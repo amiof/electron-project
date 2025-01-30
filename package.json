@@ -1,0 +1,22 @@
+{
+  "name": "downloader",
+  "version": "1.0.0",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "concurrently \"npm run start:react\"  \"npm run start:electron\"",
+    "start:react": "cd react && npm run dev",
+    "start:electron": "cd electron && npm run start",
+    "build": "npm run build:react && npm run build:electron",
+    "build:react": "cd react && npm run build",
+    "build:electron": "cd electron && npm run build",
+    "package": "npm run build && electron-builder --win --mac --linux"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^9.1.2",
+    "electron-builder": "^25.1.8"
+  }
+}
