@@ -1,7 +1,7 @@
 {
   "name": "downloader",
   "version": "1.0.0",
-  "main": "electron/main.js",
+  "main": "electron/dist/main.js",
   "scripts": {
     "start": "concurrently \"npm run start:react\"  \"npm run start:electron\"",
     "start:react": "cd react && npm run dev",
@@ -9,14 +9,39 @@
     "build": "npm run build:react && npm run build:electron",
     "build:react": "cd react && npm run build",
     "build:electron": "cd electron && npm run build",
-    "package": "npm run build && electron-builder --win --mac --linux"
+    "package": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "com.yourapp.id",
+    "electronDist": "/home/amir/Downloads/electron-v34.0.2-linux-x64",
+    "directories": {
+      "app": "electron",
+      "output": "dist"
+    },
+    "files": [
+      "dist/**/*",
+      "react/dist/**/*",
+      "electron/dist/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "concurrently": "^9.1.2",
+    "concurrently": "^9.1.2"
+  },
+  "devDependencies": {
+    "electron": "^34.0.2",
     "electron-builder": "^25.1.8"
   }
 }
