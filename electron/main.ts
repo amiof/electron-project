@@ -1,7 +1,5 @@
 import { app, BrowserWindow } from "electron";
 import path from "path";
-require('dotenv').config()
-
 
 let mainWindow: BrowserWindow | null;
 
@@ -16,22 +14,23 @@ function createWindow() {
     },
   });
 
-  console.log("NODE_ENV:", process.env.NODE_ENV);
-
-  if (process.env.NODE_ENV === 'development') {
-    // Load from localhost:3000 in development mode
-    mainWindow.loadURL('http://localhost:3000');
-    mainWindow.webContents.openDevTools(); // Open DevTools for debugging
+  if (process.env.NODE_ENV === "development") {
+    // In development, load the React dev server.
+    mainWindow.loadURL("http://localhost:3000");
+    mainWindow.webContents.openDevTools();
   } else {
-    // Load from the built HTML file in production mode
-    const indexPath = path.join(__dirname, '..', 'react', 'dist', 'index.html');
-    mainWindow.loadFile(indexPath);
+    // In production, load the built index.html from extraResources.
+    // Using process.resourcesPath ensures we reference the correct folder outside the asar.
+    const indexPath = path.join(process.resourcesPath, "react", "dist", "index.html");
+
+    console.log("Loading index.html from:", indexPath); // Add this line for debugging
+    // mainWindow.loadFile(indexPath);
+    mainWindow.loadFile(indexPath).catch((err) => console.error("Failed to load index.html:", err));
   }
 
-  mainWindow.on('closed', () => {
+  mainWindow.on("closed", () => {
     mainWindow = null;
   });
-  // mainWindow.loadURL(`file://${path.join(__dirname, '../dist/index.html')}`);
 }
 
 app.on("ready", createWindow);

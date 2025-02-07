@@ -4,7 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "outDir": "dist",
+    "outDir": "./dist",
     "esModuleInterop": true,
     "sourceMap": true,
     "strict": true,
