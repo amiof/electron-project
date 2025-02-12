@@ -1,4 +1,5 @@
 import './App.scss'
+import {Button} from "@mui/material";
 
 function App() {
 
@@ -8,6 +9,7 @@ function App() {
             <div className={"text text-yellow-400"}>
                 this is a test
             </div>
+            <Button variant={"contained"} color={"success"}>select</Button>
         </>
     )
 }
