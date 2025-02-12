@@ -1,7 +1,8 @@
+import styles from "./style.module.scss"
 
 const Sidebar = () => {
     return (
-        <div>
+        <div className={styles.container}>
 
         </div>
     );

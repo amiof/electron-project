@@ -1,7 +1,8 @@
+import styles from "./style.module.scss"
 
 const Main = () => {
     return (
-        <div>
+        <div className={styles.container}>
 
         </div>
     );
