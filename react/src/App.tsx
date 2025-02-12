@@ -1,16 +1,14 @@
-import './App.scss'
-import {Button} from "@mui/material";
-
+import styles from "./app.module.scss"
+import clsx from "clsx";
 function App() {
 
     return (
-        <>
-            <div className={"bg-amber-700"}> this is tailwindcss</div>
-            <div className={"text text-yellow-400"}>
-                this is a test
-            </div>
-            <Button variant={"contained"} color={"success"}>select</Button>
-        </>
+           <div className={clsx(styles.mainContainer ,"bg-neutral-900")}>
+               <aside></aside>
+               <header className={"border-b border-neutral-800"}></header>
+               <div className={clsx(styles.subHeader,"border-l border-b border-neutral-800")}></div>
+               <main className={"border-l  border-neutral-800"}></main>
+           </div>
     )
 }
 

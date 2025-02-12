@@ -24,7 +24,9 @@
       {
         "from": "react/dist",
         "to": "react/dist",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "mac": {
@@ -42,6 +44,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "clsx": "^2.1.1",
     "concurrently": "^9.1.2",
     "dotenv": "^16.4.7"
   },

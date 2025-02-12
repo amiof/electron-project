@@ -1,0 +1,27 @@
+.mainContainer {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(12, 1fr);
+}
+
+aside {
+  grid-column: 1/2;
+  grid-row: 2/full;
+}
+
+header {
+  grid-column: 1/6;
+  grid-row: 1/2;
+}
+.subHeader{
+  grid-column: 2/6;
+  grid-row: 2/3;
+}
+
+main {
+
+  grid-column: 2/6;
+  grid-row: 3/13;
+}

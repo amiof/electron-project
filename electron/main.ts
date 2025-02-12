@@ -5,7 +5,7 @@ let mainWindow: BrowserWindow | null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1100,
+    width: 1200,
     height: 700,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -17,7 +17,7 @@ function createWindow() {
   if (process.env.NODE_ENV === "development") {
     // In development, load the React dev server.
     mainWindow.loadURL("http://localhost:3000");
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   } else {
     // In production, load the built index.html from extraResources.
     // Using process.resourcesPath ensures we reference the correct folder outside the asar.
