@@ -1,6 +1,7 @@
 import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from '@tailwindcss/vite'
+import * as path from "node:path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,7 +9,13 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
-    base: './', // Ensures assets are correctly referenced
+    resolve: {
+        alias: {
+            "@components": path.resolve(__dirname, "src/components"),
+            "@src": path.resolve(__dirname, "src"),
+        },
+    },
+    base: './',
     build: {
         outDir: 'dist',
     },

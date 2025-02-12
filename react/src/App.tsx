@@ -1,14 +1,27 @@
-import styles from "./app.module.scss"
+import styles from "@src/app.module.scss"
 import clsx from "clsx";
+import Sidebar from "@components/sidebar/Sidebar.tsx";
+import Header from "@components/header/Header.tsx";
+import Toolbar from "@components/toolbar/Toolbar.tsx";
+import Main from "@components/main/Main.tsx";
+
 function App() {
 
     return (
-           <div className={clsx(styles.mainContainer ,"bg-neutral-900")}>
-               <aside></aside>
-               <header className={"border-b border-neutral-800"}></header>
-               <div className={clsx(styles.subHeader,"border-l border-b border-neutral-800")}></div>
-               <main className={"border-l  border-neutral-800"}></main>
-           </div>
+        <div className={clsx(styles.mainContainer, "bg-neutral-900")}>
+            <div className={styles.aside}>
+                <Sidebar/>
+            </div>
+            <div className={clsx("border-b border-neutral-800 ", styles.header)}>
+                <Header/>
+            </div>
+            <div className={clsx(styles.subHeader, "border-l border-b border-neutral-800")}>
+                <Toolbar/>
+            </div>
+            <div className={clsx(styles.main, "border-l  border-neutral-800")}>
+                <Main/>
+            </div>
+        </div>
     )
 }
 
