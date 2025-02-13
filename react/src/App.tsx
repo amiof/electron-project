@@ -8,7 +8,7 @@ import Main from "@components/main/Main.tsx";
 function App() {
 
     return (
-        <div className={clsx(styles.mainContainer, "bg-neutral-900")}>
+        <div className={clsx(styles.mainContainer)}>
             <div className={styles.aside}>
                 <Sidebar/>
             </div>
