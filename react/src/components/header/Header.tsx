@@ -5,22 +5,22 @@ import {SearchOutlined} from "@mui/icons-material";
 const Header = () => {
     return (
         <div className={styles.container}>
-            <TextField size={"small"} placeholder={"search"}
+            <TextField size={"small"} placeholder={"search in the list"}
                        sx={{
                            backgroundColor: "rgba(255, 255, 255, 0.08)",
-                           borderRadius: "30px", color: "white", width: "200px",
+                           borderRadius: "15px", color: "white", width: "230px",
                            '& input': {
-                               marginLeft: "10px"
+                               // marginLeft: "10px"
                            },
                            '& .MuiOutlinedInput-root': {
                                '&.Mui-focused fieldset': { // Remove the focus outline
                                    border: '0.5px solid green', // Remove the border
-                                   borderRadius: "30px",
+                                   borderRadius: "15px",
                                    outline: 'none', // Remove the outline
                                },
                                '&:hover fieldset': {
                                    borderColor: 'green', // Make the border transparent on hover
-                                   borderRadius: "30px",
+                                   borderRadius: "15px",
                                    outline: 'none', // Remove the outline
                                },
                            },
