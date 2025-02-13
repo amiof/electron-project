@@ -1,10 +1,21 @@
 import styles from "./style.module.scss"
 import {IconButton, InputAdornment, TextField} from "@mui/material";
 import {SearchOutlined} from "@mui/icons-material";
+import SpeedIcon from "@src/assets/SpeedIcon.tsx";
+import StraightOutlinedIcon from '@mui/icons-material/StraightOutlined';
 
 const Header = () => {
     return (
         <div className={styles.container}>
+
+            <div className={styles.speedTest}>
+                <SpeedIcon fontSize={"large"}/>
+                <div className={styles.textSpeed}>
+                    <span><StraightOutlinedIcon className={"mb-3"}/>  0 kB </span>
+                    <span><StraightOutlinedIcon className={"mb-2 rotate-180"}/>  0 kB </span>
+                </div>
+            </div>
+
             <TextField size={"small"} placeholder={"search in the list"}
                        sx={{
                            backgroundColor: "rgba(255, 255, 255, 0.08)",
@@ -42,7 +53,6 @@ const Header = () => {
                        }
 
             />
-
         </div>
     );
 };

@@ -3,7 +3,18 @@
   height: 100%;
   display: flex;
   padding-inline: 20px;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
 }
 
+.speedTest {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .textSpeed {
+    span {
+      margin-inline-start: 15px;
+    }
+  }
+}
