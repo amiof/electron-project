@@ -66,10 +66,10 @@ const Main = () => {
                     },
                 }}
                 sx={{
-                    backgroundColor: "var(--color-neutral-900)",
+                    // backgroundColor: "var(--color-neutral-900)",
                     border: "none",
                     "& .MuiDataGrid-container--top [role=row]": {
-                        backgroundColor: "var(--color-neutral-800)",
+                        backgroundColor: "var(--color-neutral-900)",
                         color: "white",
                     },
                     "& .MuiDataGrid-cell": {
@@ -100,7 +100,7 @@ const Main = () => {
 
                     },
                     "& .MuiCheckbox-root ": {
-                        color: "green"
+                        color: "white"
                     }
                 }}
                 pageSizeOptions={[5]}
