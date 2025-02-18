@@ -4,6 +4,7 @@ import Sidebar from "@components/sidebar/Sidebar.tsx";
 import Header from "@components/header/Header.tsx";
 import Toolbar from "@components/toolbar/Toolbar.tsx";
 import Main from "@components/main/Main.tsx";
+import "./renderer.ts";
 
 function App() {
 
