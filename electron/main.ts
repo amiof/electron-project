@@ -42,109 +42,7 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
 
-
-// interface Aria2cRequest {
-//   jsonrpc: '2.0';
-//   id: string;
-//   method: string;
-//   params: (string | any[])[]; // Allow for different parameter types
-// }
-//
-// interface Aria2cResponse {
-//   jsonrpc: '2.0';
-//   id: string;
-//   result?: any;
-//   error?: {
-//     code: number;
-//     message: string;
-//   };
-// }
-//
-// let aria2cProcess: ChildProcess | null = null;
-// let ws: WebSocket | null = null;
-// const aria2cSecret: string = 'test'; // STORE SECURELY! Use electron-store
-// const aria2cPort: number = 6800;
-//
-// function startAria2c(): void {
-//   aria2cProcess = spawn('aria2c', [
-//     '--enable-rpc',
-//     '--rpc-listen-all=true',
-//     '--rpc-allow-origin-all',
-//     `--rpc-listen-port=${aria2cPort}`,
-//     `--rpc-secret=${aria2cSecret}`,
-//   ]);
-//
-//   aria2cProcess.stdout!.on('data', (data: Buffer) => { // Use non-null assertion (!) if sure it's not null
-//     console.log(`aria2c stdout: ${data}`);
-//   });
-//
-//   aria2cProcess.stderr!.on('data', (data: Buffer) => {
-//     console.error(`aria2c stderr: ${data}`);
-//   });
-//
-//   aria2cProcess.on('close', (code: number) => {
-//     console.log(`aria2c exited with code ${code}`);
-//     ws = null;
-//     // Handle aria2c exit appropriately
-//   });
-// }
-//
-// function connectToAria2c(): void {
-//   ws = new WebSocket(`ws://localhost:${aria2cPort}/jsonrpc`);
-//
-//   ws.on('open', () => {
-//     console.log('Connected to aria2c via WebSocket');
-//     sendAria2cRequest('aria2.getVersion');
-//   });
-//
-//   ws.on('message', (data: WebSocket.Data) => { // Data can be a string, Buffer, ArrayBuffer, or Buffer[]
-//     console.log('Received from aria2c:', data.toString());
-//     try {
-//       const response: Aria2cResponse = JSON.parse(data.toString());
-//       if (mainWindow) {  //Check if windows is exist
-//         mainWindow.webContents.send('aria2c-response', response);
-//       }
-//     } catch (error) {
-//       console.error('Error parsing aria2c response:', error);
-//     }
-//   });
-//
-//   ws.on('close', () => {
-//     console.log('Disconnected from aria2c');
-//     ws = null;
-//   });
-//
-//   ws.on('error', (error: Error) => {
-//     console.error('WebSocket error:', error);
-//   });
-// }
-//
-// function sendAria2cRequest(method: string, params: any[] = []): void {
-//   if (!ws || ws.readyState !== WebSocket.OPEN) {
-//     console.error('WebSocket is not open. Cannot send request.');
-//     return;
-//   }
-//
-//   const request: Aria2cRequest = {
-//     jsonrpc: '2.0',
-//     id: generateId(),
-//     method: method,
-//     params: [`token:${aria2cSecret}`, ...params],
-//   };
-//
-//   ws.send(JSON.stringify(request));
-// }
-//
-// function generateId(): string {
-//   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-// }
-//
 const aria2 = new aria2c()
 
 app.whenReady().then(() => {
@@ -171,6 +69,13 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+app.on("activate", () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
+
 
 // IPC handlers
 ipcMain.on('add-download', (event: IpcMainEvent, url: string) => {
