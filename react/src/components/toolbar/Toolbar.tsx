@@ -58,6 +58,8 @@ const Toolbar = () => {
         }
     ]
 
+    const {addDownloadDir} = window.electronAPI
+    const clickHandler = () => addDownloadDir("https://www.pixelstalk.net/wp-content/uploads/2016/08/Best-Free-Desktop-Wallpaper-HD.jpg", "/home/amir")
 
     return (
         <div className={styles.container}>
@@ -98,7 +100,8 @@ const Toolbar = () => {
                                        endAdornment: (
                                            <InputAdornment position={"end"}>
                                                <IconButton>
-                                                   <CloudDownloadOutlinedIcon sx={{color: "white"}}/>
+                                                   <CloudDownloadOutlinedIcon sx={{color: "white"}}
+                                                                              onClick={clickHandler}/>
                                                </IconButton>
                                            </InputAdornment>
 

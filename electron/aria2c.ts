@@ -30,6 +30,7 @@ export default class aria2c {
     start() {
         this.aria2cProcess = spawn('aria2c', [
             '--enable-rpc',
+            '--async-dns-server=8.8.8.8',
             '--rpc-listen-all=true',
             '--rpc-allow-origin-all',
             `--rpc-listen-port=${this.aria2cPort}`,
