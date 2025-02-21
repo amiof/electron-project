@@ -59,7 +59,7 @@ const Toolbar = () => {
     ]
 
     const {addDownloadDir} = window.electronAPI
-    const clickHandler = () => addDownloadDir("https://www.pixelstalk.net/wp-content/uploads/2016/08/Best-Free-Desktop-Wallpaper-HD.jpg", "/home/amir")
+    const clickHandler = () => addDownloadDir("https://www.pixelstalk.net/wp-content/uploads/2016/08/Best-Free-Desktop-Wallpaper-HD.jpg")
 
     return (
         <div className={styles.container}>

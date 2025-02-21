@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, IpcMainEvent } from "electron";
 import path from "path";
 import aria2c from "./aria2c";
-import { checkAndCreateFolder } from "./utils";
+import { checkAndCreateFolder, directionfolder, getFolderFromUrl } from "./utils";
 
 let mainWindow: BrowserWindow | null;
 
@@ -85,10 +85,12 @@ ipcMain.on('add-download', (event: IpcMainEvent, url: string) => {
   aria2.sendAria2cRequest('aria2.addUri', [[url]]);
 });
 
-ipcMain.on('add-download-dir', (event: IpcMainEvent, url: string, directory: string) => {
-  console.log(url, directory)
+ipcMain.on('add-download-dir', (event: IpcMainEvent, url: string, directory?: string) => {
+ 
+  const dir = directionfolder(url)
+  console.log("dir:",dir)
   aria2.sendAria2cRequest('aria2.addUri', [[url], {
-    dir: directory,
+    dir: directory? directory : dir,
     'max-connection-per-server': 16, // Max connections per server
     split: 16, // Split into N connections
     'min-split-size': '1M', // Minimum split size
