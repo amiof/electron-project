@@ -36,7 +36,12 @@ function createWindow() {
 }
 
 //  create folders for download files
-checkAndCreateFolder()
+(async () => {
+
+await checkAndCreateFolder()
+
+})()
+
 
 // app.on("ready", createWindow);
 
@@ -86,11 +91,11 @@ ipcMain.on('add-download', (event: IpcMainEvent, url: string) => {
 });
 
 ipcMain.on('add-download-dir', (event: IpcMainEvent, url: string, directory?: string) => {
- 
+
   const dir = directionfolder(url)
-  console.log("dir:",dir)
+  console.log("dir:", dir)
   aria2.sendAria2cRequest('aria2.addUri', [[url], {
-    dir: directory? directory : dir,
+    dir: directory ? directory : dir,
     'max-connection-per-server': 16, // Max connections per server
     split: 16, // Split into N connections
     'min-split-size': '1M', // Minimum split size
