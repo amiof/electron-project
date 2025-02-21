@@ -1,7 +1,6 @@
 import path from "path"
 import os from "os"
 import *  as fs from "fs/promises"
-import { throws } from "assert"
 
 export const checkAndCreateFolder = async () => {
 
