@@ -12,11 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "@types/ws": "^8.5.14",
+    "better-sqlite3": "^11.8.1",
     "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.4",
+    "drizzle-orm": "^0.39.3",
     "electronmon": "^2.0.3",
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^18.15.11",
     "cross-env": "^7.0.3",
     "electron": "^34.0.1",

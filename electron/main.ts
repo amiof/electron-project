@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain, IpcMainEvent } from "electron";
 import path from "path";
 import aria2c from "./aria2c";
-import { checkAndCreateFolder, directionfolder, getFolderFromUrl } from "./utils";
+import { checkAndCreateFolder, directionfolder } from "./utils";
+import "./db/schema"
 
 let mainWindow: BrowserWindow | null;
 
