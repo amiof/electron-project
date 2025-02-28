@@ -1,4 +1,4 @@
-import {contextBridge, ipcRenderer, IpcRendererEvent} from 'electron';
+import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
 
 interface Aria2cResponse {
     jsonrpc: '2.0';
