@@ -9,6 +9,8 @@
     "sourceMap": true,
     "strict": true,
     "lib": ["esnext", "dom"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules"]
