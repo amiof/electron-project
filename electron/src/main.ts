@@ -3,6 +3,7 @@ import path from "path"
 import aria2c from "./aria2c"
 import { checkAndCreateFolder, directionfolder } from "./utils"
 import { DataSourceRepo } from "./database/database"
+import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 let mainWindow: BrowserWindow | null
 
@@ -115,4 +116,12 @@ ipcMain.on("tell-stoped", (event: IpcMainEvent) => {
 
 ipcMain.on("tell-waiting", (event: IpcMainEvent) => {
   aria2.sendAria2cRequest("aria2.tellWaiting", [-1, 100])
+})
+ipcMain.handle("get-downloads", async (event: IpcMainInvokeEvent) => {
+  try {
+    return await DataSourceRepo.getRepository("downloads").find()
+  }
+  catch (error) {
+    throw new Error("Error while getting downloads")
+  }
 })

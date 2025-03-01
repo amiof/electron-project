@@ -1,87 +1,123 @@
-import useDownloaderStore from "@src/store/downloaderStore";
+// import useDownloaderStore from "@src/store/downloaderStore"
 import styles from "./style.module.scss"
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { useEffect } from "react"
+import useDownloaderStore from "@src/store/downloaderStore.ts"
 
 
 const Main = () => {
-
-  const file = useDownloaderStore(state => state.files)
-  console.log("file", file)
-
+  
+  const getDownloads = useDownloaderStore(state => state.getDownloads)
+  const downloadsRow = useDownloaderStore(state => state.downloadsRow)
+  
+  // useEffect(() => {
+  //   console.log("downloadsRowwwww",downloadsRow)
+  // }, [downloadsRow])
+  
+  useEffect(() => {
+    (async () => {
+      await getDownloads()
+    })()
+    
+  }, [])
+  
   const columns: GridColDef<(typeof rows)[number]>[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { field: "Id", headerName: "id", width: 90, sortable: true },
     {
-      field: 'firstName',
-      headerName: 'First name',
+      field: "FileName",
+      headerName: "File Name",
       width: 150,
-      editable: true,
+      sortable: true,
+      editable: false
     },
     {
-      field: 'lastName',
-      headerName: 'Last name',
+      field: "Url",
+      headerName: "Url",
       width: 150,
-      editable: true,
-    },
-    {
-      field: 'age',
-      headerName: 'Age',
-      type: 'number',
-      width: 110,
-      editable: true,
-    },
-    {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
       sortable: false,
-      width: 160,
-      valueGetter: (_, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+      editable: false
     },
-  ];
-
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  ];
+    {
+      field: "SavePath",
+      headerName: "Save Path",
+      type: "string",
+      width: 110,
+      sortable: true,
+      editable: true
+    },
+    {
+      field: "Size",
+      headerName: "Size",
+      sortable: true,
+      width: 160
+      // valueGetter: (_, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    },
+    {
+      field: "Percentage",
+      headerName: "Percentage",
+      width: 150,
+      sortable: false,
+      editable: false
+    },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 150,
+      sortable: false,
+      editable: false
+    },
+    {
+      field: "NumberConnection",
+      headerName: "Connection",
+      width: 150,
+      sortable: false,
+      editable: false
+    },
+    {
+      field: "CreatedAt",
+      headerName: "Create At",
+      width: 150,
+      sortable: false,
+      editable: false
+    }
+  ]
+  
+  const rows = downloadsRow
+  
   return (
     <div className={styles.container}>
       <DataGrid
+        getRowId={(row) => row.Id!}
+        scrollbarSize={0}
         rows={rows}
         columns={columns}
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
-            },
-          },
+              pageSize: 6
+            }
+          }
         }}
         slotProps={{
           pagination: {
             style: {
               color: "white"
             }
-          },
+          }
         }}
         sx={{
           // backgroundColor: "var(--color-neutral-900)",
           border: "none",
           "& .MuiDataGrid-container--top [role=row]": {
             backgroundColor: "var(--color-neutral-900)",
-            color: "white",
+            color: "white"
           },
           "& .MuiDataGrid-cell": {
             borderColor: "var(--color-neutral-800)",
             color: "white"
           },
           "& .MuiDataGrid-columnSeparator": {
-            color: "var(--color-neutral-600)",
+            color: "var(--color-neutral-600)"
           },
           "& .MuiDataGrid-selectedRowCount": {
             color: "white"
@@ -101,7 +137,7 @@ const Main = () => {
             "& .MuiDataGrid-filler ": {
               borderColor: "var(--color-neutral-800)"
             }
-
+            
           },
           "& .MuiCheckbox-root ": {
             color: "white"
@@ -111,7 +147,7 @@ const Main = () => {
         checkboxSelection
       />
     </div>
-  );
-};
+  )
+}
 
 export default Main

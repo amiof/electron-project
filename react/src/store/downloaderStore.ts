@@ -4,6 +4,7 @@ import { downloaderAction } from "./downloaderAction"
 
 const useDownloaderStore = create<TDownloaderStore>((set, get) => ({
   files: null,
+  downloadsRow: [],
   ...downloaderAction(set, get)
 }))
 

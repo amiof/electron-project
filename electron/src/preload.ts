@@ -31,6 +31,7 @@ declare global {
 contextBridge.exposeInMainWorld('electronAPI', {
     addDownload: (url: string) => ipcRenderer.send('add-download', url),
     addDownloadDir: (url: string, dir?: string) => ipcRenderer.send('add-download-dir', url, dir),
+    getDownloads: () => ipcRenderer.invoke("get-downloads"),
     // onAria2cResponse: (callback) => ipcRenderer.on('aria2c-response', callback),
     // removeAria2cListener:(callback) => ipcRenderer.removeListener('aria2c-response', callback),
     tellActive: () => ipcRenderer.send('tell-active'),
