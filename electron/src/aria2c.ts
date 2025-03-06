@@ -20,12 +20,23 @@ interface Aria2cRequest {
 // }
 //
 
-export default class aria2c {
+export default class Aria2c {
   
+  private static instance: Aria2c | null = null
   ws: WebSocket | null = null
   aria2cProcess: ChildProcess | null = null
   aria2cSecret: string = "test" // STORE SECURELY! Use electron-store
   aria2cPort: number = 6800
+  
+  private constructor() {
+  } // Private constructor prevents direct instantiation
+  
+  public static getInstance(): Aria2c {
+    if (!Aria2c.instance) {
+      Aria2c.instance = new Aria2c()
+    }
+    return Aria2c.instance
+  }
   
   start() {
     this.aria2cProcess = spawn("aria2c", [

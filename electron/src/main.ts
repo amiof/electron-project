@@ -1,9 +1,10 @@
-import { app, BrowserWindow, ipcMain, IpcMainEvent } from "electron"
+import { app, BrowserWindow } from "electron"
 import path from "path"
-import aria2c from "./aria2c"
-import { checkAndCreateFolder, directionfolder } from "./utils"
+import Aria2c from "./aria2c"
+import { checkAndCreateFolder } from "./utils"
 import { DataSourceRepo } from "./database/database"
-import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
+import downloadIpcHandler from "./ipc/download/downloadHandler"
+import getDataHandler from "./ipc/getData/getDataHandler"
 
 let mainWindow: BrowserWindow | null
 
@@ -17,7 +18,6 @@ function createWindow() {
       nodeIntegration: false // Disable node integration in renderer
     }
   })
-  
   if (process.env.NODE_ENV === "development") {
     // In development, load the React dev server.
     mainWindow.loadURL("http://localhost:3000")
@@ -55,7 +55,7 @@ app.on("window-all-closed", () => {
   }
 })
 
-const aria2 = new aria2c()
+export const aria2 = Aria2c.getInstance()
 
 app.whenReady().then(() => {
   createWindow()
@@ -88,40 +88,5 @@ app.on("activate", () => {
   }
 })
 
-
-// IPC handlers
-ipcMain.on("add-download", (event: IpcMainEvent, url: string) => {
-  aria2.sendAria2cRequest("aria2.addUri", [[url]])
-})
-
-ipcMain.on("add-download-dir", (event: IpcMainEvent, url: string, directory?: string) => {
-  
-  const dir = directionfolder(url)
-  console.log("dir:", dir)
-  aria2.sendAria2cRequest("aria2.addUri", [[url], {
-    dir: directory ? directory : dir,
-    "max-connection-per-server": 16, // Max connections per server
-    split: 16, // Split into N connections
-    "min-split-size": "1M", // Minimum split size
-    continue: true // Enable resuming}]);
-  }])
-})
-ipcMain.on("tell-active", (event: IpcMainEvent) => {
-  aria2.sendAria2cRequest("aria2.tellActive")
-})
-
-ipcMain.on("tell-stoped", (event: IpcMainEvent) => {
-  aria2.sendAria2cRequest("aria2.tellStopped", [-1, 100])
-})
-
-ipcMain.on("tell-waiting", (event: IpcMainEvent) => {
-  aria2.sendAria2cRequest("aria2.tellWaiting", [-1, 100])
-})
-ipcMain.handle("get-downloads", async (event: IpcMainInvokeEvent) => {
-  try {
-    return await DataSourceRepo.getRepository("downloads").find()
-  }
-  catch (error) {
-    throw new Error("Error while getting downloads")
-  }
-})
+downloadIpcHandler()
+getDataHandler()

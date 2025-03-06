@@ -5,7 +5,9 @@
   "main": "./dist/main.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production tsc",
-    "start": "cross-env NODE_ENV=development tsc && cross-env NODE_ENV=development electronmon ."
+    "watch": "cross-env NODE_ENV=development tsc --watch",
+    "start": "cross-env NODE_ENV=development tsc && cross-env NODE_ENV=development electronmon .",
+    "start-lowlog-auto": "concurrently --prefix none -k \"npm run watch\" \"wait-on dist/preload.js && cross-env NODE_ENV=development electronmon .\""
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,7 @@
     "cross-env": "^7.0.3",
     "electron": "^34.0.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.3"
+    "typescript": "^4.9.3",
+    "wait-on": "^8.0.2"
   }
 }
