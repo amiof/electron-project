@@ -5,7 +5,8 @@
   "main": "./dist/main.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production tsc",
-    "start": "cross-env NODE_ENV=development tsc && cross-env NODE_ENV=development electronmon ."
+    "start": "cross-env NODE_ENV=development tsc && cross-env NODE_ENV=development electronmon .",
+    "start2": "concurrently -k \"tsc --watch\" \"cross-env NODE_ENV=development electronmon .\""
   },
   "keywords": [],
   "author": "",
