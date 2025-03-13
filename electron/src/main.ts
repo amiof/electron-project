@@ -14,6 +14,7 @@ function createWindow() {
     width: 1200,
     title: "IDownload",
     height: 700,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload", "preload.js"),
       contextIsolation: true, // Crucial for security

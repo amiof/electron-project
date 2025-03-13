@@ -24,6 +24,7 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
       nodeIntegration: false // Disable node integration in renderer
     }
   })
+  popupWindow.setMenuBarVisibility(false)
   const isDev = process.env.NODE_ENV === "development"
   
   const popupURL = isDev
