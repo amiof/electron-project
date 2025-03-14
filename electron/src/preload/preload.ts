@@ -16,6 +16,7 @@ interface ElectronAPI {
   addDownloadDir: (url: string, dir?: string) => void;
   onAria2cResponse: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
   removeAria2cListener: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
+  closePopupWindow: () => void,
   tellActive: () => void;
   tellStopped: () => void;
   tellWaiting: () => void;
@@ -33,6 +34,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   addDownloadDir: (url: string, dir?: string) => ipcRenderer.send("add-download-dir", url, dir),
   getDownloads: () => ipcRenderer.invoke("get-downloads"),
   addLinkPopup: () => ipcRenderer.send("add-link-popup"),
+  closePopupWindow: () => ipcRenderer.send("close-popup"),
+  
   // onAria2cResponse: (callback) => ipcRenderer.on('aria2c-response', callback),
   // removeAria2cListener:(callback) => ipcRenderer.removeListener('aria2c-response', callback),
   tellActive: () => ipcRenderer.send("tell-active"),

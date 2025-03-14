@@ -31,9 +31,6 @@ function createWindow() {
     // In production, load the built index.html from extraResources.
     // Using process.resourcesPath ensures we reference the correct folder outside the asar.
     const indexPath = path.join(process.resourcesPath, "react", "dist", "index.html")
-    console.log("%c 2 --> Line: 33||main.ts\n indexPath: ", "color:#0f0;", indexPath)
-    
-    console.log("Loading index.html from:", indexPath) // Add this line for debugging
     // mainWindow.loadFile(indexPath);
     mainWindow.loadFile(indexPath).catch((err) => console.error("Failed to load index.html:", err))
   }

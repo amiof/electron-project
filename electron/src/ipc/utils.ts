@@ -1,5 +1,6 @@
-import { BrowserWindow } from "electron"
+import { BrowserWindow, ipcMain } from "electron"
 import path from "path"
+import { POPUP_CHANNELS } from "./channels"
 
 type TCreatePopupWindow = {
   windowTitle: string
@@ -20,8 +21,16 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
     alwaysOnTop: false,
     frame: true,
     webPreferences: {
+      preload: path.join(__dirname, "../", "preload", "preload.js"),
       contextIsolation: true, // Crucial for security
       nodeIntegration: false // Disable node integration in renderer
+    }
+  })
+  
+  ipcMain.on(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, () => {
+    if (popupWindow) {
+      popupWindow.close() // Close the popup window
+      popupWindow = null // Reset the reference
     }
   })
   popupWindow.setMenuBarVisibility(false)

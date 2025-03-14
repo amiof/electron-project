@@ -1,10 +1,11 @@
 import { TDownloads } from "@src/types.ts"
 
-interface ElectronAPI {
+export interface IElectronAPI {
     addDownload: (url: string) => void;
     addDownloadDir: (url: string, dir?: string) => void;
     getDownloads: () => Promise<TDownloads[] | []>
     addLinkPopup: () => void
+    closePopupWindow: () => void,
     // onAria2cResponse: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
     // removeAria2cListener:(callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
     tellActive: () => void;
@@ -15,6 +16,6 @@ interface ElectronAPI {
 
 declare global {
     interface Window {
-        electronAPI: ElectronAPI;
+        electronAPI: IElectronAPI;
     }
 }

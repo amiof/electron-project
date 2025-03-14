@@ -1,18 +1,18 @@
-import * as React from "react";
-import {useTreeItem2, UseTreeItem2Parameters} from "@mui/x-tree-view/useTreeItem2";
-import FolderRounded from "@mui/icons-material/FolderRounded";
-import {TreeItem2Provider} from "@mui/x-tree-view/TreeItem2Provider";
-import clsx from "clsx";
-import {TreeItem2Checkbox, TreeItem2Content, TreeItem2IconContainer, TreeItem2Root} from "@mui/x-tree-view/TreeItem2";
-import {TreeItem2Icon} from "@mui/x-tree-view/TreeItem2Icon";
-import {TreeItem2DragAndDropOverlay} from "@mui/x-tree-view/TreeItem2DragAndDropOverlay";
-import {styled} from "@mui/material/styles";
-import {treeItemClasses} from "@mui/x-tree-view/TreeItem";
-import CustomLabel from "@components/sidebar/CustomLabel.tsx";
-import {animated, useSpring} from "@react-spring/web";
-import Collapse from "@mui/material/Collapse";
-import {TransitionProps} from "@mui/material/transitions";
-import {getIconFromFileType} from "@components/sidebar/utils.ts";
+import * as React from "react"
+import { useTreeItem2, UseTreeItem2Parameters } from "@mui/x-tree-view/useTreeItem2"
+import FolderRounded from "@mui/icons-material/FolderRounded"
+import { TreeItem2Provider } from "@mui/x-tree-view/TreeItem2Provider"
+import clsx from "clsx"
+import { TreeItem2Checkbox, TreeItem2Content, TreeItem2IconContainer, TreeItem2Root } from "@mui/x-tree-view/TreeItem2"
+import { TreeItem2Icon } from "@mui/x-tree-view/TreeItem2Icon"
+import { TreeItem2DragAndDropOverlay } from "@mui/x-tree-view/TreeItem2DragAndDropOverlay"
+import { styled } from "@mui/material/styles"
+import { treeItemClasses } from "@mui/x-tree-view/TreeItem"
+import CustomLabel from "@components/sidebar/CustomLabel.tsx"
+import { animated, useSpring } from "@react-spring/web"
+import Collapse from "@mui/material/Collapse"
+import { TransitionProps } from "@mui/material/transitions"
+import { getIconFromFileType } from "@components/sidebar/utils.ts"
 
 
 interface CustomTreeItemProps
@@ -58,7 +58,7 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({theme}) => ({
     fontWeight: 500,
     [`&.Mui-expanded `]: {
         '&:not(.Mui-focused, .Mui-selected, .Mui-selected.Mui-focused) .labelIcon': {
-            color: theme.palette.primary.dark,
+            color: theme.palette.success.dark,
             ...theme.applyStyles('light', {
                 color: theme.palette.success.main,
             }),
@@ -85,8 +85,11 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({theme}) => ({
         }),
     },
     [`&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused`]: {
-        backgroundColor: theme.palette.primary.dark,
+        backgroundColor: theme.palette.success.dark,
         color: theme.palette.primary.contrastText,
+        ".labelIcon": {
+            color: "white"
+        },
         ...theme.applyStyles('light', {
             backgroundColor: "green",
         }),

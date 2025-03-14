@@ -6,5 +6,6 @@ export const GETDATA_CHANNELS = {
 }
 
 export const POPUP_CHANNELS = {
-  ADD_LINK_POPUP: "add-link-popup"
+  ADD_LINK_POPUP: "add-link-popup",
+  CLOSE_POPUP_WINDOW: "close-popup"
 }

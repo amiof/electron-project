@@ -72,8 +72,11 @@ const Toolbar = () => {
         <TextField size={"small"} placeholder={"Add Url"}
                    sx={{
                      backgroundColor: "rgba(255, 255, 255, 0.08)",
-                     borderRadius: "15px", color: "white", width: "180px",
+                     borderRadius: "15px",
+                     color: "white",
+                     width: "180px",
                      "& .MuiOutlinedInput-root": {
+                       borderRadius: "15px",
                        "&.Mui-focused fieldset": {
                          border: "0.5px solid green",
                          borderRadius: "15px",

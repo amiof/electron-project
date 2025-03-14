@@ -25,6 +25,7 @@ const Header = () => {
                      // marginLeft: "10px"
                    },
                    "& .MuiOutlinedInput-root": {
+                     borderRadius: "15px",
                      "&.Mui-focused fieldset": { // Remove the focus outline
                        border: "0.5px solid green", // Remove the border
                        borderRadius: "15px",
