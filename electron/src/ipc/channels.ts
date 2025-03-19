@@ -3,7 +3,8 @@ export const DOWNLOAD_CHANNELS = {
 }
 export const GETDATA_CHANNELS = {
   GET_DOWNLOADS: "get-downloads",
-  GET_DATA_STATUS: "get-data-status"
+  GET_DATA_STATUS: "get-data-status",
+  GET_GLOBAL_STATE: "get-global-state"
 }
 
 export const POPUP_CHANNELS = {

@@ -3,8 +3,37 @@ import { IconButton, InputAdornment, TextField } from "@mui/material"
 import { SearchOutlined } from "@mui/icons-material"
 import SpeedIcon from "@src/assets/SpeedIcon.tsx"
 import StraightOutlinedIcon from "@mui/icons-material/StraightOutlined"
+import useDownloaderStore from "@src/store/downloaderStore.ts"
+import { useEffect, useState } from "react"
+import { formatBytes } from "@src/utils.ts"
 
 const Header = () => {
+  const tellActive = useDownloaderStore(state => state.tellActive)
+  
+  const [downloadSpeed, setDownloadSpeed] = useState<string>("0")
+  const [uploadSpeed, setUploadSpeed] = useState<string>("0")
+  
+  
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null
+    
+    if (tellActive.length) {
+      (async () => {
+        const globalState = window.electronAPI.getGlobalStates
+        interval = setInterval(async () => {
+          const result = await globalState()
+          setDownloadSpeed(result.downloadSpeed)
+          setUploadSpeed(result.uploadSpeed)
+        }, 400)
+      })()
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+        interval = null
+      }
+    }
+  }, [tellActive.length])
   
   return (
     <div className={styles.container}>
@@ -12,8 +41,10 @@ const Header = () => {
       <div className={styles.speedTest}>
         <SpeedIcon fontSize={"large"} />
         <div className={styles.textSpeed}>
-          <span><StraightOutlinedIcon className={"mb-3"} />  0 kB </span>
-          <span><StraightOutlinedIcon className={"mb-2 rotate-180"} />  0 kB </span>
+          <span><StraightOutlinedIcon
+            className={"mb-3"} /> {tellActive.length ? formatBytes(+downloadSpeed) : `0 kB`}</span>
+          <span><StraightOutlinedIcon
+            className={"mb-2 rotate-180"} /> {tellActive.length ? formatBytes(+uploadSpeed) : `0 kB`}</span>
         </div>
       </div>
       

@@ -50,3 +50,12 @@ export type TtellRes = {
   "totalLength": string
   "uploadLength": string
 }
+
+export type TGetGlobalStateResponse = {
+  downloadSpeed: string
+  numActive: string
+  numStopped: string
+  numStoppedTotal: string
+  numWaiting: string
+  uploadSpeed: string
+}
