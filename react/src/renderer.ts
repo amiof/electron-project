@@ -1,21 +1,20 @@
-import { TDownloads } from "@src/types.ts"
+import { TDownloads, TtellRes } from "@src/types.ts"
 
 export interface IElectronAPI {
-    addDownload: (url: string) => void;
-    addDownloadDir: (url: string, dir?: string) => void;
-    getDownloads: () => Promise<TDownloads[] | []>
-    addLinkPopup: () => void
-    closePopupWindow: () => void,
-    // onAria2cResponse: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
-    // removeAria2cListener:(callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
-    tellActive: () => void;
-    tellStopped: () => void;
-    tellWaiting: () => void;
+  addDownload: (url: string) => void;
+  addDownloadDir: (url: string, dir?: string) => Promise<string>;
+  getDownloads: () => Promise<TDownloads[] | []>
+  addLinkPopup: () => void
+  closePopupWindow: () => void,
+  getDataFilesStatus: () => void,
+  tellActive: () => Promise<TtellRes[]>;
+  tellStopped: () => Promise<TtellRes[]>;
+  tellWaiting: () => Promise<TtellRes[]>;
 }
 
 
 declare global {
-    interface Window {
-        electronAPI: IElectronAPI;
-    }
+  interface Window {
+    electronAPI: IElectronAPI;
+  }
 }

@@ -7,22 +7,39 @@ import useDownloaderStore from "@src/store/downloaderStore.ts"
 
 const Main = () => {
   
-  const getDownloads = useDownloaderStore(state => state.getDownloads)
-  const downloadsRow = useDownloaderStore(state => state.downloadsRow)
+  const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
+  const downloadsRow = useDownloaderStore(state => state.allDownloadsRow)
+  const tellActive = useDownloaderStore(state => state.tellActive)
   
-  // useEffect(() => {
-  //   console.log("downloadsRowwwww",downloadsRow)
-  // }, [downloadsRow])
   
   useEffect(() => {
-    (async () => {
-      await getDownloads()
-    })()
+    let interval: NodeJS.Timeout | null
+    if (tellActive.length) {
+      interval = setInterval(async () => {
+        await getAllDownloads()
+      }, 600)
+    }
+    else {
+      getAllDownloads()
+    }
     
-  }, [])
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+        interval = null
+      }
+    }
+  }, [tellActive.length])
   
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: "Id", headerName: "id", width: 90, sortable: true },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 150,
+      sortable: false,
+      editable: false
+    },
     {
       field: "FileName",
       headerName: "File Name",
@@ -60,14 +77,7 @@ const Main = () => {
       editable: false
     },
     {
-      field: "Status",
-      headerName: "Status",
-      width: 150,
-      sortable: false,
-      editable: false
-    },
-    {
-      field: "NumberConnection",
+      field: "NumberConnections",
       headerName: "Connection",
       width: 150,
       sortable: false,

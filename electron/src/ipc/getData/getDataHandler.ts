@@ -13,6 +13,15 @@ const ipcGetdataHanlder = () => {
       throw new Error("Error while getting downloads")
     }
   })
+  ipcMain.handle(GETDATA_CHANNELS.GET_DATA_STATUS, async (event: IpcMainInvokeEvent, id) => {
+    try {
+    
+    }
+    catch (error) {
+    
+    }
+    
+  })
   
 }
 export default ipcGetdataHanlder

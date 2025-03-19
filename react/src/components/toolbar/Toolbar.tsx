@@ -12,6 +12,7 @@ import { ReactElement } from "react"
 import { Divider, IconButton, InputAdornment, TextField } from "@mui/material"
 import AddLinkOutlinedIcon from "@mui/icons-material/AddLinkOutlined"
 import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined"
+import useDownloaderStore from "@src/store/downloaderStore.ts"
 
 type TButtonActions = {
   IconElement: ReactElement
@@ -60,8 +61,16 @@ const Toolbar = () => {
   
   const addDownloadDir = window.electronAPI.addDownloadDir
   const addLinkPopup = window.electronAPI.addLinkPopup
+  const getAllDownloadRow = useDownloaderStore(state => state.getAllDownloadsRow)
   
-  const clickHandler = () => addDownloadDir("https://www.pixelstalk.net/wp-content/uploads/2016/08/Best-Free-Desktop-Wallpaper-HD.jpg")
+  const clickHandler = async () => {
+    
+    const result = await addDownloadDir("https://www.pixelstalk.net/wp-content/uploads/2016/08/Best-Free-Desktop-Wallpaper-HD.jpg")
+    if (result) {
+      getAllDownloadRow()
+    }
+    console.log(result)
+  }
   const createPopup = () => addLinkPopup()
   
   

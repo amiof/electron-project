@@ -6,16 +6,47 @@ export type TDownloads = {
   Size: string
   CreatedAt?: Date
   Percentage?: number
-  Status?: DOWNLOAD_STATUS
+  Status?: STATUS_TYPE
   Gid: string
-  NumberConnections: number
+  NumberConnections: string
 }
 
+export type TUri = {
+  status: "used" | "waiting"
+  uri: string
+}
+export type Tfile = {
+  "completedLength": string,
+  "index": string,
+  "length": string,
+  "path": string,
+  "selected": string,
+  "uris": TUri[]
+  
+}
 
-enum DOWNLOAD_STATUS {
+export enum STATUS_TYPE {
+  WAITING = "waiting",
   ERROR = "error",
-  COMPLATED = "complated",
-  NOT_STARTED = "not-started",
-  DOWNLOAD = "download"
+  REMOVED = "removed",
+  COMPLETE = "complete",
+  PAUSED = "paused",
+  ACTIVE = "active",
 }
 
+export type TtellRes = {
+  bitfield: string
+  completedLength: string
+  connections: string
+  dir: string
+  downloadSpeed: string
+  errorCode: string
+  errorMessage: string
+  files: Tfile[]
+  gid: string
+  "numPieces": string
+  "pieceLength": string
+  "status": STATUS_TYPE
+  "totalLength": string
+  "uploadLength": string
+}

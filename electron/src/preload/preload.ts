@@ -12,14 +12,14 @@ interface Aria2cResponse {
 
 // Define a type for the exposed API in the renderer
 interface ElectronAPI {
-  addDownload: (url: string) => void;
   addDownloadDir: (url: string, dir?: string) => void;
   onAria2cResponse: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
   removeAria2cListener: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
+  getDataFilesStatus: () => void,
   closePopupWindow: () => void,
-  tellActive: () => void;
-  tellStopped: () => void;
-  tellWaiting: () => void;
+  tellActive: () => Promise<unknown>;
+  tellStopped: () => Promise<unknown>;
+  tellWaiting: () => Promise<unknown>;
 }
 
 declare global {
@@ -30,15 +30,12 @@ declare global {
 
 // Expose only specific functions to the renderer process
 contextBridge.exposeInMainWorld("electronAPI", {
-  addDownload: (url: string) => ipcRenderer.send("add-download", url),
-  addDownloadDir: (url: string, dir?: string) => ipcRenderer.send("add-download-dir", url, dir),
+  addDownloadDir: async (url: string, dir?: string) => await ipcRenderer.invoke("add-download-dir", url, dir),
   getDownloads: () => ipcRenderer.invoke("get-downloads"),
   addLinkPopup: () => ipcRenderer.send("add-link-popup"),
   closePopupWindow: () => ipcRenderer.send("close-popup"),
-  
-  // onAria2cResponse: (callback) => ipcRenderer.on('aria2c-response', callback),
-  // removeAria2cListener:(callback) => ipcRenderer.removeListener('aria2c-response', callback),
-  tellActive: () => ipcRenderer.send("tell-active"),
-  tellStopped: () => ipcRenderer.send("tell-stoped"),
-  tellWaiting: () => ipcRenderer.send("tell-waiting")
+  getDataFilesStatus: () => ipcRenderer.invoke("get-data-status"),
+  tellActive: () => ipcRenderer.invoke("tell-active"),
+  tellStopped: () => ipcRenderer.invoke("tell-stoped"),
+  tellWaiting: () => ipcRenderer.invoke("tell-waiting")
 })
