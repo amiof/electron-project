@@ -1,3 +1,5 @@
+import { Location } from "react-router-dom"
+
 export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
@@ -19,4 +21,9 @@ export const getFileName = (name: string) => {
     console.log(error)
     return ""
   }
+}
+
+export const getIdFromLocation = (location: Location<unknown>, split: string) => {
+  const splitedLocation = location.pathname.split(split)
+  return splitedLocation[splitedLocation.length - 1]
 }

@@ -13,6 +13,7 @@ import { Divider, IconButton, InputAdornment, TextField } from "@mui/material"
 import AddLinkOutlinedIcon from "@mui/icons-material/AddLinkOutlined"
 import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
+import { generateId } from "@src/utils.ts"
 
 type TButtonActions = {
   IconElement: ReactElement
@@ -20,6 +21,7 @@ type TButtonActions = {
 }
 
 const Toolbar = () => {
+  
   
   const firstButtonActions: TButtonActions[] = [
     {
@@ -71,7 +73,10 @@ const Toolbar = () => {
     }
     console.log(result)
   }
-  const createPopup = () => addLinkPopup()
+  const createPopup = () => {
+    const id = generateId()
+    addLinkPopup(id)
+  }
   
   
   return (

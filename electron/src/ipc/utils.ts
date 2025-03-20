@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain } from "electron"
+import { BrowserWindow, ipcMain, IpcMainEvent } from "electron"
 import path from "path"
 import { POPUP_CHANNELS } from "./channels"
 
@@ -7,10 +7,11 @@ type TCreatePopupWindow = {
   width: number
   height: number
   hashRoute: string
+  windowId: string
 }
 
 export const createPopupWindow = (arg: TCreatePopupWindow) => {
-  const { windowTitle, hashRoute, height, width } = arg
+  const { windowTitle, hashRoute, height, width, windowId } = arg
   let popupWindow: BrowserWindow | null
   popupWindow = new BrowserWindow({
     width: width,
@@ -27,8 +28,8 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
     }
   })
   
-  ipcMain.on(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, () => {
-    if (popupWindow) {
+  ipcMain.on(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, (event: IpcMainEvent, id: string) => {
+    if (popupWindow && id === windowId) {
       popupWindow.close() // Close the popup window
       popupWindow = null // Reset the reference
     }
