@@ -24,17 +24,13 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
     
   },
   getAllDownloadsRow: async () => {
+    await get().getTellStopped()
+    await get().getTellActive()
+    await get().getTellWaiting()
+    const tellActive = get().tellActive
+    const tellWaiting = get().tellWaiting
+    const tellStopped = get().tellStopped
     
-    const tellActive = await window.electronAPI.tellActive()
-    const tellStopped = await window.electronAPI.tellStopped()
-    const tellWaiting = await window.electronAPI.tellWaiting()
-    
-    if (tellActive.length) {
-      set({ tellActive: [...tellActive] })
-    }
-    else {
-      set({ tellActive: [] })
-    }
     const downloadsRows: TDownloads[] = [...tellStopped, ...tellWaiting, ...tellActive].map((download, index) => {
       return {
         Id: index + 1,
@@ -51,12 +47,40 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
     })
     set({ allDownloadsRow: [...downloadsRows] })
     
-    
+  },
+  getTellActive: async () => {
+    const tellActive = await window.electronAPI.tellActive()
+    if (tellActive.length) {
+      set({ tellActive: [...tellActive] })
+    }
+    else {
+      set({ tellActive: [] })
+    }
+  },
+  getTellStopped: async () => {
+    const tellStopped = await window.electronAPI.tellStopped()
+    if (tellStopped.length) {
+      set({ tellStopped: [...tellStopped] })
+    }
+    else {
+      set({ tellStopped: [] })
+    }
+  },
+  getTellWaiting: async () => {
+    const tellWaiting = await window.electronAPI.tellWaiting()
+    if (tellWaiting.length) {
+      set({ tellWaiting: [...tellWaiting] })
+    }
+    else {
+      set({ tellWaiting: [] })
+    }
   }
-  // removeFile: (file: string) => {
-  //   set((state) => ({ files: state.files.filter(f => f !== file) }));
-  // },
-  // clearFiles: () => {
-  //   set({ files: [] });
-  // },
+
+
+// removeFile: (file: string) => {
+//   set((state) => ({ files: state.files.filter(f => f !== file) }));
+// },
+// clearFiles: () => {
+//   set({ files: [] });
+// },
 })

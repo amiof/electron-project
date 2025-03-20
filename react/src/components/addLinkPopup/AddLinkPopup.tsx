@@ -3,21 +3,26 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined"
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined"
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined"
 import { useEffect, useState } from "react"
-import { formatBytes, getFileName } from "@src/utils.ts"
+import { formatBytes, getFileName, getIdFromLocation } from "@src/utils.ts"
+import { useLocation } from "react-router-dom"
 
 const AddLinkPopup = () => {
   
   const closePopupWindow = window.electronAPI.closePopupWindow
   const addDownloadDir = window.electronAPI.addDownloadDir
+  const addDownloadPopup = window.electronAPI.addDownloadPopup
+  const location = useLocation()
+  const id = getIdFromLocation(location, ":")
   
   const [linkAddress, setLinkAddress] = useState<string>("")
   const [fileSize, setFileSize] = useState<string>("0")
   const [fileName, setFileName] = useState<string>("")
   
-  const downlaodHandler = () => {
+  const downloadHandler = async () => {
     if (linkAddress) {
-      addDownloadDir(linkAddress)
-      closePopupWindow()
+      const gid = await addDownloadDir(linkAddress)
+      addDownloadPopup(gid)
+      closePopupWindow(id)
     }
   }
   
@@ -84,10 +89,10 @@ const AddLinkPopup = () => {
       </div>
       <div className={"flex items-center justify-between w-full px-5 h-[20%]"}>
         <Button variant={"outlined"} color={"error"} endIcon={<CancelOutlinedIcon />} size={"small"}
-                onClick={closePopupWindow}>close</Button>
+                onClick={() => closePopupWindow(id)}>close</Button>
         <div className={"flex gap-2 "}>
           <Button variant={"outlined"} color={"success"} size={"small"}
-                  endIcon={<DownloadOutlinedIcon />} onClick={downlaodHandler}>download</Button>
+                  endIcon={<DownloadOutlinedIcon />} onClick={downloadHandler}>download</Button>
           <Button variant={"outlined"} size={"small"} endIcon={<AddCircleOutlineOutlinedIcon />}>add</Button>
         </div>
       </div>

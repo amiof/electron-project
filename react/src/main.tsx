@@ -5,6 +5,7 @@ import App from "./App.tsx"
 import { HashRouter, Route, Routes } from "react-router-dom"
 import AddLinkPopup from "@components/addLinkPopup/AddLinkPopup.tsx"
 import { createTheme, ThemeProvider } from "@mui/material"
+import DownloadStart from "@components/startDownload/startDownload.tsx"
 
 const darkTheme = createTheme({
   palette: {
@@ -18,7 +19,8 @@ createRoot(document.getElementById("root")!).render(
     <HashRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/popup" element={<AddLinkPopup />} />
+        <Route path="/popup/:id" element={<AddLinkPopup />} />
+        <Route path="/downloadStart/:id" element={<DownloadStart />} />
       </Routes>
     </HashRouter>
     </ThemeProvider>

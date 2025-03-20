@@ -14,18 +14,18 @@ const ipcGetdataHanlder = () => {
       throw new Error("Error while getting downloads")
     }
   })
-  ipcMain.handle(GETDATA_CHANNELS.GET_DATA_STATUS, async (event: IpcMainInvokeEvent, id) => {
+  ipcMain.handle(GETDATA_CHANNELS.GET_TELL_STATUS, async (event: IpcMainInvokeEvent, gid: string) => {
     try {
-    
+      return await aria2.sendAria2cRequest("tellStatus", [gid])
     }
     catch (error) {
-    
+      console.log("Error while getting local state:", error)
     }
     
   })
   ipcMain.handle(GETDATA_CHANNELS.GET_GLOBAL_STATE, async (event: IpcMainInvokeEvent, id) => {
     try {
-      return await aria2.sendAria2cRequest("aria2.getGlobalStat")
+      return await aria2.sendAria2cRequest("getGlobalStat")
     }
     catch (error) {
       console.log("Error while getting local state:", error)

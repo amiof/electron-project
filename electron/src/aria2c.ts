@@ -101,7 +101,7 @@ export default class aria2c {
         const requestData: Aria2cRequest = {
           jsonrpc: "2.0",
           id: id,
-          method: method,
+          method: `aria2.${method}`,
           params: [`token:${this.aria2cSecret}`, ...params]
         }
         this.ws!.send(JSON.stringify(requestData))

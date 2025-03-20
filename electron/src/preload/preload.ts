@@ -15,9 +15,11 @@ interface ElectronAPI {
   addDownloadDir: (url: string, dir?: string) => void;
   onAria2cResponse: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
   removeAria2cListener: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
-  getDataFilesStatus: () => void,
+  getTellStatus: (gid: string) => Promise<unknown>,
   getGlobalStates: () => Promise<unknown>,
-  closePopupWindow: () => void,
+  addDownloadPopup: (id: string) => void,
+  addLinkPopup: (id: string) => void,
+  closePopupWindow: (id: string) => void,
   tellActive: () => Promise<unknown>;
   tellStopped: () => Promise<unknown>;
   tellWaiting: () => Promise<unknown>;
@@ -33,9 +35,10 @@ declare global {
 contextBridge.exposeInMainWorld("electronAPI", {
   addDownloadDir: async (url: string, dir?: string) => await ipcRenderer.invoke("add-download-dir", url, dir),
   getDownloads: () => ipcRenderer.invoke("get-downloads"),
-  addLinkPopup: () => ipcRenderer.send("add-link-popup"),
-  closePopupWindow: () => ipcRenderer.send("close-popup"),
-  getDataFilesStatus: () => ipcRenderer.invoke("get-data-status"),
+  addLinkPopup: (id: string) => ipcRenderer.send("add-link-popup", id),
+  closePopupWindow: (id: string) => ipcRenderer.send("close-popup", id),
+  getTellStatus: (gid: string) => ipcRenderer.invoke("get-tell-status", gid),
+  addDownloadPopup: (id: string) => ipcRenderer.invoke("popup-start-download", id),
   getGlobalStates: () => ipcRenderer.invoke("get-global-state"),
   tellActive: () => ipcRenderer.invoke("tell-active"),
   tellStopped: () => ipcRenderer.invoke("tell-stoped"),
