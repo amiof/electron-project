@@ -12,7 +12,7 @@ const ipcPopupHandler = () => {
   ipcMain.handle(POPUP_CHANNELS.POPUP_START_DOWNLOAD, (event: IpcMainInvokeEvent, id) => {
     createPopupWindow({
       windowTitle: "download",
-      height: 500,
+      height: 400,
       width: 900,
       hashRoute: `downloadStart/:${id}`,
       windowId: id
