@@ -34,7 +34,7 @@ export default class aria2c {
       "--async-dns-server=8.8.8.8",
       "--rpc-listen-all=true",
       "--rpc-allow-origin-all",
-      "--max-download-limit=30K",
+      "--max-download-limit=5K",
       `--rpc-listen-port=${this.aria2cPort}`,
       `--rpc-secret=${this.aria2cSecret}`
     ])

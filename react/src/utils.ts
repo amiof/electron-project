@@ -27,3 +27,12 @@ export const getIdFromLocation = (location: Location<unknown>, split: string) =>
   const splitedLocation = location.pathname.split(split)
   return splitedLocation[splitedLocation.length - 1]
 }
+
+export const formatTime = (seconds: number) => {
+  if (seconds === Infinity) return "∞"
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = Math.floor(seconds % 60)
+  
+  return `${hours}h ${minutes}m ${secs}s`
+}

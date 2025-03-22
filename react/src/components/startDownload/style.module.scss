@@ -1,0 +1,47 @@
+.card {
+  position: relative;
+  width: 98%;
+  height: 95%;
+  transition: all 1500ms;
+  border-radius: 2rem;
+  transform-style: preserve-3d;
+}
+
+.container:hover > .card {
+  transform: rotateX(180deg);
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 98%;
+  height: 100%;
+}
+
+.front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  //box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotateX(180deg);
+  backface-visibility: hidden;
+  //box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+//////////////////////
+.backDetailsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80%;
+  gap: 1rem;
+}

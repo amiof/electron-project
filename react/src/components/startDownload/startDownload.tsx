@@ -2,11 +2,13 @@ import { useLocation } from "react-router-dom"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { useEffect, useState } from "react"
 import { TtellRes } from "@src/types.ts"
-import { formatBytes, getIdFromLocation } from "@src/utils.ts"
-import { ProgressBar } from "react-progressbar-fancy"
-import { Button, Divider } from "@mui/material"
+import { formatBytes, formatTime, getIdFromLocation } from "@src/utils.ts"
+import styels from "./style.module.scss"
+import BackDetails from "@components/startDownload/BackDetails.tsx"
+import FrontDetails from "@components/startDownload/FrontDetails.tsx"
+import clsx from "clsx"
 
-type details = {
+export type TDetails = {
   label: string
   value: number | string
 }
@@ -46,75 +48,59 @@ const DownloadStart = () => {
     
   }, [tellActive.length])
   
+  const remainingBytes = downloadStatus ? +downloadStatus.totalLength - Number(downloadStatus.completedLength) : 0
+  const remainingSeconds = downloadStatus && +downloadStatus.downloadSpeed > 0 ? remainingBytes / Number(downloadStatus?.downloadSpeed) : Infinity
   
-  const details: details[] = [
+  const details: TDetails[] = [
     {
-      label: "speed : ",
+      label: "Speed : ",
       value: downloadStatus ? formatBytes(+downloadStatus.downloadSpeed, 1) : 0
     },
     {
-      label: "link : ",
-      value: downloadStatus?.files[0].path ?? ""
+      label: "Link : ",
+      value: downloadStatus?.files[0].uris[0].uri ?? ""
     },
     {
-      label: "saved Path : ",
+      label: "Saved Path : ",
       value: downloadStatus?.dir ?? ""
     },
     {
-      label: "connection :",
+      label: "Connection :",
       value: downloadStatus?.connections ?? 0
     },
     {
-      label: "status :",
+      label: "Status :",
       value: downloadStatus?.status ?? ""
     },
     {
-      label: "total Size:",
+      label: "File Size:",
       value: downloadStatus ? formatBytes(+downloadStatus?.totalLength) : 0
     },
     {
-      label: "downloaded Size:",
+      label: "Downloaded Size:",
       value: downloadStatus ? formatBytes(+downloadStatus?.completedLength) : 0
+    },
+    {
+      label: "Eta :",
+      value: formatTime(remainingSeconds)
     }
   
   
   ]
   return (
-    <div className={"h-screen w-screen"}>
-      <div className={"h-[49%] w-full border border-transparent "}>
-        <div className={"ml-15 mt-10"}>
-          {
-            details.map((item, index) =>
-              (
-                <div key={`details-${index}`}>
-                  <span> {item.label} </span>
-                  <span className={"ml-2"}>{item.value}</span>
-                </div>
-              )
-            )
-          }
-        </div>
-      
-      </div>
-      <div className={"w-full h-[50%] flex justify-center "}>
-        <div className={"h-full w-[90%] flex flex-col items-center justify-evenly"}>
-          <Divider variant={"middle"} flexItem={true} />
-          <ProgressBar
-            className="porgress"
-            label={""}
-            progressColor={"green"}
-            darkTheme
-            score={
-              downloadStatus ? +(+downloadStatus.completedLength / +downloadStatus.totalLength * 100).toFixed(0) : 0
-            }
-          />
-          <div className={"flex gap-2 justify-end w-full px-3 mt-10"}>
-            <Button variant={"outlined"} color={"error"}>close</Button>
-            <Button variant={"outlined"} color={"warning"}>pause</Button>
+    <div className={"w-full h-full flex justify-center items-center overflow-hidden "}>
+      <div className={styels.container}>
+        <div className={styels.card}>
+          <div className={clsx(styels.front, " border border-neutral-800 rounded-4xl")}>
+            <FrontDetails details={details} downloadStatus={downloadStatus} />
+          </div>
+          <div className={styels.back}>
+            <BackDetails details={details} downloadStatus={downloadStatus} />
           </div>
         </div>
       </div>
     </div>
+  
   )
 }
 
