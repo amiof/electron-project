@@ -175,6 +175,13 @@ const Main = () => {
           },
           "& .MuiCheckbox-root ": {
             color: "white"
+          },
+          "& .css-16z8vpz": {
+            transition: "all 0.3s ease",
+            height: "4px !important",
+            "&:hover": {
+              height: "14px !important"
+            }
           }
         }}
         pageSizeOptions={[5]}
