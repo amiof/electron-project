@@ -20,6 +20,8 @@ const DownloadStart = () => {
   const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
   const tellActive = useDownloaderStore(state => state.tellActive)
   const getTellActive = useDownloaderStore(state => state.getTellActive)
+  const setDownloadDataToEletron = useDownloaderStore(state => state.setActiveDataToElectron)
+  
   const [downloadStatus, setDownloadStatus] = useState<TtellRes | null>(null)
   
   useEffect(() => {
@@ -30,6 +32,8 @@ const DownloadStart = () => {
         await getTellActive()
         setDownloadStatus(tellStatus)
       }, 300)
+      
+      setDownloadDataToEletron(tellActive[0])
     }
     else {
       (async () => {
@@ -58,7 +62,7 @@ const DownloadStart = () => {
     },
     {
       label: "Link : ",
-      value: downloadStatus?.files[0].uris[0].uri ?? ""
+      value: downloadStatus?.files[0].uris[0]?.uri ?? ""
     },
     {
       label: "Saved Path : ",

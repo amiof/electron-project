@@ -23,6 +23,9 @@ interface ElectronAPI {
   tellActive: () => Promise<unknown>;
   tellStopped: () => Promise<unknown>;
   tellWaiting: () => Promise<unknown>;
+  setActiveDownloadData: (id: string) => void;
+  getActiveDownloadData: () => Promise<unknown>;
+  onDataChange: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
 }
 
 declare global {
@@ -42,5 +45,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getGlobalStates: () => ipcRenderer.invoke("get-global-state"),
   tellActive: () => ipcRenderer.invoke("tell-active"),
   tellStopped: () => ipcRenderer.invoke("tell-stoped"),
-  tellWaiting: () => ipcRenderer.invoke("tell-waiting")
+  tellWaiting: () => ipcRenderer.invoke("tell-waiting"),
+  setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),
+  getActiveDownloadData: () => ipcRenderer.invoke("get-download-data-active"),
+  onDataChange: (callback: (data: string) => void) => {
+    ipcRenderer.on("data-change", (_event, data) => callback(data))
+  }
+  
 })

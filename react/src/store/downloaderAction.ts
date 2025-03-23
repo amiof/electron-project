@@ -1,7 +1,7 @@
 import { StoreApi } from "zustand"
 import { TDownloaderStore } from "./storeType"
 import { formatBytes, getFileName } from "@src/utils.ts"
-import { TDownloads } from "@src/types.ts"
+import { TDownloads, TtellRes } from "@src/types.ts"
 
 export type SetState = StoreApi<TDownloaderStore>["setState"];
 export type GetState = StoreApi<TDownloaderStore>["getState"];
@@ -74,7 +74,18 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
     else {
       set({ tellWaiting: [] })
     }
+  },
+  
+  // set active data in electron for update dataGrid download rows
+  setActiveDataToElectron: async (data: TtellRes) => {
+    await window.electronAPI.setActiveDownloadData(data)
+  },
+  
+  getActiveDataFromElectron: async () => {
+    const result = await window.electronAPI.getActiveDownloadData()
+    set({ activeDownloads: [...result] })
   }
+
 
 
 // removeFile: (file: string) => {

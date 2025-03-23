@@ -7,6 +7,7 @@ export type TDownloaderState = {
   tellActive: TtellRes[] | []
   tellStopped: TtellRes[] | []
   tellWaiting: TtellRes[] | []
+  activeDownloads: TtellRes[] | []
 }
 
 export type TDownloaderActions = {
@@ -16,5 +17,7 @@ export type TDownloaderActions = {
   getTellActive: () => Promise<void>
   getTellStopped: () => Promise<void>
   getTellWaiting: () => Promise<void>
+  setActiveDataToElectron: (data: TtellRes) => Promise<void>
+  getActiveDataFromElectron: () => Promise<void>
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions

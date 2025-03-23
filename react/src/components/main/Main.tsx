@@ -1,8 +1,11 @@
 // import useDownloaderStore from "@src/store/downloaderStore"
 import styles from "./style.module.scss"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
+import { TtellRes } from "@src/types.ts"
+import { ProgressBar } from "react-progressbar-fancy"
+import clsx from "clsx"
 
 
 const Main = () => {
@@ -11,6 +14,11 @@ const Main = () => {
   const downloadsRow = useDownloaderStore(state => state.allDownloadsRow)
   const tellActive = useDownloaderStore(state => state.tellActive)
   
+  const [activeDownloads, setActiveDownloads] = useState<TtellRes | null>(null)
+  window.electronAPI.onDataChange(async (data) => {
+    const result = await data
+    setActiveDownloads(result)
+  })
   
   useEffect(() => {
     let interval: NodeJS.Timeout | null
@@ -29,14 +37,14 @@ const Main = () => {
         interval = null
       }
     }
-  }, [tellActive.length])
+  }, [tellActive.length, activeDownloads])
   
   const columns: GridColDef<(typeof rows)[number]>[] = [
-    { field: "Id", headerName: "id", width: 90, sortable: true },
+    { field: "Id", headerName: "id", width: 50, sortable: true },
     {
       field: "Status",
       headerName: "Status",
-      width: 150,
+      width: 100,
       sortable: false,
       editable: false
     },
@@ -63,23 +71,39 @@ const Main = () => {
       editable: true
     },
     {
-      field: "Size",
-      headerName: "Size",
-      sortable: true,
-      width: 160
-      // valueGetter: (_, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-    },
-    {
       field: "Percentage",
       headerName: "Percentage",
-      width: 150,
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div className={clsx("flex justify-between items-center  h-full", styles.progress)}>
+            <ProgressBar
+              label={""}
+              hideText={true}
+              progressColor={"green"}
+              darkTheme
+              score={
+                +params.row.Percentage!
+              }
+            />
+            <div>{params.row.Percentage!}%</div>
+          </div>
+        )
+      },
       sortable: false,
       editable: false
     },
     {
+      field: "Size",
+      headerName: "Size",
+      sortable: true,
+      width: 100
+      // valueGetter: (_, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    },
+    {
       field: "NumberConnections",
       headerName: "Connection",
-      width: 150,
+      width: 100,
       sortable: false,
       editable: false
     },

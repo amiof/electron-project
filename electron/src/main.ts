@@ -6,8 +6,9 @@ import { DataSourceRepo } from "./database/database"
 import ipcDownloaddHandler from "./ipc/download/downloadHandler"
 import ipcGetdataHanlder from "./ipc/getData/getDataHandler"
 import ipcPopupHandler from "./ipc/openPopup/popupHandler"
+import "./store/electronStore"
 
-let mainWindow: BrowserWindow | null
+export let mainWindow: BrowserWindow | null
 
 function createWindow() {
   mainWindow = new BrowserWindow({

@@ -30,9 +30,8 @@ const FrontDetails = (props: Props) => {
         <div className={"h-full w-[90%] flex flex-col items-center justify-evenly"}>
           <Divider variant={"middle"} flexItem={true} />
           <ProgressBar
-            className="porgress"
-            label={""}
             progressColor={"green"}
+            label={""}
             darkTheme
             score={
               downloadStatus ? +(+downloadStatus.completedLength / +downloadStatus.totalLength * 100).toFixed(0) : 0

@@ -6,9 +6,10 @@
     "allowSyntheticDefaultImports": true,
     "outDir": "./dist",
     "esModuleInterop": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": true,
     "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },

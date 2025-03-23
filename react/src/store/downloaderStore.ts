@@ -9,6 +9,7 @@ const useDownloaderStore = create<TDownloaderStore>((set, get) => ({
   tellWaiting: [],
   downloadsRow: [],
   allDownloadsRow: [],
+  activeDownloads: [],
   ...downloaderAction(set, get)
 }))
 
