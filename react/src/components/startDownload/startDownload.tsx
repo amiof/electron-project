@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { useEffect, useState } from "react"
-import { TtellRes } from "@src/types.ts"
+import { STATUS_TYPE, TtellRes } from "@src/types.ts"
 import { formatBytes, formatTime, getIdFromLocation } from "@src/utils.ts"
-import styels from "./style.module.scss"
+import styles from "./style.module.scss"
 import BackDetails from "@components/startDownload/BackDetails.tsx"
 import FrontDetails from "@components/startDownload/FrontDetails.tsx"
 import clsx from "clsx"
@@ -23,6 +23,14 @@ const DownloadStart = () => {
   const setDownloadDataToEletron = useDownloaderStore(state => state.setActiveDataToElectron)
   
   const [downloadStatus, setDownloadStatus] = useState<TtellRes | null>(null)
+  const [showMore, setShowMore] = useState<boolean>(false)
+  
+  
+  const remainingBytes = downloadStatus ? +downloadStatus.totalLength - Number(downloadStatus.completedLength) : 0
+  const remainingSeconds = downloadStatus && +downloadStatus.downloadSpeed > 0 ? remainingBytes / Number(downloadStatus?.downloadSpeed) : Infinity
+  
+  const completeDownload = downloadStatus?.status === STATUS_TYPE.COMPLETE
+  
   
   useEffect(() => {
     let interval: NodeJS.Timeout | null
@@ -52,8 +60,13 @@ const DownloadStart = () => {
     
   }, [tellActive.length])
   
-  const remainingBytes = downloadStatus ? +downloadStatus.totalLength - Number(downloadStatus.completedLength) : 0
-  const remainingSeconds = downloadStatus && +downloadStatus.downloadSpeed > 0 ? remainingBytes / Number(downloadStatus?.downloadSpeed) : Infinity
+  
+  useEffect(() => {
+    if (completeDownload) {
+      setShowMore(true)
+    }
+  }, [completeDownload])
+ 
   
   const details: TDetails[] = [
     {
@@ -93,13 +106,13 @@ const DownloadStart = () => {
   ]
   return (
     <div className={"w-full h-full flex justify-center items-center overflow-hidden "}>
-      <div className={styels.container}>
-        <div className={styels.card}>
-          <div className={clsx(styels.front, " border border-neutral-800 rounded-4xl")}>
-            <FrontDetails details={details} downloadStatus={downloadStatus} />
+      <div className={styles.container}>
+        <div className={clsx(styles.card, showMore && "rotate-x-180")}>
+          <div className={clsx(styles.front, " border border-neutral-800 rounded-4xl")}>
+            <FrontDetails details={details} downloadStatus={downloadStatus} setShowMore={setShowMore} />
           </div>
-          <div className={styels.back}>
-            <BackDetails details={details} downloadStatus={downloadStatus} />
+          <div className={styles.back}>
+            <BackDetails details={details} downloadStatus={downloadStatus} setShowMore={setShowMore} />
           </div>
         </div>
       </div>

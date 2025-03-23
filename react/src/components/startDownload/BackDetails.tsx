@@ -10,9 +10,10 @@ import { useLocation } from "react-router-dom"
 type Props = {
   details: TDetails[]
   downloadStatus: TtellRes | null
+  setShowMore: React.Dispatch<React.SetStateAction<boolean>>
 }
 const BackDetails = (props: Props) => {
-  const { details, downloadStatus } = props
+  const { details, downloadStatus, setShowMore } = props
   const location = useLocation()
   const gid = getIdFromLocation(location, ":")
   const closePopup = window.electronAPI.closePopupWindow
@@ -97,7 +98,7 @@ const BackDetails = (props: Props) => {
         
         <div className={"flex gap-2 justify-center w-full px-3 mt-10"}>
           <Button variant={"outlined"} color={"error"} onClick={() => closePopup(gid)}>close</Button>
-          <Button variant={"outlined"} color={"warning"}>pause</Button>
+          <Button variant={"outlined"} color={"warning"} onClick={() => setShowMore(false)}>back</Button>
         </div>
       </div>
     </>

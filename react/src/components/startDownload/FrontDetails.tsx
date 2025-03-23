@@ -6,9 +6,10 @@ import { TtellRes } from "@src/types.ts"
 type Props = {
   details: TDetails[]
   downloadStatus: TtellRes | null
+  setShowMore: React.Dispatch<React.SetStateAction<boolean>>
 }
 const FrontDetails = (props: Props) => {
-  const { details, downloadStatus } = props
+  const { details, downloadStatus, setShowMore } = props
   return (
     <>
       <div className={"h-[45%] w-full  "}>
@@ -39,7 +40,7 @@ const FrontDetails = (props: Props) => {
           />
           <div className={"flex gap-2 justify-end w-full px-3 mt-10"}>
             <Button variant={"outlined"} color={"error"}>close</Button>
-            <Button variant={"outlined"} color={"warning"}>pause</Button>
+            <Button variant={"outlined"} color={"warning"} onClick={() => setShowMore(true)}>More</Button>
           </div>
         </div>
       

@@ -7,10 +7,6 @@
   transform-style: preserve-3d;
 }
 
-.container:hover > .card {
-  transform: rotateX(180deg);
-}
-
 .container {
   display: flex;
   align-items: center;
