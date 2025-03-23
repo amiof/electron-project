@@ -177,7 +177,7 @@ const Main = () => {
             color: "white"
           },
           // scrollbar
-          "& .css-16z8vpz": {
+          "& .MuiDataGrid-scrollbar": {
             transition: "all 0.3s ease",
             height: "4px !important",
             "&:hover": {
