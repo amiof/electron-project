@@ -30,7 +30,12 @@ const DownloadStart = () => {
   const remainingSeconds = downloadStatus && +downloadStatus.downloadSpeed > 0 ? remainingBytes / Number(downloadStatus?.downloadSpeed) : Infinity
   
   const completeDownload = downloadStatus?.status === STATUS_TYPE.COMPLETE
+  const getDownloadedFilesDetails = useDownloaderStore(state => state.getDownloadedFilesDetails)
   
+  useEffect(() => {
+    //for add create add in dataGrid
+    getDownloadedFilesDetails()
+  }, [])
   
   useEffect(() => {
     let interval: NodeJS.Timeout | null

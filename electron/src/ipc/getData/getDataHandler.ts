@@ -2,6 +2,7 @@ import { ipcMain } from "electron"
 import { DataSourceRepo } from "../../database/database"
 import { GET_DATA_CHANNELS } from "../channels"
 import { aria2, mainWindow } from "../../main"
+import { getFilesInDirectory } from "../../utils"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 let activeData: any[] = []
@@ -46,6 +47,10 @@ const ipcGetdataHanlder = () => {
   
   ipcMain.handle(GET_DATA_CHANNELS.GET_DOWNLOAD_DATA_ACTIVE, () => {
     return activeData
+  })
+  
+  ipcMain.handle(GET_DATA_CHANNELS.CHECK_DOWNLOADED_FILES_DETAILS, () => {
+    return getFilesInDirectory()
   })
   
 }

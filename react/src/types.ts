@@ -7,6 +7,7 @@ export type TDownloads = {
   CreatedAt?: Date
   Percentage?: number
   Status?: STATUS_TYPE
+  CompletedSize?: string
   Gid: string
   NumberConnections: string
 }
@@ -59,3 +60,14 @@ export type TGetGlobalStateResponse = {
   numWaiting: string
   uploadSpeed: string
 }
+
+
+export type TFileDetails = {
+  name: string;
+  path: string;
+  size: number; // in bytes
+  createdAt: Date;
+  modifiedAt: Date;
+  isDirectory: boolean;
+}
+

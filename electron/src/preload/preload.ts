@@ -26,6 +26,7 @@ interface ElectronAPI {
   setActiveDownloadData: (id: string) => void;
   getActiveDownloadData: () => Promise<unknown>;
   onDataChange: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
+  getDownloadedFilesDetails: () => Promise<unknown>
 }
 
 declare global {
@@ -50,6 +51,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getActiveDownloadData: () => ipcRenderer.invoke("get-download-data-active"),
   onDataChange: (callback: (data: string) => void) => {
     ipcRenderer.on("data-change", (_event, data) => callback(data))
-  }
-  
+  },
+  getDownloadedFilesDetails: () => ipcRenderer.invoke("get-downloaded-files-details")
 })

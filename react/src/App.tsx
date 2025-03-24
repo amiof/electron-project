@@ -5,9 +5,16 @@ import Header from "@components/header/Header.tsx"
 import Toolbar from "@components/toolbar/Toolbar.tsx"
 import Main from "@components/main/Main.tsx"
 import "./renderer.ts"
+import { useEffect } from "react"
+import useDownloaderStore from "@src/store/downloaderStore.ts"
 
 function App() {
   
+  const getDownloadedFilesDetails = useDownloaderStore(state => state.getDownloadedFilesDetails)
+  
+  useEffect(() => {
+    getDownloadedFilesDetails()
+  }, [])
   
   return (
     <>

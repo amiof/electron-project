@@ -1,4 +1,4 @@
-import { TDownloads, TGetGlobalStateResponse, TtellRes } from "@src/types.ts"
+import { TDownloads, TFileDetails, TGetGlobalStateResponse, TtellRes } from "@src/types.ts"
 
 export interface IElectronAPI {
   addDownload: (url: string) => void
@@ -16,6 +16,7 @@ export interface IElectronAPI {
   setActiveDownloadData: (data: TtellRes) => void
   getActiveDownloadData: () => Promise<TtellRes[]>
   onDataChange: (callback: (response: Promise<TtellRes>) => void) => void;
+  getDownloadedFilesDetails: () => Promise<TFileDetails[]>
 }
 
 

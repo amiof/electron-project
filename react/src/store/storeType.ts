@@ -1,4 +1,4 @@
-import { TDownloads, TtellRes } from "@src/types.ts"
+import { TDownloads, TFileDetails, TtellRes } from "@src/types.ts"
 
 export type TDownloaderState = {
   files: string[] | null
@@ -8,6 +8,7 @@ export type TDownloaderState = {
   tellStopped: TtellRes[] | []
   tellWaiting: TtellRes[] | []
   activeDownloads: TtellRes[] | []
+  downloadedFilesDetails: Record<string, TFileDetails>
 }
 
 export type TDownloaderActions = {
@@ -19,5 +20,6 @@ export type TDownloaderActions = {
   getTellWaiting: () => Promise<void>
   setActiveDataToElectron: (data: TtellRes) => Promise<void>
   getActiveDataFromElectron: () => Promise<void>
+  getDownloadedFilesDetails: () => Promise<void>
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions

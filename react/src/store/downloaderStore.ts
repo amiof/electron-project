@@ -10,6 +10,7 @@ const useDownloaderStore = create<TDownloaderStore>((set, get) => ({
   downloadsRow: [],
   allDownloadsRow: [],
   activeDownloads: [],
+  downloadedFilesDetails: {},
   ...downloaderAction(set, get)
 }))
 

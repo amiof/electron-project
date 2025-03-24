@@ -25,7 +25,7 @@ const Main = () => {
     if (tellActive.length) {
       interval = setInterval(async () => {
         await getAllDownloads()
-      }, 600)
+      }, 900)
     }
     else {
       getAllDownloads()
@@ -94,8 +94,14 @@ const Main = () => {
       editable: false
     },
     {
+      field: "CompletedSize",
+      headerName: "Completed Size",
+      sortable: true,
+      width: 100
+    },
+    {
       field: "Size",
-      headerName: "Size",
+      headerName: "Total Size",
       sortable: true,
       width: 100
       // valueGetter: (_, row) => `${row.firstName || ''} ${row.lastName || ''}`,
@@ -111,7 +117,7 @@ const Main = () => {
       field: "CreatedAt",
       headerName: "Create At",
       width: 150,
-      sortable: false,
+      sortable: true,
       editable: false
     }
   ]

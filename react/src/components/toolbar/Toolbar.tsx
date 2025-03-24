@@ -138,8 +138,8 @@ const Toolbar = () => {
       
       <div className={styles.secondLineAction}>
         {
-          firstButtonActions.map(item =>
-            <ButtonAction iconElement={item.IconElement} title={item.title} />
+          firstButtonActions.map((item, index) =>
+            <ButtonAction key={`buttonAction-${index}`} iconElement={item.IconElement} title={item.title} />
           )
         }
       </div>
@@ -148,8 +148,8 @@ const Toolbar = () => {
       
       <div className={styles.secondLineAction}>
         {
-          secondButtonActions.map(item =>
-            <ButtonAction iconElement={item.IconElement} title={item.title} />
+          secondButtonActions.map((item, index) =>
+            <ButtonAction key={`secondButtonAction-${index}`} iconElement={item.IconElement} title={item.title} />
           )
         }
       </div>
