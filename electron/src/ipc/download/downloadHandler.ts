@@ -4,7 +4,7 @@ import { aria2 } from "../../main"
 import { DOWNLOAD_CHANNELS } from "../channels"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
-const ipcDownloaddHandler = () => {
+const ipcDownloadHandler = () => {
   
   ipcMain.handle(DOWNLOAD_CHANNELS.ADD_DOWNLOAD_LINK, async (event: IpcMainInvokeEvent, url: string, directory?: string) => {
     const dir = directionfolder(url)
@@ -31,4 +31,4 @@ const ipcDownloaddHandler = () => {
   })
 }
 
-export default ipcDownloaddHandler
+export default ipcDownloadHandler

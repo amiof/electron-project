@@ -9,6 +9,7 @@ export type TDownloaderState = {
   tellWaiting: TtellRes[] | []
   activeDownloads: TtellRes[] | []
   downloadedFilesDetails: Record<string, TFileDetails>
+  completedRowFromDB: TtellRes[] | []
 }
 
 export type TDownloaderActions = {
@@ -21,5 +22,6 @@ export type TDownloaderActions = {
   setActiveDataToElectron: (data: TtellRes) => Promise<void>
   getActiveDataFromElectron: () => Promise<void>
   getDownloadedFilesDetails: () => Promise<void>
+  getCompletedRowFromDB: () => Promise<void>
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions

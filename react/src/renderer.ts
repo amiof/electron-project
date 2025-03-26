@@ -17,6 +17,9 @@ export interface IElectronAPI {
   getActiveDownloadData: () => Promise<TtellRes[]>
   onDataChange: (callback: (response: Promise<TtellRes>) => void) => void;
   getDownloadedFilesDetails: () => Promise<TFileDetails[]>
+  addLinkToDB: (downloadRow: TtellRes) => Promise<unknown>
+  updateDownloadRowStatus: (gid: string, downloadRow: TtellRes) => Promise<TtellRes>
+  getCompletedRowFromDB: () => Promise<TtellRes[]>
 }
 
 

@@ -1,5 +1,6 @@
 import { ChildProcess, spawn } from "child_process"
 import WebSocket from "ws"
+import { getSessionPath } from "./utils"
 
 
 interface Aria2cRequest {
@@ -21,7 +22,6 @@ interface Aria2cRequest {
 //
 
 export default class aria2c {
-  
   ws: WebSocket | null = null
   aria2cProcess: ChildProcess | null = null
   aria2cSecret: string = "test" // STORE SECURELY! Use electron-store
@@ -34,7 +34,16 @@ export default class aria2c {
       "--async-dns-server=8.8.8.8",
       "--rpc-listen-all=true",
       "--rpc-allow-origin-all",
-      "--max-download-limit=5K",
+      `--save-session=${getSessionPath()}`,
+      `--input-file=${getSessionPath()}`,
+      // "--log=/home/amir/.config/electron/AMDownloader/aria2.log",
+      "--log-level=debug",
+      "--save-session-interval=0",
+      // "--force-save=true",
+      "--max-download-limit=10K",
+      "--auto-file-renaming=true",
+      "--force-sequential=true",
+      "--check-integrity=true",
       `--rpc-listen-port=${this.aria2cPort}`,
       `--rpc-secret=${this.aria2cSecret}`
     ])

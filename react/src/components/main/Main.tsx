@@ -19,6 +19,12 @@ const Main = () => {
     const result = await data
     setActiveDownloads(result)
   })
+  useEffect(() => {
+    //for get session data in start app
+    setTimeout(async () => {
+      await getAllDownloads()
+    }, 1000)
+  }, [])
   
   useEffect(() => {
     let interval: NodeJS.Timeout | null

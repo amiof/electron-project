@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
+import { STATUS_TYPE, TtellRes } from "../types"
 
 interface Aria2cResponse {
   jsonrpc: "2.0";
@@ -27,6 +28,9 @@ interface ElectronAPI {
   getActiveDownloadData: () => Promise<unknown>;
   onDataChange: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
   getDownloadedFilesDetails: () => Promise<unknown>
+  addLinkToDB: (downloadRow: TtellRes) => Promise<unknown>
+  updateDownloadRowStatus: (gid: string, downloadRow: TtellRes) => Promise<unknown>
+  getCompletedRowFromDB: () => Promise<unknown>
 }
 
 declare global {
@@ -52,5 +56,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onDataChange: (callback: (data: string) => void) => {
     ipcRenderer.on("data-change", (_event, data) => callback(data))
   },
-  getDownloadedFilesDetails: () => ipcRenderer.invoke("get-downloaded-files-details")
+  getDownloadedFilesDetails: () => ipcRenderer.invoke("get-downloaded-files-details"),
+  addLinkToDB: (downloadRow: TtellRes) => ipcRenderer.invoke("add-link-to-db", downloadRow),
+  updateDownloadRowStatus: (gid: string, downloadRow: STATUS_TYPE) => ipcRenderer.invoke("update-downloadRow-status", gid, downloadRow),
+  getCompletedRowFromDB: () => ipcRenderer.invoke("get-completed-row-from-db")
 })

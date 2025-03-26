@@ -8,7 +8,10 @@ export const GET_DATA_CHANNELS = {
   SET_DOWNLOAD_DATA_ACTIVE: "set-download-data-active", //for set sended data from front
   DATA_CHANGE: "data-change", // for add event when change a data in popup
   GET_DOWNLOAD_DATA_ACTIVE: "get-download-data-active", //for get data send from front
-  CHECK_DOWNLOADED_FILES_DETAILS: "get-downloaded-files-details" // for get createAt files
+  CHECK_DOWNLOADED_FILES_DETAILS: "get-downloaded-files-details", // for get createAt files
+  ADD_LINK_TO_DB: "add-link-to-db",
+  UPDATE_DOWNLOAD_ROW_STATUS: "update-downloadRow-status",
+  GET_COMPLETED_ROW_FROM_DB: "get-completed-row-from-db"
 }
 
 export const POPUP_CHANNELS = {

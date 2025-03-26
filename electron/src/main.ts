@@ -1,14 +1,16 @@
 import { app, BrowserWindow } from "electron"
 import path from "path"
 import aria2c from "./aria2c"
-import { checkAndCreateFolder } from "./utils"
+import { checkAndCreateFolder, checkSessionExists } from "./utils"
 import { DataSourceRepo } from "./database/database"
-import ipcDownloaddHandler from "./ipc/download/downloadHandler"
+import ipcDownloadHandler from "./ipc/download/downloadHandler"
 import ipcGetdataHanlder from "./ipc/getData/getDataHandler"
 import ipcPopupHandler from "./ipc/openPopup/popupHandler"
 import "./store/electronStore"
 
 export let mainWindow: BrowserWindow | null
+
+checkSessionExists()
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -93,6 +95,6 @@ app.on("activate", () => {
 
 
 // IPC handlers
-ipcDownloaddHandler()
+ipcDownloadHandler()
 ipcGetdataHanlder()
 ipcPopupHandler()

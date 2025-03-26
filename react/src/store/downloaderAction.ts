@@ -30,9 +30,10 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
     const tellActive = get().tellActive
     const tellWaiting = get().tellWaiting
     const tellStopped = get().tellStopped
+    const completedRowsFromDB = get().completedRowFromDB
     const downloadedFilesDetails = get().downloadedFilesDetails
     
-    const downloadsRows: TDownloads[] = [...tellStopped, ...tellWaiting, ...tellActive].map((download, index) => {
+    const downloadsRows: TDownloads[] = [...tellStopped, ...tellWaiting, ...tellActive, ...completedRowsFromDB].map((download, index) => {
       const fileName = getFileName(download.files[0].path)
       const fileCreateAte = downloadedFilesDetails?.[fileName]?.createdAt ? downloadedFilesDetails[fileName].createdAt : new Date()
       return {
@@ -51,6 +52,10 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
     })
     set({ allDownloadsRow: [...downloadsRows] })
     
+  },
+  getCompletedRowFromDB: async () => {
+    const result = await window.electronAPI.getCompletedRowFromDB()
+    set({ completedRowFromDB: [...result] })
   },
   getTellActive: async () => {
     const tellActive = await window.electronAPI.tellActive()

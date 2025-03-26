@@ -3,6 +3,7 @@ import os from "os"
 import *  as fs from "fs/promises"
 import * as fsnp from "fs"
 import { TFileDetails } from "./types"
+import { app } from "electron"
 
 export const checkAndCreateFolder = async () => {
   
@@ -49,7 +50,6 @@ export const checkAndCreateFolder = async () => {
       default:
         throw new Error("your platform not  supported")
     }
-    console.log(target)
     for (const targetPath of target) {
       try {
         
@@ -95,11 +95,11 @@ export const getFolderFromUrl = (url: string) => {
     })
   }
   if (folderExtention) {
-    console.log(folderExtention)
+    
     return folderExtention
   }
   else {
-    console.log("other")
+    
     return "other"
   }
   
@@ -237,3 +237,17 @@ export const savedPath = () => {
   }
 }
 
+
+export const getSessionPath = () => {
+  return path.join(app.getPath("userData"), "AMDownloader", "aria2.session")
+}
+
+export const checkSessionExists = () => {
+  if (!fsnp.existsSync(getSessionPath())) {
+    const fd = fsnp.openSync(getSessionPath(), "w")
+    fsnp.closeSync(fd)
+  }
+  else {
+    console.log("session file is exist 😇")
+  }
+}
