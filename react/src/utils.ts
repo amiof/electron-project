@@ -1,4 +1,5 @@
 import { Location } from "react-router-dom"
+import { TDownloads } from "@src/types.ts"
 
 export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -35,4 +36,11 @@ export const formatTime = (seconds: number) => {
   const secs = Math.floor(seconds % 60)
   
   return `${hours}h ${minutes}m ${secs}s`
+}
+
+export const searchInDownloadsRows = (data: TDownloads[], searchValue: string) => {
+  
+  if (searchValue === "") return data
+  return data.filter(item => item.FileName.toLowerCase().includes(searchValue.toLowerCase()))
+  
 }

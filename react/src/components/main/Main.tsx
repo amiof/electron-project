@@ -6,6 +6,7 @@ import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TtellRes } from "@src/types.ts"
 import { ProgressBar } from "react-progressbar-fancy"
 import clsx from "clsx"
+import { searchInDownloadsRows } from "@src/utils.ts"
 
 
 const Main = () => {
@@ -14,6 +15,9 @@ const Main = () => {
   const downloadsRow = useDownloaderStore(state => state.allDownloadsRow)
   const tellActive = useDownloaderStore(state => state.tellActive)
   const setSelectedRows = useDownloaderStore(state => state.setSelectedRow)
+  const searchValue = useDownloaderStore(state => state.searchValue)
+  
+  
   
   const [activeDownloads, setActiveDownloads] = useState<TtellRes | null>(null)
   window.electronAPI.onDataChange(async (data) => {
@@ -129,7 +133,7 @@ const Main = () => {
     }
   ]
   
-  const rows = downloadsRow
+  const rows = searchInDownloadsRows(downloadsRow, searchValue)
   
   
   const rowSelectedHandler = (selectionModel: GridRowSelectionModel) => {

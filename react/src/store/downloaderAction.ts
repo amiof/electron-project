@@ -106,6 +106,10 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
   
   setSelectedRow: (rows: TDownloads[]) => {
     set({ selectedRows: rows })
+  },
+  
+  setSearchValue: (text: string) => {
+    set({ searchValue: text })
   }
 
 

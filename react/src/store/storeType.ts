@@ -11,6 +11,7 @@ export type TDownloaderState = {
   downloadedFilesDetails: Record<string, TFileDetails>
   completedRowFromDB: TtellRes[] | []
   selectedRows: TDownloads[] | []
+  searchValue: string
 }
 
 export type TDownloaderActions = {
@@ -25,5 +26,6 @@ export type TDownloaderActions = {
   getDownloadedFilesDetails: () => Promise<void>
   getCompletedRowFromDB: () => Promise<void>
   setSelectedRow: (Rows: TDownloads[]) => void
+  setSearchValue: (text: string) => void
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions

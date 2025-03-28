@@ -6,12 +6,29 @@ import StraightOutlinedIcon from "@mui/icons-material/StraightOutlined"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { useEffect, useState } from "react"
 import { formatBytes } from "@src/utils.ts"
+import * as _ from "lodash"
 
 const Header = () => {
   const tellActive = useDownloaderStore(state => state.tellActive)
   
   const [downloadSpeed, setDownloadSpeed] = useState<string>("0")
   const [uploadSpeed, setUploadSpeed] = useState<string>("0")
+  const [inputText, setInputText] = useState<string>("")
+  const setSearchValue = useDownloaderStore(state => state.setSearchValue)
+  
+  // update search value after 1s
+  const debouncedSetSearchValue = _.debounce((value: string) => {
+    setSearchValue(value)
+  }, 500)
+  
+  useEffect(() => {
+    debouncedSetSearchValue(inputText)
+    
+    return () => {
+      debouncedSetSearchValue.cancel()
+    }
+    
+  }, [inputText])
   
   
   useEffect(() => {
@@ -49,6 +66,7 @@ const Header = () => {
       </div>
       
       <TextField size={"small"} placeholder={"search in the list"}
+                 onChange={(e) => setInputText(e.target.value)}
                  sx={{
                    backgroundColor: "rgba(255, 255, 255, 0.08)",
                    borderRadius: "15px", color: "white", width: "230px",
