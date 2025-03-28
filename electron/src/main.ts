@@ -19,6 +19,9 @@ function createWindow() {
     title: "IDownload",
     height: 700,
     autoHideMenuBar: true,
+    minWidth: 1000,
+    minHeight: 500,
+    resizable: true,
     webPreferences: {
       preload: path.join(__dirname, "preload", "preload.js"),
       contextIsolation: true, // Crucial for security
