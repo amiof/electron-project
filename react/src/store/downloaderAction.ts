@@ -102,6 +102,10 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
       return acc
     }, {} as Record<string, TFileDetails>)
     set({ downloadedFilesDetails: { ...filesObject } })
+  },
+  
+  setSelectedRow: (rows: TDownloads[]) => {
+    set({ selectedRows: rows })
   }
 
 

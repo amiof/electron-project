@@ -7,6 +7,7 @@ import ipcDownloadHandler from "./ipc/download/downloadHandler"
 import ipcGetdataHanlder from "./ipc/getData/getDataHandler"
 import ipcPopupHandler from "./ipc/openPopup/popupHandler"
 import "./store/electronStore"
+import { ipcActionsHandler } from "./ipc/actions/actionsHandler"
 
 export let mainWindow: BrowserWindow | null
 
@@ -98,3 +99,4 @@ app.on("activate", () => {
 ipcDownloadHandler()
 ipcGetdataHanlder()
 ipcPopupHandler()
+ipcActionsHandler()

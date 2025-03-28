@@ -18,29 +18,54 @@ import { generateId } from "@src/utils.ts"
 type TButtonActions = {
   IconElement: ReactElement
   title: string
+  action?: () => void
 }
 
 const Toolbar = () => {
-  
+  const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
+  const getSelectedRows = useDownloaderStore(state => state.selectedRows)
+  const getCompletedRowsDB = useDownloaderStore(state => state.getCompletedRowFromDB)
   
   const firstButtonActions: TButtonActions[] = [
     {
       IconElement: <PlayArrowOutlinedIcon fontSize={"medium"} />,
-      title: "Resume"
+      title: "Resume",
+      action: () => {
+        if (getSelectedRows[0]?.Gid) {
+          window.electronAPI.addDownloadPopup(getSelectedRows[0].Gid)
+          window.electronAPI.unPauseByGid(getSelectedRows[0].Gid)
+          getAllDownloads()
+        }
+      }
     },
     {
       IconElement: <StopOutlinedIcon fontSize={"medium"} />,
-      title: "Stop"
+      title: "Stop",
+      action: () => {
+        if (getSelectedRows[0]?.Gid) {
+          window.electronAPI.stopDownloadByGid(getSelectedRows[0].Gid)
+        }
+      }
     },
     {
       IconElement: <DangerousOutlinedIcon fontSize={"medium"} />,
-      title: "Stop All"
+      title: "Stop All",
+      action: () => {
+        window.electronAPI.stopAllDownloads()
+      }
     }
   ]
   const secondButtonActions: TButtonActions[] = [
     {
       IconElement: <DeleteOutlineOutlinedIcon fontSize={"medium"} />,
-      title: "Delete"
+      title: "Delete",
+      action: () => {
+        window.electronAPI.removeDownloadByGid(getSelectedRows[0].Gid)
+        getCompletedRowsDB()
+        setTimeout(async () => {
+          await getAllDownloads()
+        }, 300)
+      }
     },
     {
       IconElement: <SettingsOutlinedIcon fontSize={"medium"} />,
@@ -139,7 +164,8 @@ const Toolbar = () => {
       <div className={styles.secondLineAction}>
         {
           firstButtonActions.map((item, index) =>
-            <ButtonAction key={`buttonAction-${index}`} iconElement={item.IconElement} title={item.title} />
+            <ButtonAction key={`buttonAction-${index}`} iconElement={item.IconElement} title={item.title}
+                          action={item.action ? item.action : undefined} />
           )
         }
       </div>
@@ -149,7 +175,8 @@ const Toolbar = () => {
       <div className={styles.secondLineAction}>
         {
           secondButtonActions.map((item, index) =>
-            <ButtonAction key={`secondButtonAction-${index}`} iconElement={item.IconElement} title={item.title} />
+            <ButtonAction key={`secondButtonAction-${index}`} iconElement={item.IconElement} title={item.title}
+                          action={item.action} />
           )
         }
       </div>

@@ -20,6 +20,11 @@ export interface IElectronAPI {
   addLinkToDB: (downloadRow: TtellRes) => Promise<unknown>
   updateDownloadRowStatus: (gid: string, downloadRow: TtellRes) => Promise<TtellRes>
   getCompletedRowFromDB: () => Promise<TtellRes[]>
+  stopDownloadByGid: (gid: string) => Promise<unknown>
+  unPauseAll: () => Promise<unknown>,
+  unPauseByGid: (gid: string) => void,
+  stopAllDownloads: () => void,
+  removeDownloadByGid: (gid: string) => void
 }
 
 

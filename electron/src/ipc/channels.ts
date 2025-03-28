@@ -19,3 +19,11 @@ export const POPUP_CHANNELS = {
   CLOSE_POPUP_WINDOW: "close-popup",
   POPUP_START_DOWNLOAD: "popup-start-download"
 }
+
+export const ACTIONS_CHANNELS = {
+  STOP_DOWNLOAD_BY_GID: "stop-download-by-gid",
+  UNPAUSE_ALL: "unpause-all",
+  UNPAUSE_BY_GID: "unpause-By-gid",
+  STOP_ALL_DOWNLOADS: "stop-allDownloads",
+  REMOVE_DOWNLOAD_BY_GID: "remove-download-by-gid"
+}

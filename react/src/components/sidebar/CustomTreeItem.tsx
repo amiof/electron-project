@@ -85,7 +85,7 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({theme}) => ({
         }),
     },
     [`&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused`]: {
-        backgroundColor: theme.palette.success.dark,
+        background: "linear-gradient(170deg, hsla(204, 83%, 51%, 0.8) 0%, hsla(143, 100%, 48%, 0.8) 100%)",
         color: theme.palette.primary.contrastText,
         ".labelIcon": {
             color: "white"

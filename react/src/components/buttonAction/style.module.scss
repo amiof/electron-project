@@ -1,13 +1,13 @@
 .buttonContainer {
   //border:1px solid gray;
-  width: 70px;
-  height: 70px;
   display: flex;
-  gap: 5px;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
-
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  gap: 5px;
+  
 }
 
 .title {

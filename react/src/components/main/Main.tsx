@@ -1,6 +1,6 @@
 // import useDownloaderStore from "@src/store/downloaderStore"
 import styles from "./style.module.scss"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid"
 import { useEffect, useState } from "react"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TtellRes } from "@src/types.ts"
@@ -13,6 +13,7 @@ const Main = () => {
   const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
   const downloadsRow = useDownloaderStore(state => state.allDownloadsRow)
   const tellActive = useDownloaderStore(state => state.tellActive)
+  const setSelectedRows = useDownloaderStore(state => state.setSelectedRow)
   
   const [activeDownloads, setActiveDownloads] = useState<TtellRes | null>(null)
   window.electronAPI.onDataChange(async (data) => {
@@ -130,11 +131,19 @@ const Main = () => {
   
   const rows = downloadsRow
   
+  
+  const rowSelectedHandler = (selectionModel: GridRowSelectionModel) => {
+    
+    const selectedDetails = rows.filter((row) => selectionModel.includes(row.Id!))
+    setSelectedRows(selectedDetails)
+  }
+  
   return (
     <div className={styles.container}>
       <DataGrid
         getRowId={(row) => row.Id!}
         scrollbarSize={0}
+        onRowSelectionModelChange={rowSelectedHandler}
         rows={rows}
         columns={columns}
         initialState={{

@@ -10,6 +10,7 @@ export type TDownloaderState = {
   activeDownloads: TtellRes[] | []
   downloadedFilesDetails: Record<string, TFileDetails>
   completedRowFromDB: TtellRes[] | []
+  selectedRows: TDownloads[] | []
 }
 
 export type TDownloaderActions = {
@@ -23,5 +24,6 @@ export type TDownloaderActions = {
   getActiveDataFromElectron: () => Promise<void>
   getDownloadedFilesDetails: () => Promise<void>
   getCompletedRowFromDB: () => Promise<void>
+  setSelectedRow: (Rows: TDownloads[]) => void
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions
