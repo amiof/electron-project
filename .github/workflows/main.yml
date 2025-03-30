@@ -61,10 +61,10 @@ jobs:
           glibtoolize --force
           autoreconf -fiv
           ./configure --disable-nls --enable-static --disable-shared
-          # حذف پوشه po و ایجاد یک پوشه po خالی با Makefile ساده جهت تعریف هدف all
+          # حذف پوشه po و ایجاد پوشه‌ای خالی با یک Makefile ساده که هدف all را تعریف می‌کند
           rm -rf po
           mkdir po
-          cat << 'EOF' > po/Makefile
+          cat <<'EOF' > po/Makefile
 all:
 	@echo "Skipping po build."
 EOF
