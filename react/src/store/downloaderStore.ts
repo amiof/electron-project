@@ -14,6 +14,8 @@ const useDownloaderStore = create<TDownloaderStore>((set, get) => ({
   completedRowFromDB: [],
   selectedRows: [],
   searchValue: "",
+  sidebarSelectedLabel: "",
+  downloadsGroupByLabel: { "null": [] },
   ...downloaderAction(set, get)
 }))
 

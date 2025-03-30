@@ -3,7 +3,7 @@ import styles from "./style.module.scss"
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid"
 import { useEffect, useState } from "react"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
-import { TtellRes } from "@src/types.ts"
+import { TDownloads, TtellRes } from "@src/types.ts"
 import { ProgressBar } from "react-progressbar-fancy"
 import clsx from "clsx"
 import { searchInDownloadsRows } from "@src/utils.ts"
@@ -16,8 +16,24 @@ const Main = () => {
   const tellActive = useDownloaderStore(state => state.tellActive)
   const setSelectedRows = useDownloaderStore(state => state.setSelectedRow)
   const searchValue = useDownloaderStore(state => state.searchValue)
+  const sidebarSelectedLabel = useDownloaderStore(state => state.sidebarSelectedLabel)
+  const downloadsGroupingByLabel = useDownloaderStore(state => state.downloadsGroupByLabel)
   
+  let dataGridRow: TDownloads[]
   
+  if (sidebarSelectedLabel === "All Downloads" || sidebarSelectedLabel === "all" || sidebarSelectedLabel === "") {
+    dataGridRow = downloadsRow
+  }
+  else if (sidebarSelectedLabel === "Finished") {
+    dataGridRow = downloadsRow.filter((item) => item.Status === "complete")
+  }
+  else if (sidebarSelectedLabel === "UnFinished") {
+    dataGridRow = downloadsRow.filter((item) => item.Status !== "complete")
+  }
+  else {
+    dataGridRow = downloadsGroupingByLabel[sidebarSelectedLabel.toLowerCase()]
+    if (!dataGridRow) dataGridRow = []
+  }
   
   const [activeDownloads, setActiveDownloads] = useState<TtellRes | null>(null)
   window.electronAPI.onDataChange(async (data) => {
@@ -133,7 +149,7 @@ const Main = () => {
     }
   ]
   
-  const rows = searchInDownloadsRows(downloadsRow, searchValue)
+  const rows = searchInDownloadsRows(dataGridRow, searchValue)
   
   
   const rowSelectedHandler = (selectionModel: GridRowSelectionModel) => {
@@ -174,6 +190,12 @@ const Main = () => {
           "& .MuiDataGrid-cell": {
             borderColor: "var(--color-neutral-800)",
             color: "white"
+          },
+          "& .MuiDataGrid-cell:focus": {
+            outline: "none"
+          },
+          "& .MuiDataGrid-columnHeader:focus": {
+            outline: "none"
           },
           "& .MuiDataGrid-columnSeparator": {
             color: "var(--color-neutral-600)"

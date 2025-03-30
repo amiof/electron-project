@@ -1,5 +1,5 @@
 import { ipcMain } from "electron"
-import { directionfolder } from "../../utils"
+import { directionFolder } from "../../utils"
 import { aria2 } from "../../main"
 import { DOWNLOAD_CHANNELS } from "../channels"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
@@ -7,7 +7,7 @@ import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 const ipcDownloadHandler = () => {
   
   ipcMain.handle(DOWNLOAD_CHANNELS.ADD_DOWNLOAD_LINK, async (event: IpcMainInvokeEvent, url: string, directory?: string) => {
-    const dir = directionfolder(url)
+    const dir = directionFolder(url)
     
     return await aria2.sendAria2cRequest("addUri", [[url], {
       dir: directory ? directory : dir,

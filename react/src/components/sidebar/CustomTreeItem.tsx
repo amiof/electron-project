@@ -13,6 +13,7 @@ import { animated, useSpring } from "@react-spring/web"
 import Collapse from "@mui/material/Collapse"
 import { TransitionProps } from "@mui/material/transitions"
 import { getIconFromFileType } from "@components/sidebar/utils.ts"
+import useDownloaderStore from "@src/store/downloaderStore.ts"
 
 
 interface CustomTreeItemProps
@@ -103,6 +104,8 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
 ) {
   const { id, itemId, label, disabled, children, ...other } = props
   
+  const setSidebarSelectedLabel = useDownloaderStore(state => state.setSidebarSelectedLabel)
+  
   const {
     getRootProps,
     getContentProps,
@@ -136,8 +139,8 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   
   return (
     <TreeItem2Provider itemId={itemId}>
-      <StyledTreeItemRoot {...getRootProps(other)}>
-        <div onClick={() => console.log(label, item.parent)}>
+      <StyledTreeItemRoot {...getRootProps(other)} >
+        <div onClick={() => setSidebarSelectedLabel(item.label)}>
           <CustomTreeItemContent
             {...getContentProps({
               className: clsx("content", {

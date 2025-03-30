@@ -18,10 +18,10 @@ export const checkAndCreateFolder = async () => {
         basePath = process.env.UserProlfile || "C://windows/Download"
         target = [
           path.join(basePath, "AMDownloader", "compressed"),
-          path.join(basePath, "AMDownloader", "music"),
-          path.join(basePath, "AMDownloader", "video"),
-          path.join(basePath, "AMDownloader", "image"),
-          path.join(basePath, "AMDownloader", "document"),
+          path.join(basePath, "AMDownloader", "musics"),
+          path.join(basePath, "AMDownloader", "videos"),
+          path.join(basePath, "AMDownloader", "images"),
+          path.join(basePath, "AMDownloader", "documents"),
           path.join(basePath, "AMDownloader", "other")
         ]
         break
@@ -29,10 +29,10 @@ export const checkAndCreateFolder = async () => {
         basePath = os.homedir()
         target = [
           path.join(basePath, "AMDownloader", "compressed"),
-          path.join(basePath, "AMDownloader", "music"),
-          path.join(basePath, "AMDownloader", "video"),
-          path.join(basePath, "AMDownloader", "image"),
-          path.join(basePath, "AMDownloader", "document"),
+          path.join(basePath, "AMDownloader", "musics"),
+          path.join(basePath, "AMDownloader", "videos"),
+          path.join(basePath, "AMDownloader", "images"),
+          path.join(basePath, "AMDownloader", "documents"),
           path.join(basePath, "AMDownloader", "other")
         ]
         break
@@ -40,10 +40,10 @@ export const checkAndCreateFolder = async () => {
         basePath = os.homedir()
         target = [
           path.join(basePath, "AMDownloader", "compressed"),
-          path.join(basePath, "AMDownloader", "music"),
-          path.join(basePath, "AMDownloader", "video"),
-          path.join(basePath, "AMDownloader", "image"),
-          path.join(basePath, "AMDownloader", "document"),
+          path.join(basePath, "AMDownloader", "musics"),
+          path.join(basePath, "AMDownloader", "videos"),
+          path.join(basePath, "AMDownloader", "images"),
+          path.join(basePath, "AMDownloader", "documents"),
           path.join(basePath, "AMDownloader", "other")
         ]
         break
@@ -75,11 +75,11 @@ export const getFolderFromUrl = (url: string) => {
   console.log("extention", extension)
   
   const fileTypes: Record<string, string[]> = {
-    video: ["mp4", "mkv", "avi", "mov", "wmv", "flv", "webm"],
-    music: ["mp3", "wav", "aac", "flac", "ogg", "m4a"],
+    videos: ["mp4", "mkv", "avi", "mov", "wmv", "flv", "webm"],
+    musics: ["mp3", "wav", "aac", "flac", "ogg", "m4a"],
     compressed: ["zip", "rar", "7z", "tar", "gz"],
-    image: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"],
-    document: ["pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx"]
+    images: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"],
+    documents: ["pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx"]
   }
   
   let folderExtention: string | null = null
@@ -107,7 +107,7 @@ export const getFolderFromUrl = (url: string) => {
 }
 
 
-export const directionfolder = (url: string) => {
+export const directionFolder = (url: string) => {
   
   try {
     
@@ -200,7 +200,7 @@ export const savedPath = () => {
     const target: string[] = []
     const platform = process.platform
     let basePath: string
-    const folders = ["compressed", "music", "video", "image", "document", "other"]
+    const folders = ["compressed", "musics", "videos", "images", "documents", "other"]
     switch (platform) {
       case "win32":
         basePath = process.env.UserProlfile || "C://windows/Download"

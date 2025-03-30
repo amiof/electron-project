@@ -2,6 +2,8 @@ import { StoreApi } from "zustand"
 import { TDownloaderStore } from "./storeType"
 import { formatBytes, getFileName } from "@src/utils.ts"
 import { TDownloads, TFileDetails, TtellRes } from "@src/types.ts"
+import * as _ from "lodash"
+
 
 export type SetState = StoreApi<TDownloaderStore>["setState"];
 export type GetState = StoreApi<TDownloaderStore>["getState"];
@@ -51,7 +53,8 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
       }
     })
     set({ allDownloadsRow: [...downloadsRows] })
-    
+    const groupByResult = _.groupBy(downloadsRows, (row) => getFileName(row.SavePath))
+    set({ downloadsGroupByLabel: groupByResult })
   },
   getCompletedRowFromDB: async () => {
     const result = await window.electronAPI.getCompletedRowFromDB()
@@ -110,6 +113,10 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
   
   setSearchValue: (text: string) => {
     set({ searchValue: text })
+  },
+  
+  setSidebarSelectedLabel: (label: string) => {
+    set({ sidebarSelectedLabel: label })
   }
 
 
