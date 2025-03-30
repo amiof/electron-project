@@ -28,7 +28,10 @@ jobs:
         run: |
           brew install autoconf automake libtool gettext \
             openssl cppunit libxml2 zlib sqlite3
+          brew link --force --overwrite libtool
           brew link --force --overwrite gettext
+          echo 'export PATH="/usr/local/opt/libtool/bin:$PATH"' >> ~/.bash_profile
+          echo 'export PATH="/usr/local/opt/libtool/bin:$PATH"' >> ~/.zshrc
           echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.bash_profile
           echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.zshrc
           source ~/.bash_profile || true
