@@ -28,13 +28,10 @@ jobs:
         run: |
           brew install autoconf automake libtool gettext \
             openssl cppunit libxml2 zlib sqlite3
-          # Install libtool and ensure it's linked properly
-          brew install libtool
           brew link --force --overwrite libtool
           brew link --force --overwrite gettext
-          # Force reset the path to ensure the shell recognizes it
-          echo 'export PATH="/usr/local/opt/libtool/bin:$PATH"' >> ~/.bash_profile
-          echo 'export PATH="/usr/local/opt/libtool/bin:$PATH"' >> ~/.zshrc
+          echo 'export PATH="/usr/local/opt/libtool/libexec/gnubin:$PATH"' >> ~/.bash_profile
+          echo 'export PATH="/usr/local/opt/libtool/libexec/gnubin:$PATH"' >> ~/.zshrc
           echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.bash_profile
           echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.zshrc
           source ~/.bash_profile || true
@@ -60,8 +57,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cd aria2
-          # Ensure everything is configured
-          libtoolize --force
+          # استفاده از glibtoolize به جای libtoolize
+          glibtoolize --force
           autoreconf -fiv
           ./configure --enable-static --disable-shared
           make -j$(sysctl -n hw.logicalcpu)
