@@ -54,7 +54,9 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cd aria2
-          autoreconf -i
+          # Ensure everything is configured
+          libtoolize --force
+          autoreconf -fiv
           ./configure --enable-static --disable-shared
           make -j$(sysctl -n hw.logicalcpu)
 
