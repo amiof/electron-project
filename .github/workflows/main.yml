@@ -28,7 +28,11 @@ jobs:
         run: |
           brew install autoconf automake libtool gettext \
             openssl cppunit libxml2 zlib sqlite3
-          brew link --force gettext
+          brew link --force --overwrite gettext
+          echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.bash_profile
+          echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.zshrc
+          source ~/.bash_profile || true
+          source ~/.zshrc || true
 
       - name: Install dependencies (Windows)
         if: runner.os == 'Windows'
@@ -38,13 +42,21 @@ jobs:
       - name: Clone aria2
         run: git clone https://github.com/aria2/aria2.git --depth=1
 
-      - name: Build aria2 (Linux/macOS)
-        if: runner.os != 'Windows'
+      - name: Build aria2 (Linux)
+        if: runner.os == 'Linux'
         run: |
           cd aria2
           autoreconf -i
           ./configure --enable-static --disable-shared
           make -j$(nproc)
+
+      - name: Build aria2 (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cd aria2
+          autoreconf -i
+          ./configure --enable-static --disable-shared
+          make -j$(sysctl -n hw.logicalcpu)
 
       - name: Build aria2 (Windows)
         if: runner.os == 'Windows'
