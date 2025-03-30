@@ -61,10 +61,13 @@ jobs:
           glibtoolize --force
           autoreconf -fiv
           ./configure --disable-nls --enable-static --disable-shared
-          # حذف پوشه po و ایجاد یک دایرکتوری خالی با Makefile ساده
+          # حذف پوشه po و ایجاد یک پوشه po خالی با Makefile ساده جهت تعریف هدف all
           rm -rf po
           mkdir po
-          echo "# Empty Makefile to disable po build" > po/Makefile
+          cat << 'EOF' > po/Makefile
+all:
+	@echo "Skipping po build."
+EOF
           make -j$(sysctl -n hw.logicalcpu)
 
       - name: Build aria2 (Windows)
