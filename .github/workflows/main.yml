@@ -61,6 +61,8 @@ jobs:
           glibtoolize --force
           autoreconf -fiv
           ./configure --disable-nls --enable-static --disable-shared
+          # حذف پوشه‌ی po برای جلوگیری از خطای "No rule to make target `/config.status'"
+          rm -rf po
           make -j$(sysctl -n hw.logicalcpu)
 
       - name: Build aria2 (Windows)
