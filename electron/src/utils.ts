@@ -251,3 +251,40 @@ export const checkSessionExists = () => {
     console.log("session file is exist 😇")
   }
 }
+
+
+export const aria2BinPath = () => {
+  const systemPlatform = os.platform()
+  let aria2cBinaryPath: string
+  let basePath
+  if (process.env.NODE_ENV === "development") {
+    basePath = path.join(__dirname, "..", "src", "release-aria2", "bin")  // for develop mode
+  }
+  else {
+    basePath = path.join(process.resourcesPath, "electron", "dist", "bin") //for product mode
+  }
+  
+  try {
+    
+    switch (systemPlatform) {
+      case "win32":
+        aria2cBinaryPath = path.join(basePath, "win", "aria2c.exe")
+        break
+      case "darwin":
+        aria2cBinaryPath = path.join(basePath, "macOS", "aria2c")
+        break
+      case "linux":
+        // must install aria2 by user
+        aria2cBinaryPath = "aria2c"
+        break
+      default:
+        throw new Error(`Unsupported platform: ${systemPlatform}`)
+    }
+    return aria2cBinaryPath
+    
+  }
+  catch (error) {
+    console.error(error)
+    return "aria2c"
+  }
+}

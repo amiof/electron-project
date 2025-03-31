@@ -1,6 +1,7 @@
 import { ChildProcess, spawn } from "child_process"
 import WebSocket from "ws"
-import { getSessionPath } from "./utils"
+import { aria2BinPath } from "./utils"
+import { config } from "./aria2Config"
 
 
 interface Aria2cRequest {
@@ -29,21 +30,8 @@ export default class aria2c {
   requestMap = new Map()
   
   start() {
-    this.aria2cProcess = spawn("aria2c", [
-      "--enable-rpc",
-      "--async-dns-server=8.8.8.8",
-      "--rpc-listen-all=true",
-      "--rpc-allow-origin-all",
-      `--save-session=${getSessionPath()}`,
-      `--input-file=${getSessionPath()}`,
-      // "--log=/home/amir/.config/electron/AMDownloader/aria2.log",
-      "--log-level=debug",
-      "--save-session-interval=0",
-      // "--force-save=true",
-      "--max-download-limit=10K",
-      "--auto-file-renaming=true",
-      "--force-sequential=true",
-      "--check-integrity=true",
+    this.aria2cProcess = spawn(aria2BinPath(), [
+      ...config,
       `--rpc-listen-port=${this.aria2cPort}`,
       `--rpc-secret=${this.aria2cSecret}`
     ])

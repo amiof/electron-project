@@ -1,4 +1,4 @@
-name: Build and Release aria2
+name: Build MacOS and Release aria2
 
 on:
   workflow_dispatch:
