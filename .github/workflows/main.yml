@@ -7,21 +7,12 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Install dependencies (Ubuntu)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y autoconf automake autotools-dev \
-            build-essential pkg-config libtool \
-            libssl-dev libcppunit-dev libxml2-dev zlib1g-dev \
-            libsqlite3-dev gettext
 
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
@@ -45,14 +36,6 @@ jobs:
 
       - name: Clone aria2
         run: git clone https://github.com/aria2/aria2.git --depth=1
-
-      - name: Build aria2 (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          cd aria2
-          autoreconf -i
-          ./configure --enable-static --disable-shared
-          make -j$(nproc)
 
       - name: Build aria2 (macOS)
         if: runner.os == 'macOS'
