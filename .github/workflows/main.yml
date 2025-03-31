@@ -18,7 +18,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt update
-          sudo apt install -y autoconf automake autopoint gettext autotools-dev \
+          sudo apt install -y autoconf automake autotools-dev \
             build-essential pkg-config libtool \
             libssl-dev libcppunit-dev libxml2-dev zlib1g-dev \
             libsqlite3-dev
@@ -41,6 +41,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           choco install -y mingw make
+          echo "C:\Program Files\Git\usr\bin" >> $GITHUB_PATH
 
       - name: Clone aria2
         run: git clone https://github.com/aria2/aria2.git --depth=1
@@ -69,8 +70,9 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           cd aria2
-          sh ./configure --enable-static --disable-shared
-          make -j$(nproc)
+          autoreconf -i
+          ./configure --enable-static --disable-shared
+          make -j$(echo $NUMBER_OF_PROCESSORS)
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
