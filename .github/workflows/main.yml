@@ -55,8 +55,7 @@ jobs:
         shell: msys2 {0}
         run: |
           cd aria2
-          # تنظیم متغیر محیطی NLS_DISABLE به‌صورت مستقیم برای جلوگیری از فراخوانی autopoint
-          env NLS_DISABLE=1 autoreconf -i
+          autoreconf --no-autopoint -i
           ./configure --disable-nls --enable-static --disable-shared
           make -j$(echo $NUMBER_OF_PROCESSORS)
 
