@@ -52,7 +52,7 @@ jobs:
 
       - name: Build aria2 (Windows)
         if: runner.os == 'Windows'
-        shell: bash
+        shell: msys2 {0}
         run: |
           cd aria2
           autoreconf -i
