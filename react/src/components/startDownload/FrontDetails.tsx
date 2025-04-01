@@ -1,4 +1,4 @@
-import { Button, Divider } from "@mui/material"
+import { Button, Divider, Tooltip } from "@mui/material"
 import { ProgressBar } from "react-progressbar-fancy"
 import { TDetails } from "@components/startDownload/startDownload.tsx"
 import { TtellRes } from "@src/types.ts"
@@ -28,8 +28,10 @@ const FrontDetails = (props: Props) => {
           {
             details.map((item, index) =>
               (
-                <div key={`details-${index}`}>
+                <div key={`details-${index}`} className={"truncate"}>
+                  <Tooltip title={item.value} placement="bottom">
                   <span> {item.label} </span>
+                  </Tooltip>
                   <span className={"ml-2"}>{item.value}</span>
                 </div>
               )

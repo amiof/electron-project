@@ -1,5 +1,5 @@
 import { TDetails } from "@components/startDownload/startDownload.tsx"
-import { Button } from "@mui/material"
+import { Button, Tooltip } from "@mui/material"
 import { TtellRes } from "@src/types.ts"
 import styles from "./style.module.scss"
 import { CircularProgressbar } from "react-circular-progressbar"
@@ -28,9 +28,11 @@ const BackDetails = (props: Props) => {
             {
               details.map((item, index) =>
                 (
-                  <div key={`details-${index}`}>
+                  <div key={`details-${index}`} className={"truncate"}>
                     <span> {item.label} </span>
-                    <span className={"ml-2"}>{item.value}</span>
+                    <Tooltip title={item.value} placement="bottom">
+                      <span className={"ml-2"}>{item.value}</span>
+                    </Tooltip>
                   </div>
                 )
               )
