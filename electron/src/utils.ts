@@ -4,6 +4,7 @@ import *  as fs from "fs/promises"
 import * as fsnp from "fs"
 import { TFileDetails } from "./types"
 import { app } from "electron"
+import { exec } from "node:child_process"
 
 export const checkAndCreateFolder = async () => {
   
@@ -287,4 +288,37 @@ export const aria2BinPath = () => {
     console.error(error)
     return "aria2c"
   }
+}
+
+
+function openFileExplorer(directoryPath: string) {
+  const platform = os.platform() // Get the current operating system
+  
+  let command
+  switch (platform) {
+    case "win32": // Windows
+      command = `explorer "${directoryPath}"`
+      break
+    case "darwin": // macOS
+      command = `open "${directoryPath}"`
+      break
+    case "linux": // Linux
+      command = `xdg-open "${directoryPath}"`
+      break
+    default:
+      console.error("Unsupported platform:", platform)
+      return
+  }
+  
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error opening file explorer: ${error.message}`)
+      return
+    }
+    if (stderr) {
+      console.error(`File explorer stderr: ${stderr}`)
+      return
+    }
+    console.log(`File explorer opened successfully: ${stdout}`)
+  })
 }
