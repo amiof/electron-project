@@ -25,6 +25,7 @@ export interface IElectronAPI {
   unPauseByGid: (gid: string) => void,
   stopAllDownloads: () => void,
   removeDownloadByGid: (gid: string) => void
+  openFolder: (path: string) => void
 }
 
 

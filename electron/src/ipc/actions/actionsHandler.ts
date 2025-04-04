@@ -2,6 +2,7 @@ import { ipcMain, IpcMainEvent } from "electron"
 import { ACTIONS_CHANNELS } from "../channels"
 import { aria2 } from "../../main"
 import { DataSourceRepo } from "../../database/database"
+import { openFileExplorer } from "../../utils"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 export const ipcActionsHandler = () => {
@@ -41,6 +42,9 @@ export const ipcActionsHandler = () => {
     catch (error) {
       console.log(error)
     }
+  })
+  ipcMain.on(ACTIONS_CHANNELS.OPEN_FOLDER, (_: IpcMainEvent, path: string) => {
+    openFileExplorer(path)
   })
   
   

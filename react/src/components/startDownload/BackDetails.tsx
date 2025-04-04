@@ -62,12 +62,11 @@ const BackDetails = (props: Props) => {
       title: "Close"
     },
     {
-      action: () => console.log("open folder"),
+      action: () => window.electronAPI.openFolder(String(details[2].value)),
       Icon: <FolderIcon sx={{ color: "darkgray", width: "32px", height: "32px" }} />,
       title: "open"
     }
   ]
-  console.log(details)
   
   const back: actionButton = {
     action: () => setShowMore(false),

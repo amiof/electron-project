@@ -36,6 +36,7 @@ interface ElectronAPI {
   unPauseByGid: (gid: string) => void,
   stopAllDownloads: () => void,
   removeDownloadByGid: (gid: string) => void
+  openFolder: (path: string) => void
 }
 
 declare global {
@@ -74,5 +75,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   unPauseAll: () => ipcRenderer.invoke("unpause-all"),
   unPauseByGid: (gid: string) => ipcRenderer.send("unpause-By-gid", gid),
   stopAllDownloads: () => ipcRenderer.send("stop-allDownloads"),
-  removeDownloadByGid: (gid: string) => ipcRenderer.send("remove-download-by-gid", gid)
+  removeDownloadByGid: (gid: string) => ipcRenderer.send("remove-download-by-gid", gid),
+  openFolder: (path: string) => ipcRenderer.send("open-folder", path)
 })

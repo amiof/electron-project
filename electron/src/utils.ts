@@ -291,7 +291,7 @@ export const aria2BinPath = () => {
 }
 
 
-function openFileExplorer(directoryPath: string) {
+export const openFileExplorer = (directoryPath: string) => {
   const platform = os.platform() // Get the current operating system
   
   let command
