@@ -19,6 +19,7 @@
     "@react-spring/web": "^9.7.5",
     "@tailwindcss/vite": "^4.0.5",
     "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^18.3.1",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/lodash": "^4.17.16",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",

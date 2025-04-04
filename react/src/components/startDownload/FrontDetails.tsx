@@ -1,7 +1,9 @@
-import { Button, Divider } from "@mui/material"
+import { Button, Divider, Tooltip } from "@mui/material"
 import { ProgressBar } from "react-progressbar-fancy"
 import { TDetails } from "@components/startDownload/startDownload.tsx"
 import { TtellRes } from "@src/types.ts"
+import { useLocation } from "react-router-dom"
+import { getIdFromLocation } from "@src/utils.ts"
 
 type Props = {
   details: TDetails[]
@@ -10,6 +12,15 @@ type Props = {
 }
 const FrontDetails = (props: Props) => {
   const { details, downloadStatus, setShowMore } = props
+  
+  
+  const location = useLocation()
+  const gid = getIdFromLocation(location, ":")
+  const stopHandler = () => {
+    window.electronAPI.stopDownloadByGid(gid)
+  }
+  
+  
   return (
     <>
       <div className={"h-[45%] w-full  "}>
@@ -17,8 +28,10 @@ const FrontDetails = (props: Props) => {
           {
             details.map((item, index) =>
               (
-                <div key={`details-${index}`}>
+                <div key={`details-${index}`} className={"truncate"}>
+                  <Tooltip title={item.value} placement="bottom">
                   <span> {item.label} </span>
+                  </Tooltip>
                   <span className={"ml-2"}>{item.value}</span>
                 </div>
               )
@@ -39,7 +52,7 @@ const FrontDetails = (props: Props) => {
             }
           />
           <div className={"flex gap-2 justify-end w-full px-3 mt-10"}>
-            <Button variant={"outlined"} color={"error"}>close</Button>
+            <Button variant={"outlined"} color={"error"} onClick={stopHandler}>stop</Button>
             <Button variant={"outlined"} color={"warning"} onClick={() => setShowMore(true)}>More</Button>
           </div>
         </div>

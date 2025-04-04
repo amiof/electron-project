@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
+import { STATUS_TYPE, TtellRes } from "../types"
 
 interface Aria2cResponse {
   jsonrpc: "2.0";
@@ -26,6 +27,16 @@ interface ElectronAPI {
   setActiveDownloadData: (id: string) => void;
   getActiveDownloadData: () => Promise<unknown>;
   onDataChange: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
+  getDownloadedFilesDetails: () => Promise<unknown>
+  addLinkToDB: (downloadRow: TtellRes) => Promise<unknown>
+  updateDownloadRowStatus: (gid: string, downloadRow: TtellRes) => Promise<unknown>
+  getCompletedRowFromDB: () => Promise<unknown>
+  stopDownloadByGid: (gid: string) => Promise<unknown>,
+  unPauseAll: () => Promise<unknown>,
+  unPauseByGid: (gid: string) => void,
+  stopAllDownloads: () => void,
+  removeDownloadByGid: (gid: string) => void
+  openFolder: (path: string) => void
 }
 
 declare global {
@@ -46,10 +57,24 @@ contextBridge.exposeInMainWorld("electronAPI", {
   tellActive: () => ipcRenderer.invoke("tell-active"),
   tellStopped: () => ipcRenderer.invoke("tell-stoped"),
   tellWaiting: () => ipcRenderer.invoke("tell-waiting"),
+  
+  // update main window in start download
   setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),
   getActiveDownloadData: () => ipcRenderer.invoke("get-download-data-active"),
   onDataChange: (callback: (data: string) => void) => {
     ipcRenderer.on("data-change", (_event, data) => callback(data))
-  }
+  },
+  getDownloadedFilesDetails: () => ipcRenderer.invoke("get-downloaded-files-details"),
   
+  // use DataBase
+  addLinkToDB: (downloadRow: TtellRes) => ipcRenderer.invoke("add-link-to-db", downloadRow),
+  updateDownloadRowStatus: (gid: string, downloadRow: STATUS_TYPE) => ipcRenderer.invoke("update-downloadRow-status", gid, downloadRow),
+  getCompletedRowFromDB: () => ipcRenderer.invoke("get-completed-row-from-db"),
+  //action handler
+  stopDownloadByGid: (gid: string) => ipcRenderer.invoke("stop-download-by-gid", gid),
+  unPauseAll: () => ipcRenderer.invoke("unpause-all"),
+  unPauseByGid: (gid: string) => ipcRenderer.send("unpause-By-gid", gid),
+  stopAllDownloads: () => ipcRenderer.send("stop-allDownloads"),
+  removeDownloadByGid: (gid: string) => ipcRenderer.send("remove-download-by-gid", gid),
+  openFolder: (path: string) => ipcRenderer.send("open-folder", path)
 })

@@ -1,14 +1,17 @@
 import { app, BrowserWindow } from "electron"
 import path from "path"
 import aria2c from "./aria2c"
-import { checkAndCreateFolder } from "./utils"
+import { checkAndCreateFolder, checkSessionExists } from "./utils"
 import { DataSourceRepo } from "./database/database"
-import ipcDownloaddHandler from "./ipc/download/downloadHandler"
+import ipcDownloadHandler from "./ipc/download/downloadHandler"
 import ipcGetdataHanlder from "./ipc/getData/getDataHandler"
 import ipcPopupHandler from "./ipc/openPopup/popupHandler"
 import "./store/electronStore"
+import { ipcActionsHandler } from "./ipc/actions/actionsHandler"
 
 export let mainWindow: BrowserWindow | null
+
+checkSessionExists()
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -16,6 +19,9 @@ function createWindow() {
     title: "IDownload",
     height: 700,
     autoHideMenuBar: true,
+    minWidth: 1000,
+    minHeight: 500,
+    resizable: true,
     webPreferences: {
       preload: path.join(__dirname, "preload", "preload.js"),
       contextIsolation: true, // Crucial for security
@@ -93,6 +99,7 @@ app.on("activate", () => {
 
 
 // IPC handlers
-ipcDownloaddHandler()
+ipcDownloadHandler()
 ipcGetdataHanlder()
 ipcPopupHandler()
+ipcActionsHandler()

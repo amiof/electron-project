@@ -27,6 +27,13 @@
         "filter": [
           "**/*"
         ]
+      },
+      {
+        "from": "electron/src/release-aria2/",
+        "to": "electron/dist",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "mac": {

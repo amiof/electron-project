@@ -6,7 +6,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production tsc",
     "start2": "cross-env NODE_ENV=development tsc && cross-env NODE_ENV=development electronmon .",
-    "start": "concurrently -k \"tsc --watch\" \"cross-env NODE_ENV=development electronmon .\""
+    "start": "concurrently -k \"cross-env NODE_ENV=development tsc --watch\" \" wait-on dist && cross-env NODE_ENV=development electronmon .\""
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "reflect-metadata": "^0.2.2",
     "sqlite3": "^5.1.7",
     "typeorm": "^0.3.20",
+    "wait-on": "^8.0.3",
     "ws": "^8.18.0"
   },
   "devDependencies": {
@@ -26,7 +27,7 @@
     "@types/node": "^18.15.11",
     "@types/sqlite3": "^3.1.11",
     "cross-env": "^7.0.3",
-    "electron": "^34.0.1",
+    "electron": "^34.0.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3"
   }

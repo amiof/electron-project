@@ -1,5 +1,7 @@
 import { ChildProcess, spawn } from "child_process"
 import WebSocket from "ws"
+import { aria2BinPath } from "./utils"
+import { config } from "./aria2Config"
 
 
 interface Aria2cRequest {
@@ -21,7 +23,6 @@ interface Aria2cRequest {
 //
 
 export default class aria2c {
-  
   ws: WebSocket | null = null
   aria2cProcess: ChildProcess | null = null
   aria2cSecret: string = "test" // STORE SECURELY! Use electron-store
@@ -29,12 +30,8 @@ export default class aria2c {
   requestMap = new Map()
   
   start() {
-    this.aria2cProcess = spawn("aria2c", [
-      "--enable-rpc",
-      "--async-dns-server=8.8.8.8",
-      "--rpc-listen-all=true",
-      "--rpc-allow-origin-all",
-      "--max-download-limit=5K",
+    this.aria2cProcess = spawn(aria2BinPath(), [
+      ...config,
       `--rpc-listen-port=${this.aria2cPort}`,
       `--rpc-secret=${this.aria2cSecret}`
     ])

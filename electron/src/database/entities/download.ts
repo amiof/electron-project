@@ -1,55 +1,60 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { STATUS_TYPE, Tfile, TtellRes } from "../../types"
 
-
-export interface IDownloads {
-  Id?: number
-  FileName: string
-  Url: string
-  SavePath: string
-  Size: string
-  CreatedAt?: Date
-  Percentage?: number
-  Status?: DOWNLOAD_STATUS
-  Gid: string
-  NumberConnections: number
-}
-
-enum DOWNLOAD_STATUS {
-  ERROR = "error",
-  COMPLATED = "complated",
-  NOT_STARTED = "not-started",
-  DOWNLOAD = "download"
-}
 
 @Entity("downloads")
-export class Download implements IDownloads {
+export class Download implements TtellRes {
   @PrimaryGeneratedColumn()
   Id!: number
   
   @Column({ type: "text", nullable: false })
-  Gid!: string
+  bitfield!: string
   
   @Column({ type: "text", nullable: false })
-  FileName!: string
+  completedLength!: string
   
-  @Column({ type: "text", nullable: false, default: DOWNLOAD_STATUS.NOT_STARTED })
-  Status!: DOWNLOAD_STATUS
-  
-  @Column({ type: "text", nullable: false })
-  Url!: string
+  @Column({ type: "text", nullable: false, default: 0 })
+  connections!: string
   
   @Column({ type: "text", nullable: false })
-  SavePath!: string
+  dir!: string
+  
+  @Column({ type: "text", nullable: false })
+  downloadSpeed!: string
   
   @Column({ type: "text", nullable: false, default: "0" })
-  Size!: string
+  errorCode!: string
   
-  @Column({ type: "integer", nullable: false, default: 0 })
-  Percentage!: number
+  @Column({ type: "text", nullable: false, default: 0 })
+  errorMessage!: string
   
-  @Column({ type: "text", nullable: false, default: 64 })
-  NumberConnections!: number
+  @Column({
+    type: "text", nullable: false, default: "[]",
+    transformer: {
+      to: (value: Tfile[]) => JSON.stringify(value),
+      from: (value: string) => JSON.parse(value)
+    }
+  })
+  files!: Tfile[]
+  
+  @CreateDateColumn({ type: "text", nullable: false })
+  gid!: string
+  
+  @Column({ type: "text", nullable: false })
+  numPieces!: string
+  
+  @Column({ type: "text", nullable: false })
+  pieceLength!: string
+  
+  @Column({ type: "text", enum: STATUS_TYPE, default: STATUS_TYPE.WAITING, nullable: false })
+  status!: STATUS_TYPE
+  
+  @Column({ type: "text", nullable: false })
+  totalLength!: string
+  
+  @Column({ type: "text", nullable: false })
+  uploadLength!: string
   
   @CreateDateColumn({ type: "datetime", nullable: false })
-  CreatedAt!: Date
+  createdAt!: Date
 }

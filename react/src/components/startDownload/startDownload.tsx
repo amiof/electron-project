@@ -25,12 +25,29 @@ const DownloadStart = () => {
   const [downloadStatus, setDownloadStatus] = useState<TtellRes | null>(null)
   const [showMore, setShowMore] = useState<boolean>(false)
   
+  const addLinkToDB = window.electronAPI.addLinkToDB
+  const changeStatusDownload = window.electronAPI.updateDownloadRowStatus
+  const currentDownloadRow = tellActive.find(downloadRow => downloadRow.gid === gid)
   
   const remainingBytes = downloadStatus ? +downloadStatus.totalLength - Number(downloadStatus.completedLength) : 0
   const remainingSeconds = downloadStatus && +downloadStatus.downloadSpeed > 0 ? remainingBytes / Number(downloadStatus?.downloadSpeed) : Infinity
   
   const completeDownload = downloadStatus?.status === STATUS_TYPE.COMPLETE
+  const getDownloadedFilesDetails = useDownloaderStore(state => state.getDownloadedFilesDetails)
   
+  useEffect(() => {
+    //for add create add in dataGrid
+    getDownloadedFilesDetails()
+  }, [])
+  
+  useEffect(() => {
+    
+    if (currentDownloadRow) {
+      (async () => {
+        await addLinkToDB(currentDownloadRow)
+      })()
+    }
+  }, [tellActive.length])
   
   useEffect(() => {
     let interval: NodeJS.Timeout | null
@@ -56,6 +73,12 @@ const DownloadStart = () => {
         interval = null
         setDownloadStatus(null)
       }
+      //for update status in db when closed popup
+      (async () => {
+        const tellStatus = await window.electronAPI.getTellStatus(gid)
+        await changeStatusDownload(tellStatus.gid, tellStatus)
+      })()
+      
     }
     
   }, [tellActive.length])
@@ -66,7 +89,7 @@ const DownloadStart = () => {
       setShowMore(true)
     }
   }, [completeDownload])
- 
+  
   
   const details: TDetails[] = [
     {
