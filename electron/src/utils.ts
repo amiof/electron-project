@@ -1,6 +1,6 @@
 import path from "path"
 import os from "os"
-import *  as fs from "fs/promises"
+import * as fs from "fs/promises"
 import * as fsnp from "fs"
 import { TFileDetails } from "./types"
 import { app } from "electron"
@@ -13,10 +13,9 @@ export const checkAndCreateFolder = async () => {
     let target: string[]
     const platform = process.platform
     let basePath: string
-    
     switch (platform) {
       case "win32":
-        basePath = process.env.UserProlfile || "C://windows/Download"
+        basePath = app.getPath("downloads")
         target = [
           path.join(basePath, "AMDownloader", "compressed"),
           path.join(basePath, "AMDownloader", "musics"),
@@ -204,7 +203,7 @@ export const savedPath = () => {
     const folders = ["compressed", "musics", "videos", "images", "documents", "other"]
     switch (platform) {
       case "win32":
-        basePath = process.env.UserProlfile || "C://windows/Download"
+        basePath = app.getPath("downloads")
         folders.map(folder => {
           const route = path.join(basePath, "AMDownloader", folder)
           target.push(route)
@@ -244,9 +243,18 @@ export const getSessionPath = () => {
 }
 
 export const checkSessionExists = () => {
-  if (!fsnp.existsSync(getSessionPath())) {
-    const fd = fsnp.openSync(getSessionPath(), "w")
+  
+  const sessionPath = getSessionPath()
+  const parentDir = path.dirname(sessionPath)
+  
+  if (!fsnp.existsSync(parentDir)) {
+    fsnp.mkdirSync(parentDir, { recursive: true }) // This creates the full path
+  }
+  if (!fsnp.existsSync(sessionPath)) {
+    const fd = fsnp.openSync(sessionPath, "w")
     fsnp.closeSync(fd)
+    
+    console.log("session file  created ✌ ")
   }
   else {
     console.log("session file is exist 😇")
