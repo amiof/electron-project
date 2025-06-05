@@ -120,7 +120,7 @@ export const directionFolder = (url: string) => {
     switch (platform) {
       case "win32":
         
-        basePath = process.env.UserProlfile || "C://windows/Download"
+        basePath = app.getPath("downloads")
         direction = path.join(basePath, "AMDownloader", folderName)
         
         break
