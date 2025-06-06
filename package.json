@@ -8,11 +8,11 @@
     "build": "npm run build:electron && npm run build:react",
     "build:react": "cd react && npm run build",
     "build:electron": "cd electron && npm run build",
-    "package": "npm run build && electron-builder"
+    "package": "npm run build && electron-builder",
+    "package:win": "npm run build && electron-builder --win"
   },
   "build": {
     "appId": "com.yourapp.id",
-    "electronDist": "/home/amir/Downloads/electron-v34.0.2-linux-x64",
     "directories": {
       "app": "electron",
       "output": "release"
@@ -37,13 +37,50 @@
       }
     ],
     "mac": {
-      "category": "public.app-category.utilities"
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "identity": null
+    },
+    "dmg": {
+      "writeUpdateInfo": true
     },
     "win": {
-      "target": "nsis"
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "sign": false,
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "differentialPackage": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "shortcutName": "AMDownloader",
+      "artifactName": "${productName}-${version}-Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-Portable.${ext}"
     },
     "linux": {
-      "target": "AppImage"
+      "target": ["AppImage","deb","rpm","tar.xz"]
     }
   },
   "keywords": [],
