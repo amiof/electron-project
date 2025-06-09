@@ -9,17 +9,20 @@
     "build:react": "cd react && npm run build",
     "build:electron": "cd electron && npm run build",
     "package": "npm run build && electron-builder",
-    "package:win": "npm run build && electron-builder --win"
+    "package:win": "npm run build && electron-builder --win",
+    "icon": "electron-icon-builder --input=/assets/icon_1024x1024.png --output=./build --flatten"
   },
   "build": {
     "appId": "com.yourapp.id",
     "directories": {
       "app": "electron",
-      "output": "release"
+      "output": "release",
+      "buildResources": "assets"
     },
     "files": [
       "**/*"
     ],
+    "icon": "assets",
     "extraResources": [
       {
         "from": "react/dist",
@@ -53,7 +56,8 @@
           ]
         }
       ],
-      "identity": null
+      "identity": null,
+      "icon": "icon"
     },
     "dmg": {
       "writeUpdateInfo": true
@@ -64,6 +68,7 @@
         "portable"
       ],
       "sign": false,
+      "icon": "icon",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "nsis": {
@@ -80,7 +85,12 @@
       "artifactName": "${productName}-${version}-Portable.${ext}"
     },
     "linux": {
-      "target": ["AppImage","deb","rpm","tar.xz"]
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm",
+        "tar.xz"
+      ]
     }
   },
   "keywords": [],
@@ -93,6 +103,7 @@
   },
   "devDependencies": {
     "electron": "^34.0.2",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "electron-icon-builder": "^2.0.1"
   }
 }
