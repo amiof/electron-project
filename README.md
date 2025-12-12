@@ -68,7 +68,10 @@ npm run start
 Use your packaging tool (like **Electron Forge**, **Electron Builder**, etc.) to generate installers:
 
 ```bash
-npm run make
+#for windows
+npm run package:win
+#for linux
+npm run package:linux
 ```
 
 *(Adjust based on your actual packaging script.)*
@@ -146,7 +149,7 @@ Want to help improve the download manager? Open issues or send pull requests —
 
 ## 📄 License
 
-MIT License © Your Name (or GitHub Username)
+GNU General Public License v3.0 @amiof
 
 ---
 
