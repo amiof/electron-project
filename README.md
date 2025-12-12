@@ -10,11 +10,9 @@
 
 ## 🎬 Demo
 
-<!-- Add your GIF/video here once ready -->
 
-```markdown
-![Demo of downloading workflow](./assets/demo.gif)
-```
+![demo](https://raw.githubusercontent.com/amiof/images/main/download-manager.gif)
+
 
 ---
 
