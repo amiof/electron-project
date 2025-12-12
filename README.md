@@ -1,10 +1,12 @@
-
+<div  align="center">
+  <img src="./assets/icon_256x256.png"></img>
+</div>
 
 ## 📥 Shabdiz Download Manager
 
+
 A modern, cross-platform download manager built with Electron, React, and aria2c. This application provides a powerful and user-friendly interface for managing your downloads with advanced features powered by aria2c.
 
-![Download Manager](./assets/icon_256x256.png)
 ---
 
 ## 🎬 Demo
