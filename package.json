@@ -5,17 +5,23 @@
     "start": "concurrently \"npm run start:react\"  \"npm run start:electron\"",
     "start:react": "cd react && npm run dev",
     "start:electron": "cd electron && npm run start",
+    "icon": "electron-icon-builder --input=./assets/icon.png --output=build",
     "build": "npm run build:electron && npm run build:react",
     "build:react": "cd react && npm run build",
     "build:electron": "cd electron && npm run build",
-    "package": "npm run build && electron-builder"
+    "package": "npm run build && electron-builder",
+    "package:linux": "npm run build && electron-builder --linux",
+    "package:linux:rpm": "npm run build && electron-builder --linux rpm --x64",
+    "package:win": "npm run build && electron-builder --win",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "appId": "com.yourapp.id",
-    "electronDist": "/home/amir/Downloads/electron-v34.0.2-linux-x64",
+    "icon": "assets",
     "directories": {
       "app": "electron",
-      "output": "release"
+      "output": "release",
+      "buildResources": "assets"
     },
     "files": [
       "**/*"
@@ -34,7 +40,8 @@
         "filter": [
           "**/*"
         ]
-      }
+      },
+      "./assets/**"
     ],
     "mac": {
       "category": "public.app-category.utilities"
@@ -43,7 +50,16 @@
       "target": "nsis"
     },
     "linux": {
-      "target": "AppImage"
+      "maintainer": "arm131313@gmail.com",
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "assets/icon.png",
+      "desktop": {
+        "Icon": "icon"
+      },
+      "category": "Network"
     }
   },
   "keywords": [],
@@ -52,10 +68,12 @@
   "description": "",
   "dependencies": {
     "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.7"
   },
   "devDependencies": {
-    "electron": "^34.0.2",
-    "electron-builder": "^25.1.8"
+    "electron": "^34.4.1",
+    "electron-builder": "^25.1.8",
+    "electron-icon-builder": "^2.0.1"
   }
 }

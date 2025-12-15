@@ -11,7 +11,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -24,9 +28,19 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-//    "baseUrl": "./",
-//    "paths": {
-//      "@components/*": ["src/components/*"]
-//    }
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": [
+        "src/*"
+      ],
+      // CORRECT a "s" to the end of "@component"
+      "@components/*": [
+        "src/components/*"
+      ]
+    }
+    //    "baseUrl": "./",
+    //    "paths": {
+    //      "@components/*": ["src/components/*"]
+    //    }
   }
 }
