@@ -27,7 +27,6 @@
     "files": [
       "**/*"
     ],
-    "icon": "assets",
     "extraResources": [
       {
         "from": "react/dist",
