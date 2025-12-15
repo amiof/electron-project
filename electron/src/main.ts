@@ -12,7 +12,6 @@ import { ipcActionsHandler } from "./ipc/actions/actionsHandler"
 export let mainWindow: BrowserWindow | null
 
 checkSessionExists()
-
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
@@ -22,6 +21,7 @@ function createWindow() {
     minWidth: 1000,
     minHeight: 500,
     resizable: true,
+    icon:path.join(__dirname,"..","..","assets","icon.ico"),
     webPreferences: {
       preload: path.join(__dirname, "preload", "preload.js"),
       contextIsolation: true, // Crucial for security
