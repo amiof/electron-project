@@ -35,11 +35,18 @@ function createWindow() {
     // mainWindow.webContents.openDevTools();
   }
   else {
+    
+    if (process.platform === "linux") {
+      const iconPath = path.join(process.resourcesPath, "assets", "icon.png")
+      mainWindow.setIcon(iconPath)
+    }
+    
     // In production, load the built index.html from extraResources.
     // Using process.resourcesPath ensures we reference the correct folder outside the asar.
     const indexPath = path.join(process.resourcesPath, "react", "dist", "index.html")
     // mainWindow.loadFile(indexPath);
     mainWindow.loadFile(indexPath).catch((err) => console.error("Failed to load index.html:", err))
+    
   }
   
   mainWindow.on("closed", () => {

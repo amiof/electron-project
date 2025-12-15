@@ -5,15 +5,20 @@
     "start": "concurrently \"npm run start:react\"  \"npm run start:electron\"",
     "start:react": "cd react && npm run dev",
     "start:electron": "cd electron && npm run start",
+    "icon": "electron-icon-builder --input=./assets/icon.png --output=build",
     "build": "npm run build:electron && npm run build:react",
     "build:react": "cd react && npm run build",
     "build:electron": "cd electron && npm run build",
     "package": "npm run build && electron-builder",
+    "package:linux": "npm run build && electron-builder --linux",
+    "package:linux:rpm": "npm run build && electron-builder --linux rpm --x64",
     "package:win": "npm run build && electron-builder --win",
-    "icon": "electron-icon-builder --input=/assets/icon_1024x1024.png --output=./build --flatten"
+    "postinstall": "electron-builder install-app-deps",
+    "icon-flatten": "electron-icon-builder --input=/assets/icon_1024x1024.png --output=./build --flatten"
   },
   "build": {
     "appId": "com.yourapp.id",
+    "icon": "assets",
     "directories": {
       "app": "electron",
       "output": "release",
@@ -22,7 +27,6 @@
     "files": [
       "**/*"
     ],
-    "icon": "assets",
     "extraResources": [
       {
         "from": "react/dist",
@@ -37,7 +41,8 @@
         "filter": [
           "**/*"
         ]
-      }
+      },
+      "./assets/**"
     ],
     "mac": {
       "target": [
@@ -85,12 +90,16 @@
       "artifactName": "${productName}-${version}-Portable.${ext}"
     },
     "linux": {
+      "maintainer": "arm131313@gmail.com",
       "target": [
         "AppImage",
-        "deb",
-        "rpm",
-        "tar.xz"
-      ]
+        "deb"
+      ],
+      "icon": "assets/icon.png",
+      "desktop": {
+        "Icon": "icon"
+      },
+      "category": "Network"
     }
   },
   "keywords": [],
@@ -99,10 +108,11 @@
   "description": "",
   "dependencies": {
     "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.7"
   },
   "devDependencies": {
-    "electron": "^34.0.2",
+    "electron": "^34.4.1",
     "electron-builder": "^25.1.8",
     "electron-icon-builder": "^2.0.1"
   }
