@@ -14,9 +14,9 @@ export let mainWindow: BrowserWindow | null
 checkSessionExists()
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1050,
     title: "shabdiz",
-    height: 700,
+    height: 500,
     autoHideMenuBar: true,
     minWidth: 1000,
     minHeight: 500,
