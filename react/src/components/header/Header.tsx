@@ -53,7 +53,6 @@ const Header = () => {
     }
   }, [tellActive.length])
   
-  console.log("%c 1 --> Line: 115||Header.tsx\n downloadSpeed: ", "color:#f0f;", downloadSpeed)
   return (
     <div className={styles.container}>
       
