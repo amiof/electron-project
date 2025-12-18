@@ -72,7 +72,7 @@
         "nsis",
         "portable"
       ],
-      "sign": false,
+      "signExts": false,
       "icon": "icon",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
@@ -96,9 +96,6 @@
         "deb"
       ],
       "icon": "assets/icon.png",
-      "desktop": {
-        "Icon": "icon"
-      },
       "category": "Network"
     }
   },
@@ -112,8 +109,8 @@
     "dotenv": "^16.4.7"
   },
   "devDependencies": {
-    "electron": "^34.4.1",
-    "electron-builder": "^25.1.8",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.0.12",
     "electron-icon-builder": "^2.0.1"
   }
 }
