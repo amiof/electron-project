@@ -15,7 +15,7 @@ checkSessionExists()
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
-    title: "IDownload",
+    title: "shabdiz",
     height: 700,
     autoHideMenuBar: true,
     minWidth: 1000,
