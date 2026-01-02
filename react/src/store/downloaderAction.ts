@@ -1,5 +1,5 @@
 import { StoreApi } from "zustand"
-import { TDownloaderStore } from "./storeType"
+import { TDownloaderActions, TDownloaderStore } from "./storeType"
 import { formatBytes, getFileName } from "@src/utils.ts"
 import { TDownloads, TFileDetails, TtellRes } from "@src/types.ts"
 import * as _ from "lodash"
@@ -8,7 +8,7 @@ import * as _ from "lodash"
 export type SetState = StoreApi<TDownloaderStore>["setState"];
 export type GetState = StoreApi<TDownloaderStore>["getState"];
 
-export const downloaderAction = (set: SetState, get: GetState) => ({
+export const downloaderAction = (set: SetState, get: GetState): TDownloaderActions => ({
   getFiles: (file: string) => {
     const currentFiles = get().files
     if (currentFiles && !currentFiles.includes(file)) {
@@ -118,7 +118,6 @@ export const downloaderAction = (set: SetState, get: GetState) => ({
   setSidebarSelectedLabel: (label: string) => {
     set({ sidebarSelectedLabel: label })
   }
-
 
 
 // removeFile: (file: string) => {

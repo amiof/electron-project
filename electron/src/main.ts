@@ -4,10 +4,12 @@ import aria2c from "./aria2c"
 import { checkAndCreateFolder, checkSessionExists } from "./utils"
 import { DataSourceRepo } from "./database/database"
 import ipcDownloadHandler from "./ipc/download/downloadHandler"
-import ipcGetdataHanlder from "./ipc/getData/getDataHandler"
+import ipcGetDataHandler from "./ipc/getData/getDataHandler"
 import ipcPopupHandler from "./ipc/openPopup/popupHandler"
 import "./store/electronStore"
 import { ipcActionsHandler } from "./ipc/actions/actionsHandler"
+import { ipcConfigHandler } from "./ipc/config/configHandler"
+import { ipcUtilsHandler } from "./ipc/utils/utils"
 
 export let mainWindow: BrowserWindow | null
 
@@ -107,6 +109,8 @@ app.on("activate", () => {
 
 // IPC handlers
 ipcDownloadHandler()
-ipcGetdataHanlder()
+ipcGetDataHandler()
 ipcPopupHandler()
 ipcActionsHandler()
+ipcConfigHandler()
+ipcUtilsHandler()

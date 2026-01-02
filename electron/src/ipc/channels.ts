@@ -17,7 +17,8 @@ export const GET_DATA_CHANNELS = {
 export const POPUP_CHANNELS = {
   ADD_LINK_POPUP: "add-link-popup",
   CLOSE_POPUP_WINDOW: "close-popup",
-  POPUP_START_DOWNLOAD: "popup-start-download"
+  POPUP_START_DOWNLOAD: "popup-start-download",
+  POPUP_OPEN_OPTIONS: "open-options-popup"
 }
 
 export const ACTIONS_CHANNELS = {
@@ -27,4 +28,17 @@ export const ACTIONS_CHANNELS = {
   STOP_ALL_DOWNLOADS: "stop-allDownloads",
   REMOVE_DOWNLOAD_BY_GID: "remove-download-by-gid",
   OPEN_FOLDER: "open-folder"
+}
+export const CONFIG_CHANNELS = {
+  SET_PROXY_CONFIG: "set-proxy-config",
+  GET_PROXY_CONFIG: "get-proxy-config",
+  GET_ARIA2_CONFIG: "get-aria2-config",
+  SET_ARIA2_CONFIG: "set-aria2-config",
+  SELECT_STORAGE_DIR: "select-storage-dir",
+  GET_SELECTED_STORAGE_CONF_DIR: "get-selected=storage-config-dir",
+  SET_SELECTED_STORAGE_DIR: "set-selected-storage-directory"
+}
+
+export const UTILS_CHANNELS = {
+  SHOW_NOTIFICATION: "show-notification"
 }

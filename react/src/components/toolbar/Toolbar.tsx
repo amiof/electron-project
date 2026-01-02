@@ -26,6 +26,13 @@ const Toolbar = () => {
   const getSelectedRows = useDownloaderStore(state => state.selectedRows)
   const getCompletedRowsDB = useDownloaderStore(state => state.getCompletedRowFromDB)
   
+  
+  const openOptionsHandler = () => {
+    const id = generateId()
+    openOptionsPopup(id)
+  }
+  
+  
   const firstButtonActions: TButtonActions[] = [
     {
       IconElement: <PlayArrowOutlinedIcon fontSize={"medium"} />,
@@ -69,7 +76,8 @@ const Toolbar = () => {
     },
     {
       IconElement: <SettingsOutlinedIcon fontSize={"medium"} />,
-      title: "Options"
+      title: "Options",
+      action: openOptionsHandler
     },
     {
       IconElement: <ContentCopyOutlinedIcon fontSize={"medium"} />,
@@ -88,6 +96,8 @@ const Toolbar = () => {
   
   const addDownloadDir = window.electronAPI.addDownloadDir
   const addLinkPopup = window.electronAPI.addLinkPopup
+  const openOptionsPopup = window.electronAPI.openOptionsPopup
+  
   const getAllDownloadRow = useDownloaderStore(state => state.getAllDownloadsRow)
   
   const clickHandler = async () => {

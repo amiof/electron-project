@@ -32,3 +32,27 @@ export type TDownloaderActions = {
   setSidebarSelectedLabel: (label: string) => void
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions
+
+export type TProxyConfig = {
+  proxyStatus: boolean
+  ip: string
+  port: string
+  proxyUserName?: string
+  proxyPassword?: string
+  proxyType: "http" | "socks"
+}
+
+export type TAria2Config = {
+  maxConnection: string
+  maxConnectionSplit: string
+  maxDownloadLimit: string
+  dnsServer: string
+  minSplitSize: string
+  connectTimeout: string
+  
+}
+
+export type TNotificationDetailes = {
+  title: string
+  body: string
+}

@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
-import { STATUS_TYPE, TtellRes } from "../types"
+import { STATUS_TYPE, TAria2Config, TNotificationDetailes, TProxyConfig, TtellRes } from "../types"
 
 interface Aria2cResponse {
   jsonrpc: "2.0";
@@ -37,6 +37,17 @@ interface ElectronAPI {
   stopAllDownloads: () => void,
   removeDownloadByGid: (gid: string) => void
   openFolder: (path: string) => void
+  openOptionsPopup: (id: string) => Promise<unknown>,
+  setProxyConfig: (config: TProxyConfig) => Promise<unknown>,
+  getProxyConfig: () => Promise<unknown>,
+  setAria2Config: (config: TAria2Config) => Promise<unknown>,
+  getAria2Config: () => Promise<unknown>,
+  selectStorageDirectory: () => Promise<unknown>,
+  getSelectedStorageDirectory: () => Promise<string>,
+  setSelectedStorageDirectory: (basePath: string) => Promise<void>,
+  showNotification: (notif: TNotificationDetailes) => Promise<void>,
+  
+  
 }
 
 declare global {
@@ -58,6 +69,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   tellStopped: () => ipcRenderer.invoke("tell-stoped"),
   tellWaiting: () => ipcRenderer.invoke("tell-waiting"),
   
+  //popup
+  openOptionsPopup: (id: string) => ipcRenderer.invoke("open-options-popup", id),
+  
   // update main window in start download
   setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),
   getActiveDownloadData: () => ipcRenderer.invoke("get-download-data-active"),
@@ -76,5 +90,18 @@ contextBridge.exposeInMainWorld("electronAPI", {
   unPauseByGid: (gid: string) => ipcRenderer.send("unpause-By-gid", gid),
   stopAllDownloads: () => ipcRenderer.send("stop-allDownloads"),
   removeDownloadByGid: (gid: string) => ipcRenderer.send("remove-download-by-gid", gid),
-  openFolder: (path: string) => ipcRenderer.send("open-folder", path)
+  openFolder: (path: string) => ipcRenderer.send("open-folder", path),
+  
+  //config
+  setProxyConfig: (config: TProxyConfig) => ipcRenderer.invoke("set-proxy-config", config),
+  getProxyConfig: () => ipcRenderer.invoke("get-proxy-config"),
+  setAria2Config: (config: TAria2Config) => ipcRenderer.invoke("set-aria2-config", config),
+  getAria2Config: () => ipcRenderer.invoke("get-aria2-config"),
+  selectStorageDirectory: () => ipcRenderer.invoke("select-storage-dir"),
+  getSelectedStorageDirectory: () => ipcRenderer.invoke("get-selected=storage-config-dir"),
+  setSelectedStorageDirectory: (basePath: string) => ipcRenderer.invoke("set-selected-storage-directory", basePath),
+  
+  //utils
+  showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes)
+  
 })

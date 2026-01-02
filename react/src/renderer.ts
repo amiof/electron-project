@@ -1,4 +1,5 @@
 import { TDownloads, TFileDetails, TGetGlobalStateResponse, TtellRes } from "@src/types.ts"
+import { TAria2Config, TNotificationDetailes, TProxyConfig } from "@src/store/storeType.ts"
 
 export interface IElectronAPI {
   addDownload: (url: string) => void
@@ -26,6 +27,16 @@ export interface IElectronAPI {
   stopAllDownloads: () => void,
   removeDownloadByGid: (gid: string) => void
   openFolder: (path: string) => void
+  openOptionsPopup: (id: string) => Promise<string>
+  setProxyConfig: (config: TProxyConfig) => Promise<unknown>,
+  getProxyConfig: () => Promise<TProxyConfig>,
+  setAria2Config: (config: TAria2Config) => Promise<unknown>,
+  getAria2Config: () => Promise<TAria2Config>,
+  selectStorageDirectory: () => Promise<unknown>,
+  getSelectedStorageDirectory: () => Promise<string>,
+  setSelectedStorageDirectory: (basePath: string | null) => Promise<void>,
+  showNotification: (notif: TNotificationDetailes) => Promise<void>,
+  
 }
 
 

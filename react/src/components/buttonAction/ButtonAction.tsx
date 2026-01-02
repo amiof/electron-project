@@ -1,6 +1,5 @@
 import styles from "./style.module.scss"
 import { ReactElement } from "react"
-import { Button } from "@mui/material"
 
 type Props = {
   iconElement: ReactElement
@@ -14,10 +13,10 @@ const ButtonAction = (props: Props) => {
   const { title, iconElement, action } = props
   
   return (
-    <Button className={styles.buttonContainer} onClick={action} sx={{ textTransform: "lowercase", color: "white" }}>
-      <div>{iconElement}</div>
+    <div className={styles.buttonContainer} onClick={action}>
+      <div className={styles.iconElement}>{iconElement}</div>
       <span className={styles.title}>{title}</span>
-    </Button>
+    </div>
   )
 }
 

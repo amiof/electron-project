@@ -9,7 +9,7 @@ import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 let activeData: any[] = []
 
 
-const ipcGetdataHanlder = () => {
+const ipcGetDataHandler = () => {
   
   ipcMain.handle(GET_DATA_CHANNELS.GET_DOWNLOADS, async (event: IpcMainInvokeEvent) => {
     try {
@@ -86,4 +86,4 @@ const ipcGetdataHanlder = () => {
   })
   
 }
-export default ipcGetdataHanlder
+export default ipcGetDataHandler

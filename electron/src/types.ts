@@ -50,6 +50,26 @@ export type TtellRes = {
   uploadLength: string
   createdAt?: Date
 }
+export type TProxyConfig = {
+  proxyStatus: boolean
+  ip: string
+  port: string
+  proxyUserName?: string
+  proxyPassword?: string
+  proxyType: "http" | "socks"
+}
+export type TAria2Config = {
+  maxConnection: string
+  maxConnectionSplit: string
+  maxDownloadLimit: string
+  dnsServer: string
+  minSplitSize: string
+  connectTimeout: string
+}
+export type TNotificationDetailes = {
+  title: string
+  body: string
+}
 
 // aria2 methods
 

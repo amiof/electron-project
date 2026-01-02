@@ -162,26 +162,13 @@ const Main = () => {
     <div className={styles.container}>
       <DataGrid
         getRowId={(row) => row.Id!}
-        scrollbarSize={0}
+        scrollbarSize={1}
+        checkboxSelection
         onRowSelectionModelChange={rowSelectedHandler}
         rows={rows}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 6
-            }
-          }
-        }}
-        slotProps={{
-          pagination: {
-            style: {
-              color: "white"
-            }
-          }
-        }}
+        hideFooterPagination={true}
         sx={{
-          // backgroundColor: "var(--color-neutral-900)",
           border: "none",
           "& .MuiDataGrid-container--top [role=row]": {
             backgroundColor: "var(--color-neutral-900)",
@@ -228,12 +215,10 @@ const Main = () => {
             transition: "all 0.3s ease",
             height: "4px !important",
             "&:hover": {
-              height: "14px !important"
+              height: "30% !important"
             }
           }
         }}
-        pageSizeOptions={[5]}
-        checkboxSelection
       />
     </div>
   )

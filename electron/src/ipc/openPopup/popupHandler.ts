@@ -20,6 +20,17 @@ const ipcPopupHandler = () => {
     return id
   })
   
+  ipcMain.handle(POPUP_CHANNELS.POPUP_OPEN_OPTIONS, (event: IpcMainInvokeEvent, id) => {
+    createPopupWindow({
+      windowTitle: "options",
+      height: 600,
+      width: 800,
+      hashRoute: `options/:${id}`,
+      windowId: id
+    })
+    return id
+  })
+  
   
 }
 export default ipcPopupHandler

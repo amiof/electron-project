@@ -6,10 +6,29 @@
   justify-content: center;
   width: 70px;
   height: 70px;
+  cursor: pointer;
+  text-transform: lowercase;
   gap: 5px;
   
+  &:hover {
+    .iconElement {
+      color: green;
+    }
+    
+    .title {
+      color: green;
+    }
+  }
+  
+}
+
+.iconElement {
+  transition: all ease 0.5s;
+  color: white;
 }
 
 .title {
   font-size: 12px;
+  transition: all ease 0.5s;
+  color: white;
 }
