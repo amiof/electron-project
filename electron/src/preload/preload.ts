@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
-import { STATUS_TYPE, TAria2Config, TNotificationDetailes, TProxyConfig, TtellRes } from "../types"
+import { STATUS_TYPE, TAria2Config, TNotificationDetailes, TProxyConfig, TtellRes, TTorrentConfig } from "../types"
 
 interface Aria2cResponse {
   jsonrpc: "2.0";
@@ -46,6 +46,8 @@ interface ElectronAPI {
   getSelectedStorageDirectory: () => Promise<string>,
   setSelectedStorageDirectory: (basePath: string) => Promise<void>,
   showNotification: (notif: TNotificationDetailes) => Promise<void>,
+  getTorrentConfig: () => Promise<TTorrentConfig>,
+  setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>,
   
   
 }
@@ -100,6 +102,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   selectStorageDirectory: () => ipcRenderer.invoke("select-storage-dir"),
   getSelectedStorageDirectory: () => ipcRenderer.invoke("get-selected=storage-config-dir"),
   setSelectedStorageDirectory: (basePath: string) => ipcRenderer.invoke("set-selected-storage-directory", basePath),
+  getTorrentConfig: () => ipcRenderer.invoke("get-torrents-config"),
+  setTorrentConfig: (config: TTorrentConfig) => ipcRenderer.invoke("set-torrents-config", config),
   
   //utils
   showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes)

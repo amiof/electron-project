@@ -1,5 +1,5 @@
 import { TDownloads, TFileDetails, TGetGlobalStateResponse, TtellRes } from "@src/types.ts"
-import { TAria2Config, TNotificationDetailes, TProxyConfig } from "@src/store/storeType.ts"
+import { TAria2Config, TNotificationDetailes, TProxyConfig, TTorrentConfig } from "@src/store/storeType.ts"
 
 export interface IElectronAPI {
   addDownload: (url: string) => void
@@ -36,6 +36,9 @@ export interface IElectronAPI {
   getSelectedStorageDirectory: () => Promise<string>,
   setSelectedStorageDirectory: (basePath: string | null) => Promise<void>,
   showNotification: (notif: TNotificationDetailes) => Promise<void>,
+  getTorrentConfig: () => Promise<TTorrentConfig>,
+  setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>,
+  
   
 }
 

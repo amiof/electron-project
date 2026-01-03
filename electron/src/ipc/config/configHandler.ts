@@ -1,6 +1,6 @@
 import { dialog, ipcMain } from "electron"
 import { CONFIG_CHANNELS } from "../channels"
-import { TAria2Config, TProxyConfig } from "../../types"
+import { TAria2Config, TProxyConfig, TTorrentConfig } from "../../types"
 import { electronStore } from "../../store/electronStore"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
@@ -51,6 +51,18 @@ export const ipcConfigHandler = () => {
   ipcMain.handle(CONFIG_CHANNELS.SET_SELECTED_STORAGE_DIR, async (_event: IpcMainInvokeEvent, basePath: string) => {
     
     return electronStore.set("selectedStorageDirectory", basePath)
+    
+  })
+  
+  ipcMain.handle(CONFIG_CHANNELS.GET_TORRENTS_CONF, async (_event: IpcMainInvokeEvent) => {
+    
+    return electronStore.get("torrentConfig")
+    
+  })
+  
+  ipcMain.handle(CONFIG_CHANNELS.SET_TORRENTS_CONF, async (_event: IpcMainInvokeEvent, config: TTorrentConfig) => {
+    
+    return electronStore.set("torrentConfig", config)
     
   })
   

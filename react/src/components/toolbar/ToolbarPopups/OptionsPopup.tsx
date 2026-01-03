@@ -1,12 +1,13 @@
 import { Tab, Tabs } from "@mui/material"
 import { useState } from "react"
-import { PlayForWork, SdCard, VpnLock } from "@mui/icons-material"
+import { Hub, PlayForWork, SdCard, VpnLock } from "@mui/icons-material"
 import { TOptionsTabs } from "@components/toolbar/types.ts"
 import ProxyConfig from "@components/toolbar/ToolbarPopups/ProxyConfig.tsx"
 import Aria2Conf from "@components/toolbar/ToolbarPopups/Aria2Conf.tsx"
 import StorageConf from "@components/toolbar/ToolbarPopups/StorageConf.tsx"
 import { useLocation } from "react-router-dom"
 import { getIdFromLocation } from "@src/utils.ts"
+import TorrentConf from "@components/toolbar/ToolbarPopups/torrentConf.tsx"
 
 
 const OptionsPopup = () => {
@@ -27,6 +28,8 @@ const OptionsPopup = () => {
         return <Aria2Conf id={id} />
       case "storage":
         return <StorageConf id={id} />
+      case "torrent":
+        return <TorrentConf id={id} />
       default:
         return <ProxyConfig id={id} />
     }
@@ -43,6 +46,7 @@ const OptionsPopup = () => {
           <Tab label={"proxy"} value={"proxy"} iconPosition={"start"} icon={<VpnLock />} />
           <Tab label={"aria2"} value={"aria2"} iconPosition={"start"} icon={<PlayForWork />} />
           <Tab label={"storage"} value={"storage"} iconPosition={"start"} icon={<SdCard />} />
+          <Tab label={"TORRENT"} value={"torrent"} iconPosition={"start"} icon={<Hub />} />
         </Tabs>
       
       </div>

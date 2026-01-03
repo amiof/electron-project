@@ -56,3 +56,19 @@ export type TNotificationDetailes = {
   title: string
   body: string
 }
+
+export type TTorrentConfig = {
+  enableDht: boolean,
+  enableDht6: boolean
+  enableLpd: boolean
+  enablePeerExchange: boolean
+  maxPeers: string
+  requestPeerSpeedLimit: string
+  seedTime: string
+  seedRatio: string
+  stopTimeout: string
+  maxOverallUploadLimit: string
+  maxUploadLimit: string
+  maxOverallDownloadLimit: string
+  tracker: null | string
+}

@@ -36,7 +36,9 @@ export const CONFIG_CHANNELS = {
   SET_ARIA2_CONFIG: "set-aria2-config",
   SELECT_STORAGE_DIR: "select-storage-dir",
   GET_SELECTED_STORAGE_CONF_DIR: "get-selected=storage-config-dir",
-  SET_SELECTED_STORAGE_DIR: "set-selected-storage-directory"
+  SET_SELECTED_STORAGE_DIR: "set-selected-storage-directory",
+  GET_TORRENTS_CONF: "get-torrents-config",
+  SET_TORRENTS_CONF: "set-torrents-config"
 }
 
 export const UTILS_CHANNELS = {

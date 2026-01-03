@@ -1,15 +1,53 @@
 import { Button, FormControl, TextField } from "@mui/material"
 import { useEffect, useState } from "react"
-import { TAria2Config } from "@src/store/storeType.ts"
+import { TAria2Config } from "@src/store/storeType"
 
 type Props = {
-  id: string,
+  id: string
 }
 
-const Aria2Conf = (props: Props) => {
-  
-  const { id } = props
-  
+type Aria2Field = {
+  key: keyof TAria2Config
+  label: string
+  placeholder?: string
+  type?: string
+}
+
+const aria2Fields: Aria2Field[] = [
+  {
+    key: "dnsServer",
+    label: "DNS Server",
+    placeholder: "example: 8.8.8.8"
+  },
+  {
+    key: "maxConnection",
+    label: "Max connection per server",
+    placeholder: "example: 8"
+  },
+  {
+    key: "maxConnectionSplit",
+    label: "Split",
+    placeholder: "example: 8"
+  },
+  {
+    key: "minSplitSize",
+    label: "Min split size",
+    placeholder: "example: 8M"
+  },
+  {
+    key: "maxDownloadLimit",
+    label: "Max download limit",
+    placeholder: "example: 100K"
+  },
+  {
+    key: "connectTimeout",
+    label: "Connect timeout (seconds)",
+    placeholder: "example: 60"
+    // type: "number"
+  }
+]
+
+const Aria2Conf = ({ id }: Props) => {
   const closePopupWindow = window.electronAPI.closePopupWindow
   
   const [formValue, setFormValue] = useState<TAria2Config>({
@@ -22,87 +60,58 @@ const Aria2Conf = (props: Props) => {
   })
   
   useEffect(() => {
-    (async () => {
-      const defaultAria2Config = await window.electronAPI.getAria2Config() as TAria2Config
-      setFormValue(defaultAria2Config)
+    ;(async () => {
+      const defaultConfig = await window.electronAPI.getAria2Config()
+      setFormValue(defaultConfig)
     })()
   }, [])
   
-  // The reusable onChange handler
-  const handleInputChange = (field: keyof TAria2Config) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormValue(prev => ({
-      ...prev,
-      [field]: event.target.value
-    }))
-  }
+  const handleChange =
+    (key: keyof TAria2Config) =>
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormValue(prev => ({
+          ...prev,
+          [key]: event.target.value
+        }))
+      }
   
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const submitHandler = (e: React.FormEvent) => {
+    e.preventDefault()
     window.electronAPI.setAria2Config(formValue)
     window.electronAPI.showNotification({
       title: "Aria2 Settings Saved",
-      body: "Your aria2 configuration has been saved successfully.\n for use config please restart program"
+      body: "Your aria2 configuration has been saved successfully.\nPlease restart the program to apply changes."
     })
   }
   
   return (
     <div className="flex justify-center items-center w-full h-full">
-      <form onSubmit={submitHandler}>
-        <FormControl className={"gap-6"}>
-          <TextField
-            name="dnsServer"
-            value={formValue.dnsServer || ""}
-            onChange={handleInputChange("dnsServer")}
-            label="DNS Server"
-            placeholder="example: 8.8.8.8"
-          />
-          
-          <TextField
-            name="maxConnection"
-            value={formValue.maxConnection || ""}
-            onChange={handleInputChange("maxConnection")}
-            label="Max connection per server"
-            placeholder="example: 8"
-          />
-          
-          <TextField
-            name="maxConnectionSplit"
-            value={formValue.maxConnectionSplit || ""}
-            onChange={handleInputChange("maxConnectionSplit")}
-            label="Split"
-            placeholder="example: 8"
-          />
-          
-          <TextField
-            name="minSplitSize"
-            value={formValue.minSplitSize || ""}
-            onChange={handleInputChange("minSplitSize")}
-            label="Min split size"
-            placeholder="example: 8M"
-          />
-          
-          <TextField
-            name="maxDownloadLimit"
-            value={formValue.maxDownloadLimit || ""}
-            onChange={handleInputChange("maxDownloadLimit")}
-            label="Max download limit"
-            placeholder="example: 100K"
-          />
-          
-          <TextField
-            name="connectTimeout"
-            value={formValue.connectTimeout || ""}
-            onChange={handleInputChange("connectTimeout")}
-            label="Connect timeout (seconds)"
-            placeholder="example: 60"
-          />
+      <form onSubmit={submitHandler} className="w-[80%]">
+        <FormControl className="w-full gap-4">
+          {aria2Fields.map(field => (
+            <div className={"flex items-center justify-between "}>
+              <p>{field.label}</p>
+              
+              <TextField
+                key={field.key}
+                // label={field.label}
+                size={"small"}
+                placeholder={field.placeholder}
+                type={field.type ?? "text"}
+                value={formValue[field.key] || ""}
+                onChange={handleChange(field.key)}
+              />
+            </div>
+          ))}
         </FormControl>
         
-        <div className={"w-full flex justify-end gap-2 absolute bottom-3 right-5"}>
-          <Button variant="contained" color="primary" type="submit">Save</Button>
-          <Button variant="outlined" onClick={() => closePopupWindow(id)}>Close</Button>
+        <div className="w-full flex justify-end gap-2 absolute bottom-3 right-5">
+          <Button variant="contained" type="submit">
+            Save
+          </Button>
+          <Button variant="outlined" onClick={() => closePopupWindow(id)}>
+            Close
+          </Button>
         </div>
       </form>
     </div>

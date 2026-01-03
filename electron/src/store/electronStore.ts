@@ -1,5 +1,5 @@
 import Store from "electron-store"
-import { TAria2Config, TProxyConfig } from "../types"
+import { TAria2Config, TProxyConfig, TTorrentConfig } from "../types"
 
 interface Schema {
   theme: string
@@ -8,6 +8,7 @@ interface Schema {
   proxyConfig: TProxyConfig
   aria2Config: TAria2Config
   selectedStorageDirectory: string | null
+  torrentConfig: TTorrentConfig
 }
 
 //add electron-store for save settings to config.json
@@ -33,7 +34,22 @@ export const electronStore = new Store<Schema>({
       proxyUserName: "",
       proxyPassword: ""
     },
-    selectedStorageDirectory: null
+    selectedStorageDirectory: null,
+    torrentConfig: {
+      enableDht: true,
+      enableDht6: true,
+      enableLpd: true,
+      enablePeerExchange: true,
+      maxPeers: "100",
+      requestPeerSpeedLimit: "0",
+      seedTime: "0",
+      seedRatio: "0.0",
+      stopTimeout: "0",
+      maxOverallUploadLimit: "1K",
+      maxUploadLimit: "1K",
+      maxOverallDownloadLimit: "0",
+      tracker: null
+    }
     
   }
 })
