@@ -1,5 +1,5 @@
 import { Location } from "react-router-dom"
-import { TDownloads } from "@src/types.ts"
+import { TDownloads, TtellRes } from "@src/types.ts"
 
 export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -43,4 +43,17 @@ export const searchInDownloadsRows = (data: TDownloads[], searchValue: string) =
   if (searchValue === "") return data
   return data.filter(item => item.FileName.toLowerCase().includes(searchValue.toLowerCase()))
   
+}
+
+
+export const isMetadataPhase = (tellStatus: TtellRes): boolean => {
+  return (
+    tellStatus.totalLength === "0" &&
+    tellStatus.files?.length === 1 &&
+    tellStatus.files[0].path.startsWith("[METADATA]")
+  )
+}
+
+export const isTorrentMode = (tellStatus: TtellRes) => {
+  return "infoHash" in tellStatus
 }

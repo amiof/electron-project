@@ -41,15 +41,15 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
       return {
         Id: index + 1,
         FileName: fileName,
-        Url: download.files[0].uris[0].uri,
-        SavePath: download.dir,
+        Url: download?.files[0]?.uris[0]?.uri,
+        SavePath: download?.dir,
         Size: formatBytes(+download.totalLength),
         CreatedAt: fileCreateAte,
         CompletedSize: formatBytes(+download.completedLength),
         Percentage: isNaN(+download.completedLength / +download.totalLength) ? 0 : Number(((+download.completedLength / +download.totalLength) * 100).toFixed(0)),
-        Status: download.status,
-        Gid: download.gid,
-        NumberConnections: download.connections
+        Status: download?.status,
+        Gid: download?.gid,
+        NumberConnections: download?.connections
       }
     })
     set({ allDownloadsRow: [...downloadsRows] })

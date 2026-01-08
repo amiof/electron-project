@@ -2,15 +2,25 @@ import { useLocation } from "react-router-dom"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { useEffect, useState } from "react"
 import { STATUS_TYPE, TtellRes } from "@src/types.ts"
-import { formatBytes, formatTime, getIdFromLocation } from "@src/utils.ts"
+import { formatBytes, formatTime, getIdFromLocation, isMetadataPhase, isTorrentMode } from "@src/utils.ts"
 import styles from "./style.module.scss"
 import BackDetails from "@components/startDownload/BackDetails.tsx"
 import FrontDetails from "@components/startDownload/FrontDetails.tsx"
 import clsx from "clsx"
+import FolderIcon from "@src/assets/folderIcon.tsx"
+import LinkIcon from "@src/assets/LinkIcon.tsx"
+import SpeedTestIcon from "@src/assets/SpeedTestIcon.tsx"
+import ConnectionIcon from "@src/assets/ConnectionIcon.tsx"
+import StatusIcon from "@src/assets/StatusIcon.tsx"
+import FileSizeIcon from "@src/assets/FileSizeIcon.tsx"
+import DownloadSizeIcon from "@src/assets/DownloadSizeIcon.tsx"
+import TimeEtaIcon from "@src/assets/TimeEtaIcon.tsx"
 
 export type TDetails = {
   label: string
   value: number | string
+  icon?: React.ReactElement
+  showDetails?: boolean
 }
 
 const DownloadStart = () => {
@@ -20,7 +30,7 @@ const DownloadStart = () => {
   const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
   const tellActive = useDownloaderStore(state => state.tellActive)
   const getTellActive = useDownloaderStore(state => state.getTellActive)
-  const setDownloadDataToEletron = useDownloaderStore(state => state.setActiveDataToElectron)
+  const setDownloadDataToElectron = useDownloaderStore(state => state.setActiveDataToElectron)
   
   const [downloadStatus, setDownloadStatus] = useState<TtellRes | null>(null)
   const [showMore, setShowMore] = useState<boolean>(false)
@@ -56,9 +66,9 @@ const DownloadStart = () => {
         const tellStatus = await window.electronAPI.getTellStatus(gid)
         await getTellActive()
         setDownloadStatus(tellStatus)
-      }, 300)
+      }, 400)
       
-      setDownloadDataToEletron(tellActive[0])
+      setDownloadDataToElectron(tellActive[0])
     }
     else {
       (async () => {
@@ -91,51 +101,76 @@ const DownloadStart = () => {
   }, [completeDownload])
   
   
+  const isMetaData = downloadStatus ? isMetadataPhase(downloadStatus) : true
+  const isTorrent = downloadStatus ? isTorrentMode(downloadStatus) : false
+  
+  const isTorrentsDetails = isTorrent ? [
+    { label: "Number Seeders", value: downloadStatus?.numSeeders ?? "0", showDetails: false },
+    { label: "Upload", value: downloadStatus?.uploadLength ?? "0", showDetails: false }
+  ] as TDetails[] : [] as TDetails[]
+  
   const details: TDetails[] = [
     {
       label: "Speed : ",
-      value: downloadStatus ? formatBytes(+downloadStatus.downloadSpeed, 1) : 0
+      value: downloadStatus ? formatBytes(+downloadStatus.downloadSpeed, 1) : 0,
+      icon: <SpeedTestIcon />,
+      showDetails: true
     },
     {
       label: "Link : ",
-      value: downloadStatus?.files[0].uris[0]?.uri ?? ""
+      value: downloadStatus?.files[0].uris[0]?.uri ?? "",
+      icon: <LinkIcon />,
+      showDetails: true
     },
     {
       label: "Saved Path : ",
-      value: downloadStatus?.dir ?? ""
+      value: downloadStatus?.dir ?? "",
+      icon: <FolderIcon />,
+      showDetails: true
     },
     {
       label: "Connection :",
-      value: downloadStatus?.connections ?? 0
+      value: downloadStatus?.connections ?? 0,
+      icon: <ConnectionIcon />,
+      showDetails: true
     },
     {
       label: "Status :",
-      value: downloadStatus?.status ?? ""
+      value: downloadStatus?.status ?? "",
+      icon: <StatusIcon />,
+      showDetails: true
     },
     {
       label: "File Size:",
-      value: downloadStatus ? formatBytes(+downloadStatus?.totalLength) : 0
+      value: downloadStatus ? formatBytes(+downloadStatus?.totalLength) : 0,
+      icon: <FileSizeIcon />,
+      showDetails: true
     },
     {
       label: "Downloaded Size:",
-      value: downloadStatus ? formatBytes(+downloadStatus?.completedLength) : 0
+      value: downloadStatus ? formatBytes(+downloadStatus?.completedLength) : 0,
+      icon: <DownloadSizeIcon />,
+      showDetails: true
     },
     {
       label: "Eta :",
-      value: formatTime(remainingSeconds)
-    }
-  
-  
+      value: formatTime(remainingSeconds),
+      icon: <TimeEtaIcon />,
+      showDetails: true
+    },
+    ...isTorrentsDetails
   ]
   return (
     <div className={"w-full h-full flex justify-center items-center overflow-hidden "}>
       <div className={styles.container}>
         <div className={clsx(styles.card, showMore && "rotate-x-180")}>
           <div className={clsx(styles.front, " border border-neutral-800 rounded-4xl")}>
-            <FrontDetails details={details} downloadStatus={downloadStatus} setShowMore={setShowMore} />
+            <FrontDetails details={details} isMetaData={isMetaData} isTorrent={isTorrent}
+                          downloadStatus={downloadStatus} setShowMore={setShowMore} />
           </div>
           <div className={styles.back}>
-            <BackDetails details={details} downloadStatus={downloadStatus} setShowMore={setShowMore} />
+            <BackDetails details={details} downloadStatus={downloadStatus} setShowMore={setShowMore}
+                         isMetaData={isMetaData} isTorrent={isTorrent} />
           </div>
         </div>
       </div>

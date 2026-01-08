@@ -58,7 +58,6 @@ const TorrentConf = ({ id }: Props) => {
   useEffect(() => {
     ;(async () => {
       const defaultConfig = await window.electronAPI.getTorrentConfig()
-      console.log("%c 1 --> Line: 66||torrentConf.tsx\n defaultConfig: ", "color:#f0f;", defaultConfig)
       setFormValues(defaultConfig)
     })()
   }, [])

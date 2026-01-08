@@ -22,7 +22,6 @@ const StorageConf = (props: Props) => {
   
   const handleSelectDirectory = async () => {
     const selectedPath = await window.electronAPI.selectStorageDirectory() as string | null
-    console.log("%c 1 --> Line: 17||StorageConf.tsx\n selectedPath: ", "color:#f0f;", selectedPath)
     if (selectedPath) {
       setBasePath(selectedPath)
       // Optionally save it back via another API call

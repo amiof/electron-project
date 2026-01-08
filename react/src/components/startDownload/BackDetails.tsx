@@ -15,11 +15,14 @@ import UndoIcon from "@mui/icons-material/Undo"
 import { ReactElement } from "react"
 import ActionButton from "@components/startDownload/ActionButton.tsx"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
+import MagnetIcon from "@src/assets/MagnetIcon.tsx"
 
 type Props = {
   details: TDetails[]
   downloadStatus: TtellRes | null
   setShowMore: React.Dispatch<React.SetStateAction<boolean>>
+  isMetaData: boolean
+  isTorrent: boolean
 }
 type actionButton = {
   Icon: ReactElement
@@ -27,13 +30,15 @@ type actionButton = {
   action?: () => void
 }
 const BackDetails = (props: Props) => {
-  const { details, downloadStatus, setShowMore } = props
+  
+  const { details, downloadStatus, setShowMore, isTorrent, isMetaData } = props
+  
   const location = useLocation()
   const gid = getIdFromLocation(location, ":")
   const closePopup = window.electronAPI.closePopupWindow
   const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
   
-  const percentage = downloadStatus ? +(+downloadStatus?.completedLength / +downloadStatus?.totalLength * 100).toFixed(0) : 0
+  const percentage = !isMetaData ? downloadStatus ? +(+downloadStatus?.completedLength / +downloadStatus?.totalLength * 100).toFixed(0) : 0 : 0
   
   const actionButtonData: actionButton[] = [
     {
@@ -99,14 +104,14 @@ const BackDetails = (props: Props) => {
             <div className={"justify-center flex  items-center w-full "}>
               <Chip label={`${details[2].label}  ${details[2].value}`} variant={"outlined"} color={"warning"} />
             </div>
-            
+          
           </div>
           
           <div
             className={"flex gap-x-5 flex-wrap w-full h-[30%] border border-neutral-800 rounded-4xl  items-center justify-center"}>
             {
               actionButtonData.map((item, index) => (
-                <ActionButton index={index} action={item.action} Icon={item.Icon} title={item.title} />
+                <ActionButton key={item.title} index={index} action={item.action} Icon={item.Icon} title={item.title} />
               ))
             }
           </div>
@@ -114,6 +119,12 @@ const BackDetails = (props: Props) => {
         
         <div className={"w-[50%] h-full flex justify-center border border-neutral-800 rounded-4xl"}>
           <div className={"h-full w-[50%] flex flex-col items-center justify-evenly"}>
+            {
+              isTorrent &&
+              <div className={"absolute top-2 left-3"}>
+                <MagnetIcon style={{ fontSize: "46px" }} />
+              </div>
+            }
             <div className={"absolute top-5 right-5"}>
               <ActionButton index={1} action={back.action} Icon={back.Icon} title={back.title} />
             </div>
