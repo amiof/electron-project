@@ -2,19 +2,39 @@ import { ipcMain } from "electron"
 import { directionFolder } from "../../utils"
 import { aria2 } from "../../main"
 import { DOWNLOAD_CHANNELS } from "../channels"
+import { TOptionsConfig, TProxyConfig } from "../../types"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 const ipcDownloadHandler = () => {
   
-  ipcMain.handle(DOWNLOAD_CHANNELS.ADD_DOWNLOAD_LINK, async (event: IpcMainInvokeEvent, url: string, directory?: string) => {
+  ipcMain.handle(DOWNLOAD_CHANNELS.ADD_DOWNLOAD_LINK, async (event: IpcMainInvokeEvent, url: string, directory?: string, fileName?: string, proxyConfig?: TProxyConfig | null, options?: TOptionsConfig | null) => {
     const dir = directionFolder(url)
+    
+    const proxyArgs = {} as any
+    if (proxyConfig) {
+      const { ip, port, proxyPassword, proxyType, proxyStatus, proxyUserName } = proxyConfig
+      if (proxyStatus && ip && port) {
+        proxyArgs["all-proxy"] = (`${proxyType}://${ip}:${port}`)
+        if (proxyUserName) proxyArgs["all-proxy-user"] = proxyUserName
+        if (proxyPassword) proxyArgs["all-proxy-passwd"] = proxyPassword
+      }
+    }
+    
+    let optionsConfig = {} as any
+    if (options) {
+      const { referrer, header, cookie, userAgent } = options
+      if (referrer) optionsConfig["referrer"] = referrer
+      if (header) optionsConfig["header"] = header
+      if (cookie) optionsConfig["load-cookies"] = cookie
+      if (userAgent) optionsConfig["user-agent"] = userAgent
+    }
     
     return await aria2.sendAria2cRequest("addUri", [[url], {
       dir: directory ? directory : dir,
-      "max-connection-per-server": 16, // Max connections per server
-      split: 16, // Split into N connections
-      "min-split-size": "1M", // Minimum split size
-      continue: true // Enable resuming}]);
+      continue: true, // Enable resuming}]);
+      out: fileName,
+      ...proxyArgs,
+      ...optionsConfig
     }])
   })
   

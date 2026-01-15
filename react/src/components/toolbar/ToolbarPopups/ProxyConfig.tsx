@@ -44,7 +44,7 @@ const ProxyConfig = (props: Props) => {
   const handleProxyTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues(prev => ({
       ...prev,
-      proxyType: event.target.value as "http" | "socks"
+      proxyType: event.target.value as "http" | "https"
     }))
   }
   
@@ -115,8 +115,8 @@ const ProxyConfig = (props: Props) => {
             onChange={handleProxyTypeChange}
             row
           >
-            <FormControlLabel value="http" control={<Radio />} label="HTTP" disabled={!formValues.proxyStatus} />
-            <FormControlLabel value="socks" control={<Radio />} label="Socks" disabled={!formValues.proxyStatus} />
+            <FormControlLabel value="http" control={<Radio />} label="http" disabled={!formValues.proxyStatus} />
+            <FormControlLabel value="https" control={<Radio />} label="https" disabled={!formValues.proxyStatus} />
           </RadioGroup>
         </FormControl>
         

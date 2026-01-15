@@ -39,7 +39,7 @@ export type TProxyConfig = {
   port: string
   proxyUserName?: string
   proxyPassword?: string
-  proxyType: "http" | "socks"
+  proxyType: "http" | "https"
 }
 
 export type TAria2Config = {

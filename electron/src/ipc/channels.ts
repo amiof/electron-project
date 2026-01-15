@@ -42,5 +42,6 @@ export const CONFIG_CHANNELS = {
 }
 
 export const UTILS_CHANNELS = {
-  SHOW_NOTIFICATION: "show-notification"
+  SHOW_NOTIFICATION: "show-notification",
+  GET_METADATA_URLS: "get-metadata-urls"
 }

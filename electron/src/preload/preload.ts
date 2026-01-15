@@ -1,5 +1,13 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
-import { STATUS_TYPE, TAria2Config, TNotificationDetailes, TProxyConfig, TtellRes, TTorrentConfig } from "../types"
+import {
+  STATUS_TYPE,
+  TAria2Config,
+  TNotificationDetailes,
+  TOptionsConfig,
+  TProxyConfig,
+  TtellRes,
+  TTorrentConfig
+} from "../types"
 
 interface Aria2cResponse {
   jsonrpc: "2.0";
@@ -13,7 +21,7 @@ interface Aria2cResponse {
 
 // Define a type for the exposed API in the renderer
 interface ElectronAPI {
-  addDownloadDir: (url: string, dir?: string) => void;
+  addDownloadDir: (url: string, dir?: string, outFileName?: string, proxyConfig?: TProxyConfig | null, options?: TOptionsConfig | null) => void;
   onAria2cResponse: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
   removeAria2cListener: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
   getTellStatus: (gid: string) => Promise<unknown>,
@@ -48,7 +56,7 @@ interface ElectronAPI {
   showNotification: (notif: TNotificationDetailes) => Promise<void>,
   getTorrentConfig: () => Promise<TTorrentConfig>,
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>,
-  
+  getMetadataUrls: (url: string) => Promise<unknown>,
   
 }
 
@@ -60,7 +68,7 @@ declare global {
 
 // Expose only specific functions to the renderer process
 contextBridge.exposeInMainWorld("electronAPI", {
-  addDownloadDir: async (url: string, dir?: string) => await ipcRenderer.invoke("add-download-dir", url, dir),
+  addDownloadDir: async (url: string, dir?: string, outFileName?: string, proxyConfig?: TProxyConfig | null, options?: TOptionsConfig | null) => await ipcRenderer.invoke("add-download-dir", url, dir, outFileName, proxyConfig, options),
   getDownloads: () => ipcRenderer.invoke("get-downloads"),
   addLinkPopup: (id: string) => ipcRenderer.send("add-link-popup", id),
   closePopupWindow: (id: string) => ipcRenderer.send("close-popup", id),
@@ -86,6 +94,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   addLinkToDB: (downloadRow: TtellRes) => ipcRenderer.invoke("add-link-to-db", downloadRow),
   updateDownloadRowStatus: (gid: string, downloadRow: STATUS_TYPE) => ipcRenderer.invoke("update-downloadRow-status", gid, downloadRow),
   getCompletedRowFromDB: () => ipcRenderer.invoke("get-completed-row-from-db"),
+  
   //action handler
   stopDownloadByGid: (gid: string) => ipcRenderer.invoke("stop-download-by-gid", gid),
   unPauseAll: () => ipcRenderer.invoke("unpause-all"),
@@ -106,6 +115,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   setTorrentConfig: (config: TTorrentConfig) => ipcRenderer.invoke("set-torrents-config", config),
   
   //utils
-  showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes)
+  showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes),
+  getMetadataUrls: (url: string) => ipcRenderer.invoke("get-metadata-urls", url)
+  
   
 })

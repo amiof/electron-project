@@ -43,10 +43,10 @@ const OptionsPopup = () => {
               value={value}
               onChange={handleChange}
         >
-          <Tab label={"proxy"} value={"proxy"} iconPosition={"start"} icon={<VpnLock />} />
           <Tab label={"aria2"} value={"aria2"} iconPosition={"start"} icon={<PlayForWork />} />
           <Tab label={"storage"} value={"storage"} iconPosition={"start"} icon={<SdCard />} />
           <Tab label={"TORRENT"} value={"torrent"} iconPosition={"start"} icon={<Hub />} />
+          <Tab label={"proxy"} value={"proxy"} iconPosition={"start"} icon={<VpnLock />} />
         </Tabs>
       
       </div>

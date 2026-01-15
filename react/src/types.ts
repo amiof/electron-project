@@ -100,3 +100,10 @@ export type TFileDetails = {
   isDirectory: boolean;
 }
 
+export type resMetadataUrls = {
+  fileName: string | null,
+  size: string | null,
+  typeUrl: "direct" | "torrent" | "magnet",
+  savePath: string
+  resume: boolean | null
+}

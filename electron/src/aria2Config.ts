@@ -50,10 +50,9 @@ const {
 
 const addedTrackers = tracker ? [`--bt-tracker= ${tracker}`] : []
 
-
 export const config = [
   "--enable-rpc",
-  `--async-dns-server=${dnsServer}`,
+  `${dnsServer && `{--async-dns-server=${dnsServer}`}`,
   "--rpc-listen-all=true",
   "--rpc-allow-origin-all",
   `--save-session=${getSessionPath()}`,

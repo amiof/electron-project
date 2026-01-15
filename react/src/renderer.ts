@@ -1,9 +1,10 @@
-import { TDownloads, TFileDetails, TGetGlobalStateResponse, TtellRes } from "@src/types.ts"
+import { resMetadataUrls, TDownloads, TFileDetails, TGetGlobalStateResponse, TtellRes } from "@src/types.ts"
 import { TAria2Config, TNotificationDetailes, TProxyConfig, TTorrentConfig } from "@src/store/storeType.ts"
+import { TAddLinkOptions } from "@components/addLinkPopup/store/addLinkStoreType.ts"
 
 export interface IElectronAPI {
   addDownload: (url: string) => void
-  addDownloadDir: (url: string, dir?: string) => Promise<string>
+  addDownloadDir: (url: string, dir?: string, outFileName?: string, proxyConfig?: TProxyConfig | null, options?: TAddLinkOptions | null) => Promise<string>
   getDownloads: () => Promise<TDownloads[] | []>
   addLinkPopup: (id: string) => void
   closePopupWindow: (id: string) => void
@@ -38,7 +39,7 @@ export interface IElectronAPI {
   showNotification: (notif: TNotificationDetailes) => Promise<void>,
   getTorrentConfig: () => Promise<TTorrentConfig>,
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>,
-  
+  getMetadataUrls: (url: string) => Promise<resMetadataUrls>,
   
 }
 

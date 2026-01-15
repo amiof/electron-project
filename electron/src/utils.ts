@@ -334,3 +334,29 @@ export const openFileExplorer = (directoryPath: string) => {
     console.log(`File explorer opened successfully: ${stdout}`)
   })
 }
+
+// get name from header of a link
+export const extractFilenameFromDisposition = (headerValue: string | null) => {
+  if (!headerValue) return null
+  
+  // First, try the modern filename* (RFC 5987 encoded)
+  // filename*=UTF-8''encoded%20name.ext  or  filename*=utf-8''encoded-name
+  const encodedMatch = headerValue.match(/filename\*=(UTF-8''|[^']*'')[^;]*/i)
+  if (encodedMatch) {
+    const encoded = encodedMatch[0].split(/''/, 2)[1] // get part after ''
+    try {
+      return decodeURIComponent(encoded)
+    }
+    catch (e) {
+      // fallback if decode fails
+    }
+  }
+  
+  // Then try regular filename="..." or filename=...
+  const filenameMatch = headerValue.match(/filename="?([^";]+)"?/i)
+  if (filenameMatch && filenameMatch[1]) {
+    return filenameMatch[1].trim()
+  }
+  
+  return null
+}

@@ -77,6 +77,13 @@ export type TTorrentRes = {
   uploadSpeed: string;
 };
 
+export type resMetadataUrls = {
+  fileName: string | null
+  size: string | null
+  typeUrl: "direct" | "torrent" | "magnet"
+  savePath: string
+  resume: boolean | null
+}
 
 // export type TtellRes = {
 //   bitfield: string
@@ -102,8 +109,15 @@ export type TProxyConfig = {
   port: string
   proxyUserName?: string
   proxyPassword?: string
-  proxyType: "http" | "socks"
+  proxyType: "http" | "https"
 }
+export type TOptionsConfig = {
+  referrer?: string,
+  header?: string,
+  userAgent?: string,
+  cookie?: string
+}
+
 export type TAria2Config = {
   maxConnection: string
   maxConnectionSplit: string
