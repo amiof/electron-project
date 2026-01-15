@@ -95,7 +95,7 @@ const Main = () => {
       type: "string",
       width: 110,
       sortable: true,
-      editable: true
+      editable: false
     },
     {
       field: "Percentage",

@@ -27,6 +27,7 @@ export const ACTIONS_CHANNELS = {
   UNPAUSE_BY_GID: "unpause-By-gid",
   STOP_ALL_DOWNLOADS: "stop-allDownloads",
   REMOVE_DOWNLOAD_BY_GID: "remove-download-by-gid",
+  REMOVE_SELECTED_DOWNLOADS: "remove-selected-downloads",
   OPEN_FOLDER: "open-folder"
 }
 export const CONFIG_CHANNELS = {

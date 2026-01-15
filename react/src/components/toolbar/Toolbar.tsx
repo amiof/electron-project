@@ -25,6 +25,7 @@ const Toolbar = () => {
   const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
   const getSelectedRows = useDownloaderStore(state => state.selectedRows)
   const getCompletedRowsDB = useDownloaderStore(state => state.getCompletedRowFromDB)
+  const setSelectedRows = useDownloaderStore(state => state.setSelectedRow)
   
   
   const openOptionsHandler = () => {
@@ -67,7 +68,12 @@ const Toolbar = () => {
       IconElement: <DeleteOutlineOutlinedIcon fontSize={"medium"} />,
       title: "Delete",
       action: () => {
-        window.electronAPI.removeDownloadByGid(getSelectedRows[0].Gid)
+        const gidList = []
+        for (const item of getSelectedRows) {
+          gidList.push(item.Gid)
+        }
+        window.electronAPI.removeSelectedDownloads(gidList)
+        setSelectedRows([])
         getCompletedRowsDB()
         setTimeout(async () => {
           await getAllDownloads()

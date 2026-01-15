@@ -49,5 +49,18 @@ export const ipcActionsHandler = () => {
     openFileExplorer(path)
   })
   
+  ipcMain.handle(ACTIONS_CHANNELS.REMOVE_SELECTED_DOWNLOADS, async (event, gidList: string[]) => {
+    try {
+      for (const gid of gidList) {
+        await DataSourceRepo.getRepository("downloads").delete({ gid: gid })
+        await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
+        await aria2.sendAria2cRequest("remove", [gid])
+        await aria2.sendAria2cRequest("removeDownloadResult", [gid])
+      }
+    }
+    catch (error) {
+      console.error(error)
+    }
+  })
   
 }

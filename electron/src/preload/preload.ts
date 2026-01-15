@@ -44,6 +44,7 @@ interface ElectronAPI {
   unPauseByGid: (gid: string) => void,
   stopAllDownloads: () => void,
   removeDownloadByGid: (gid: string) => void
+  removeSelectedDownloads: (gidList: string[]) => void,
   openFolder: (path: string) => void
   openOptionsPopup: (id: string) => Promise<unknown>,
   setProxyConfig: (config: TProxyConfig) => Promise<unknown>,
@@ -101,6 +102,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   unPauseByGid: (gid: string) => ipcRenderer.send("unpause-By-gid", gid),
   stopAllDownloads: () => ipcRenderer.send("stop-allDownloads"),
   removeDownloadByGid: (gid: string) => ipcRenderer.send("remove-download-by-gid", gid),
+  removeSelectedDownloads: (gidList: string[]) => ipcRenderer.invoke("remove-selected-downloads", gidList),
   openFolder: (path: string) => ipcRenderer.send("open-folder", path),
   
   //config

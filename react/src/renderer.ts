@@ -27,6 +27,7 @@ export interface IElectronAPI {
   unPauseByGid: (gid: string) => void,
   stopAllDownloads: () => void,
   removeDownloadByGid: (gid: string) => void
+  removeSelectedDownloads: (gidList: string[]) => void,
   openFolder: (path: string) => void
   openOptionsPopup: (id: string) => Promise<string>
   setProxyConfig: (config: TProxyConfig) => Promise<unknown>,
