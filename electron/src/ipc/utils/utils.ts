@@ -1,7 +1,9 @@
-import { ipcMain, Notification } from "electron"
-import { UTILS_CHANNELS } from "../channels"
-import { resMetadataUrls, TNotificationDetailes } from "../../types"
-import { directionFolder, extractFilenameFromDisposition } from "../../utils"
+import { BrowserWindow, ipcMain, Menu, Notification } from "electron"
+import { ACTIONS_CHANNELS, POPUP_CHANNELS, UTILS_CHANNELS } from "../channels"
+import { resMetadataUrls, STATUS_TYPE, TDownloads, TNotificationDetailes } from "../../types"
+import { directionFolder, extractFilenameFromDisposition, generateId } from "../../utils"
+import { createPopupWindow, iconPathContextMenu } from "../utils"
+import { mainWindow } from "../../main"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 export const ipcUtilsHandler = () => {
@@ -105,5 +107,132 @@ export const ipcUtilsHandler = () => {
     return urlResponse
     
   })
+  
+  ipcMain.handle(UTILS_CHANNELS.SHOW_CONTEXT_MENU, async (event: IpcMainInvokeEvent, selectedDownloadRow: TDownloads[] | []) => {
+    
+    // const iconPath = path.join(process.resourcesPath, "assets", "icon.png")
+    const isActive = selectedDownloadRow.filter(item => item.Status === STATUS_TYPE.ACTIVE)
+    const isResume = selectedDownloadRow.filter(item => item.Status !== STATUS_TYPE.ACTIVE && item.Status !== STATUS_TYPE.COMPLETE)
+    
+    const menu = Menu.buildFromTemplate([
+      {
+        label: "Add new link",
+        icon: iconPathContextMenu("plus-32.png"),
+        visible: !selectedDownloadRow.length,
+        click: () => {
+          const id = generateId()
+          ipcMain.emit(POPUP_CHANNELS.ADD_LINK_POPUP, event, id)
+          mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "add-link")
+        }
+      },
+      {
+        label: "Options",
+        visible: !selectedDownloadRow.length,
+        icon: iconPathContextMenu("setting-32.png"),
+        click: () => {
+          const id = generateId()
+          ipcMain.emit(POPUP_CHANNELS.POPUP_OPEN_OPTIONS, event, id)
+          mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "open-options")
+        }
+      },
+      {
+        label: "Reload",
+        visible: !selectedDownloadRow.length,
+        role: "reload",
+        icon: iconPathContextMenu("reload-32.png"),
+        click: () => {
+          mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "reload-app")
+        }
+      },
+      {
+        label: "Quite",
+        visible: !selectedDownloadRow.length,
+        role: "quit",
+        icon: iconPathContextMenu("exit-32.png")
+      },
+      //-------------
+      {
+        // icon:path.join(process.resourcesPath, "assets", "icon_32x32.png"),
+        // icon:path.join(__dirname,"..","..","..","..","assets","icon_32x32.png"),
+        label: "Delete selected rows",
+        icon: iconPathContextMenu("delete-32.png"),
+        visible: !!selectedDownloadRow.length,
+        click: () => {
+          const gidList = selectedDownloadRow.map(selected => selected.Gid)
+          ipcMain.emit(ACTIONS_CHANNELS.REMOVE_SELECTED_DOWNLOADS, event, gidList)
+          mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "delete-rows")
+        }
+      },
+      {
+        label: "Stop selected rows",
+        icon: iconPathContextMenu("pause-32.png"),
+        visible: !!selectedDownloadRow.length,
+        enabled: !!isActive.length,
+        click: () => {
+          const ActiveGid = isActive.map(selected => selected.Gid)
+          ActiveGid.map(gid => {
+            ipcMain.emit(ACTIONS_CHANNELS.STOP_DOWNLOAD_BY_GID, event, gid)
+            mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "stop-downloads")
+          })
+        }
+      },
+      {
+        label: "Resume downloads",
+        visible: !!selectedDownloadRow.length,
+        enabled: !!isResume.length,
+        icon: iconPathContextMenu("resume-32.png"),
+        click: () => {
+          isResume.map((item) => {
+            const gid = item?.Gid
+            createPopupWindow({
+              windowTitle: "download",
+              height: 400,
+              width: 900,
+              hashRoute: `downloadStart/:${gid}`,
+              windowId: gid
+            })
+            ipcMain.emit(ACTIONS_CHANNELS.UNPAUSE_BY_GID, event, gid)
+            mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "resume")
+          })
+        }
+      },
+      // {
+      //   label: "Delete downloaded Files",
+      //   visible: !!selectedDownloadRow.length,
+      //   icon: iconPathContextMenu("delete-32.png"),
+      //   click: () => {
+      //     console.log("delete")
+      //   }
+      // },
+      {
+        label: "Open folder",
+        visible: !!selectedDownloadRow.length,
+        icon: iconPathContextMenu("folder-32.png"),
+        click: () => {
+          selectedDownloadRow.map((item) => {
+            ipcMain.emit(ACTIONS_CHANNELS.OPEN_FOLDER, event, item.SavePath)
+            mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "open-folders")
+          })
+        }
+      },
+      {
+        label: "Add to scheduler ",
+        visible: !!selectedDownloadRow.length,
+        icon: iconPathContextMenu("scheduler-32.png"),
+        click: () => {
+          console.log("scheduler")
+          mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "add-scheduler")
+        }
+      }
+    ])
+    
+    const window = BrowserWindow.fromWebContents(event.sender) as BrowserWindow
+    
+    menu.popup({
+      window: window
+    })
+    
+  })
+ 
   
 }

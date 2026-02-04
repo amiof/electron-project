@@ -85,6 +85,22 @@ export type resMetadataUrls = {
   resume: boolean | null
 }
 
+
+// downloads create in ui  -- some times need use in back
+export type TDownloads = {
+  Id?: number
+  FileName: string
+  Url: string
+  SavePath: string
+  Size: string
+  CreatedAt?: Date
+  Percentage?: number
+  Status?: STATUS_TYPE
+  CompletedSize?: string
+  Gid: string
+  NumberConnections: string
+}
+
 // export type TtellRes = {
 //   bitfield: string
 //   completedLength: string

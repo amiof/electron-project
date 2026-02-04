@@ -1,7 +1,7 @@
 // import useDownloaderStore from "@src/store/downloaderStore"
 import styles from "./style.module.scss"
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid"
-import { useEffect, useState } from "react"
+import { MouseEvent, useEffect, useState } from "react"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TDownloads, TtellRes } from "@src/types.ts"
 import { ProgressBar } from "react-progressbar-fancy"
@@ -15,9 +15,12 @@ const Main = () => {
   const downloadsRow = useDownloaderStore(state => state.allDownloadsRow)
   const tellActive = useDownloaderStore(state => state.tellActive)
   const setSelectedRows = useDownloaderStore(state => state.setSelectedRow)
+  const selectedRows = useDownloaderStore(state => state.selectedRows)
   const searchValue = useDownloaderStore(state => state.searchValue)
   const sidebarSelectedLabel = useDownloaderStore(state => state.sidebarSelectedLabel)
   const downloadsGroupingByLabel = useDownloaderStore(state => state.downloadsGroupByLabel)
+  
+  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
   
   let dataGridRow: TDownloads[]
   
@@ -36,10 +39,81 @@ const Main = () => {
   }
   
   const [activeDownloads, setActiveDownloads] = useState<TtellRes | null>(null)
+  
   window.electronAPI.onDataChange(async (data) => {
     const result = await data
     setActiveDownloads(result)
   })
+  
+  // remove selected item context menu and update main download list
+  const clickedContextMenuItem = () => {
+    getAllDownloads()
+    setRowSelectionModel([])
+    setSelectedRows([])
+  }
+  
+  useEffect(() => {
+    window.electronAPI.onContextMenuAction((payload) => {
+      if (typeof payload === "string") {
+        // simple actions
+        switch (payload) {
+          case "add-link":
+            console.log(payload)
+            clickedContextMenuItem()
+            break
+          case "reload-app":
+            window.location.reload()
+            clickedContextMenuItem()
+            break
+          case "delete-rows":
+            console.log(payload)
+            clickedContextMenuItem()
+            break
+          case "resume":
+            console.log(payload)
+            clickedContextMenuItem()
+            break
+          case "stop-downloads":
+            console.log(payload)
+            clickedContextMenuItem()
+            break
+          case "open-folders":
+            console.log(payload)
+            clickedContextMenuItem()
+            break
+          case "open-options":
+            console.log("open options")
+            clickedContextMenuItem()
+            break
+          case "add-scheduler":
+            console.log(payload)
+            clickedContextMenuItem()
+            break
+          default:
+            return undefined
+        }
+      }
+      else {
+        // complex actions with data
+        switch (payload.action) {
+          case "delete-selected":
+            console.log(payload)
+            break
+          case "stop-selected":
+            console.log(payload)
+            break
+          case "resume-selected":
+            console.log(payload)
+            break
+          case "open-folders":
+            console.log(payload)
+            break
+        }
+      }
+    })
+    
+  }, [])
+  
   useEffect(() => {
     //for get session data in start app
     setTimeout(async () => {
@@ -153,17 +227,25 @@ const Main = () => {
   
   
   const rowSelectedHandler = (selectionModel: GridRowSelectionModel) => {
-    
+    setRowSelectionModel(selectionModel)
     const selectedDetails = rows.filter((row) => selectionModel.includes(row.Id!))
     setSelectedRows(selectedDetails)
   }
   
+  const handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault()
+    event.stopPropagation()
+    window.electronAPI.showContextMenu(selectedRows)
+  }
+  
   return (
-    <div className={styles.container}>
+    <div className={styles.container}
+         onContextMenu={(e) => handleContextMenu(e)}>
       <DataGrid
         getRowId={(row) => row.Id!}
         scrollbarSize={1}
         checkboxSelection
+        rowSelectionModel={rowSelectionModel}
         onRowSelectionModelChange={rowSelectedHandler}
         rows={rows}
         columns={columns}

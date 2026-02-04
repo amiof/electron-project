@@ -46,3 +46,14 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
     popupWindow = null
   })
 }
+
+
+export const iconPathContextMenu = (iconName: string) => {
+  
+  if (process.env.NODE_ENV === "development") {
+    return path.join(__dirname, "..", "..", "..", "assets", `${iconName}`)
+  }
+  else {
+    return path.join(process.resourcesPath, "assets", `${iconName}`)
+  }
+}

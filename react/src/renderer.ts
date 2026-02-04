@@ -18,6 +18,10 @@ export interface IElectronAPI {
   setActiveDownloadData: (data: TtellRes) => void
   getActiveDownloadData: () => Promise<TtellRes[]>
   onDataChange: (callback: (response: Promise<TtellRes>) => void) => void;
+  onContextMenuAction: (callback: (action: string | {
+    action: string;
+    [key: string]: unknown
+  }) => void) => Promise<unknown>
   getDownloadedFilesDetails: () => Promise<TFileDetails[]>
   addLinkToDB: (downloadRow: TtellRes) => Promise<unknown>
   updateDownloadRowStatus: (gid: string, downloadRow: TtellRes) => Promise<TtellRes>
@@ -41,6 +45,7 @@ export interface IElectronAPI {
   getTorrentConfig: () => Promise<TTorrentConfig>,
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>,
   getMetadataUrls: (url: string) => Promise<resMetadataUrls>,
+  showContextMenu: (selectedItems: [] | TDownloads[]) => Promise<unknown>,
   
 }
 

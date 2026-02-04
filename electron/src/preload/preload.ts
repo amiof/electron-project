@@ -58,6 +58,8 @@ interface ElectronAPI {
   getTorrentConfig: () => Promise<TTorrentConfig>,
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>,
   getMetadataUrls: (url: string) => Promise<unknown>,
+  showContextMenu: (id: string) => Promise<unknown>,
+  onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => Promise<any>
   
 }
 
@@ -81,7 +83,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   tellWaiting: () => ipcRenderer.invoke("tell-waiting"),
   
   //popup
-  openOptionsPopup: (id: string) => ipcRenderer.invoke("open-options-popup", id),
+  openOptionsPopup: (id: string) => ipcRenderer.send("open-options-popup", id),
   
   // update main window in start download
   setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),
@@ -97,12 +99,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getCompletedRowFromDB: () => ipcRenderer.invoke("get-completed-row-from-db"),
   
   //action handler
-  stopDownloadByGid: (gid: string) => ipcRenderer.invoke("stop-download-by-gid", gid),
+  stopDownloadByGid: (gid: string) => ipcRenderer.send("stop-download-by-gid", gid),
   unPauseAll: () => ipcRenderer.invoke("unpause-all"),
   unPauseByGid: (gid: string) => ipcRenderer.send("unpause-By-gid", gid),
   stopAllDownloads: () => ipcRenderer.send("stop-allDownloads"),
   removeDownloadByGid: (gid: string) => ipcRenderer.send("remove-download-by-gid", gid),
-  removeSelectedDownloads: (gidList: string[]) => ipcRenderer.invoke("remove-selected-downloads", gidList),
+  removeSelectedDownloads: (gidList: string[]) => ipcRenderer.send("remove-selected-downloads", gidList),
   openFolder: (path: string) => ipcRenderer.send("open-folder", path),
   
   //config
@@ -118,7 +120,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
   
   //utils
   showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes),
-  getMetadataUrls: (url: string) => ipcRenderer.invoke("get-metadata-urls", url)
-  
+  getMetadataUrls: (url: string) => ipcRenderer.invoke("get-metadata-urls", url),
+  showContextMenu: (id: string) => ipcRenderer.invoke("show-context-menu", id),
+  onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => {
+    ipcRenderer.on("context-menu-action", (_event, payload) => callback(payload))
+  }
   
 })

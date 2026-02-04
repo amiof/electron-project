@@ -14,6 +14,7 @@ import { ipcUtilsHandler } from "./ipc/utils/utils"
 export let mainWindow: BrowserWindow | null
 
 checkSessionExists()
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1050,
@@ -35,6 +36,8 @@ function createWindow() {
     // In development, load the React dev server.
     mainWindow.loadURL("http://localhost:3000")
     // mainWindow.webContents.openDevTools();
+    const iconPath = path.join(__dirname, "..", "..", "assets", "icon.png")
+    mainWindow.setIcon(iconPath)
   }
   else {
     
