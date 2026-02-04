@@ -7,6 +7,7 @@ import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { useEffect, useState } from "react"
 import { formatBytes } from "@src/utils.ts"
 import * as _ from "lodash"
+import clsx from "clsx"
 
 const Header = () => {
   const tellActive = useDownloaderStore(state => state.tellActive)
@@ -58,10 +59,15 @@ const Header = () => {
       <div className={styles.speedTest}>
         <SpeedIcon fontSize={"large"} />
         <div className={styles.textSpeed}>
-          <span><StraightOutlinedIcon
-            className={"mb-3"} /> {tellActive.length ? formatBytes(+downloadSpeed) : `0 kB`}</span>
-          <span><StraightOutlinedIcon
-            className={"mb-2 rotate-180"} /> {tellActive.length ? formatBytes(+uploadSpeed) : `0 kB`}</span>
+          <span>
+            <StraightOutlinedIcon fontSize={"small"}
+                                  className={clsx("mb-1 rotate-180", tellActive.length && "text-green-500")} />
+            {tellActive.length ? formatBytes(+downloadSpeed) : `0 KB`}
+          </span>
+          <span>
+            <StraightOutlinedIcon fontSize={"small"} className={clsx("mb-1", tellActive.length && "text-red-500")} />
+            {tellActive.length ? formatBytes(+uploadSpeed) : `0 KB`}
+          </span>
         </div>
       </div>
       

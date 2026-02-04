@@ -9,11 +9,12 @@
 
 .speedTest {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
   .textSpeed {
     span {
+      font-size: 0.82rem;
       margin-inline-start: 15px;
     }
   }

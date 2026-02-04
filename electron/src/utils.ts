@@ -5,46 +5,50 @@ import * as fsnp from "fs"
 import { TFileDetails } from "./types"
 import { app } from "electron"
 import { exec } from "node:child_process"
+import { electronStore } from "./store/electronStore"
+
+const basePathSelected = electronStore.get("selectedStorageDirectory")
 
 export const checkAndCreateFolder = async () => {
   
   try {
+    
     
     let target: string[]
     const platform = process.platform
     let basePath: string
     switch (platform) {
       case "win32":
-        basePath = app.getPath("downloads")
+        basePath = basePathSelected ?? app.getPath("downloads")
         target = [
-          path.join(basePath, "AMDownloader", "compressed"),
-          path.join(basePath, "AMDownloader", "musics"),
-          path.join(basePath, "AMDownloader", "videos"),
-          path.join(basePath, "AMDownloader", "images"),
-          path.join(basePath, "AMDownloader", "documents"),
-          path.join(basePath, "AMDownloader", "other")
+          path.join(basePath, "Shabdiz-DM", "compressed"),
+          path.join(basePath, "Shabdiz-DM", "musics"),
+          path.join(basePath, "Shabdiz-DM", "videos"),
+          path.join(basePath, "Shabdiz-DM", "images"),
+          path.join(basePath, "Shabdiz-DM", "documents"),
+          path.join(basePath, "Shabdiz-DM", "other")
         ]
         break
       case "linux":
-        basePath = os.homedir()
+        basePath = basePathSelected ?? os.homedir()
         target = [
-          path.join(basePath, "AMDownloader", "compressed"),
-          path.join(basePath, "AMDownloader", "musics"),
-          path.join(basePath, "AMDownloader", "videos"),
-          path.join(basePath, "AMDownloader", "images"),
-          path.join(basePath, "AMDownloader", "documents"),
-          path.join(basePath, "AMDownloader", "other")
+          path.join(basePath, "Shabdiz-DM", "compressed"),
+          path.join(basePath, "Shabdiz-DM", "musics"),
+          path.join(basePath, "Shabdiz-DM", "videos"),
+          path.join(basePath, "Shabdiz-DM", "images"),
+          path.join(basePath, "Shabdiz-DM", "documents"),
+          path.join(basePath, "Shabdiz-DM", "other")
         ]
         break
       case "darwin":
-        basePath = os.homedir()
+        basePath = basePathSelected ?? os.homedir()
         target = [
-          path.join(basePath, "AMDownloader", "compressed"),
-          path.join(basePath, "AMDownloader", "musics"),
-          path.join(basePath, "AMDownloader", "videos"),
-          path.join(basePath, "AMDownloader", "images"),
-          path.join(basePath, "AMDownloader", "documents"),
-          path.join(basePath, "AMDownloader", "other")
+          path.join(basePath, "Shabdiz-DM", "compressed"),
+          path.join(basePath, "Shabdiz-DM", "musics"),
+          path.join(basePath, "Shabdiz-DM", "videos"),
+          path.join(basePath, "Shabdiz-DM", "images"),
+          path.join(basePath, "Shabdiz-DM", "documents"),
+          path.join(basePath, "Shabdiz-DM", "other")
         ]
         break
       default:
@@ -120,22 +124,22 @@ export const directionFolder = (url: string) => {
     switch (platform) {
       case "win32":
         
-        basePath = app.getPath("downloads")
-        direction = path.join(basePath, "AMDownloader", folderName)
+        basePath = basePathSelected ?? app.getPath("downloads")
+        direction = path.join(basePath, "Shabdiz-DM", folderName)
         
         break
       
       case "linux":
         
-        basePath = os.homedir()
-        direction = path.join(basePath, "AMDownloader", folderName)
+        basePath = basePathSelected ?? os.homedir()
+        direction = path.join(basePath, "Shabdiz-DM", folderName)
         
         break
       
       case "darwin":
         
-        basePath = os.homedir()
-        direction = path.join(basePath, "AMDownloader", folderName)
+        basePath = basePathSelected ?? os.homedir()
+        direction = path.join(basePath, "Shabdiz-DM", folderName)
         
         break
       
@@ -203,24 +207,24 @@ export const savedPath = () => {
     const folders = ["compressed", "musics", "videos", "images", "documents", "other"]
     switch (platform) {
       case "win32":
-        basePath = app.getPath("downloads")
+        basePath = basePathSelected ?? app.getPath("downloads")
         folders.map(folder => {
-          const route = path.join(basePath, "AMDownloader", folder)
+          const route = path.join(basePath, "Shabdiz-DM", folder)
           target.push(route)
         })
         break
       case "linux":
-        basePath = os.homedir()
+        basePath = basePathSelected ?? os.homedir()
         
         folders.map(folder => {
-          const route = path.join(basePath, "AMDownloader", folder)
+          const route = path.join(basePath, "Shabdiz-DM", folder)
           target.push(route)
         })
         break
       case "darwin":
-        basePath = os.homedir()
+        basePath = basePathSelected ?? os.homedir()
         folders.map(folder => {
-          const route = path.join(basePath, "AMDownloader", folder)
+          const route = path.join(basePath, "Shabdiz-DM", folder)
           target.push(route)
         })
         break
@@ -239,7 +243,7 @@ export const savedPath = () => {
 
 
 export const getSessionPath = () => {
-  return path.join(app.getPath("userData"), "AMDownloader", "aria2.session")
+  return path.join(app.getPath("userData"), "Shabdiz-data", "aria2.session")
 }
 
 export const checkSessionExists = () => {
@@ -330,3 +334,34 @@ export const openFileExplorer = (directoryPath: string) => {
     console.log(`File explorer opened successfully: ${stdout}`)
   })
 }
+
+// get name from header of a link
+export const extractFilenameFromDisposition = (headerValue: string | null) => {
+  if (!headerValue) return null
+  
+  // First, try the modern filename* (RFC 5987 encoded)
+  // filename*=UTF-8''encoded%20name.ext  or  filename*=utf-8''encoded-name
+  const encodedMatch = headerValue.match(/filename\*=(UTF-8''|[^']*'')[^;]*/i)
+  if (encodedMatch) {
+    const encoded = encodedMatch[0].split(/''/, 2)[1] // get part after ''
+    try {
+      return decodeURIComponent(encoded)
+    }
+    catch (e) {
+      // fallback if decode fails
+    }
+  }
+  
+  // Then try regular filename="..." or filename=...
+  const filenameMatch = headerValue.match(/filename="?([^";]+)"?/i)
+  if (filenameMatch && filenameMatch[1]) {
+    return filenameMatch[1].trim()
+  }
+  
+  return null
+}
+
+export const generateId = () => {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+}
+

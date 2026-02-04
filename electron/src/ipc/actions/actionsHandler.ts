@@ -7,7 +7,7 @@ import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 export const ipcActionsHandler = () => {
   
-  ipcMain.handle(ACTIONS_CHANNELS.STOP_DOWNLOAD_BY_GID, async (_: IpcMainInvokeEvent, gid: string) => {
+  ipcMain.on(ACTIONS_CHANNELS.STOP_DOWNLOAD_BY_GID, async (_: IpcMainInvokeEvent, gid: string) => {
     return await aria2.sendAria2cRequest("pause", [gid])
     
   })
@@ -36,6 +36,8 @@ export const ipcActionsHandler = () => {
   ipcMain.on(ACTIONS_CHANNELS.REMOVE_DOWNLOAD_BY_GID, async (event: IpcMainEvent, gid: string) => {
     try {
       await DataSourceRepo.getRepository("downloads").delete({ gid: gid })
+      await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
+      await aria2.sendAria2cRequest("remove", [gid])
       await aria2.sendAria2cRequest("removeDownloadResult", [gid])
       
     }
@@ -47,5 +49,18 @@ export const ipcActionsHandler = () => {
     openFileExplorer(path)
   })
   
+  ipcMain.on(ACTIONS_CHANNELS.REMOVE_SELECTED_DOWNLOADS, async (event, gidList: string[]) => {
+    try {
+      for (const gid of gidList) {
+        await DataSourceRepo.getRepository("downloads").delete({ gid: gid })
+        await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
+        await aria2.sendAria2cRequest("remove", [gid])
+        await aria2.sendAria2cRequest("removeDownloadResult", [gid])
+      }
+    }
+    catch (error) {
+      console.error(error)
+    }
+  })
   
 }

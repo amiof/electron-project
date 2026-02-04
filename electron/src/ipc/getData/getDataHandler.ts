@@ -4,36 +4,54 @@ import { GET_DATA_CHANNELS } from "../channels"
 import { aria2, mainWindow } from "../../main"
 import { getFilesInDirectory } from "../../utils"
 import { TtellRes } from "../../types"
+import { InsertResult } from "typeorm"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 let activeData: any[] = []
 
 
-const ipcGetdataHanlder = () => {
+const ipcGetDataHandler = () => {
   
   ipcMain.handle(GET_DATA_CHANNELS.GET_DOWNLOADS, async (event: IpcMainInvokeEvent) => {
     try {
-      return await DataSourceRepo.getRepository("downloads").find()
+      const downloads = await DataSourceRepo.getRepository("downloads").find()
+      const torrents = await DataSourceRepo.getRepository("torrents").findBy({ status: "complete" })
+      
+      return [...downloads, ...torrents]
     }
     catch (error) {
       throw new Error("Error while getting downloads")
     }
   })
+  
   ipcMain.handle(GET_DATA_CHANNELS.ADD_LINK_TO_DB, async (event: IpcMainInvokeEvent, downloadRow: TtellRes) => {
     try {
-      const result = await DataSourceRepo.getRepository("downloads").insert(downloadRow)
+      let result: InsertResult
+      if ("infoHash" in downloadRow) {
+        result = await DataSourceRepo.getRepository("torrents").insert({ downloadRow })
+      }
+      else {
+        result = await DataSourceRepo.getRepository("downloads").insert(downloadRow)
+      }
       return result
     }
     catch (error) {
       console.log(error)
-      
     }
   })
+  
   ipcMain.handle(GET_DATA_CHANNELS.UPDATE_DOWNLOAD_ROW_STATUS, async (event: IpcMainInvokeEvent, gid: string, downloadRow: TtellRes) => {
     try {
-      await DataSourceRepo.getRepository("downloads").createQueryBuilder().delete().where("gid = :gid", { gid: gid }).execute()
-      return await DataSourceRepo.getRepository("downloads").insert(downloadRow)
-      
+      let result: InsertResult
+      if ("infoHash" in downloadRow) {
+        await DataSourceRepo.getRepository("torrents").createQueryBuilder().delete().where("gid = :gid", { gid: gid }).execute()
+        result = await DataSourceRepo.getRepository("torrents").insert(downloadRow)
+      }
+      else {
+        await DataSourceRepo.getRepository("downloads").createQueryBuilder().delete().where("gid = :gid", { gid: gid }).execute()
+        result = await DataSourceRepo.getRepository("downloads").insert(downloadRow)
+      }
+      return result
     }
     catch (error) {
       console.log(error)
@@ -42,7 +60,9 @@ const ipcGetdataHanlder = () => {
   
   ipcMain.handle(GET_DATA_CHANNELS.GET_COMPLETED_ROW_FROM_DB, async (event: IpcMainInvokeEvent) => {
     try {
-      return await DataSourceRepo.getRepository("downloads").findBy({ status: "complete" })
+      const downloadComplated = await DataSourceRepo.getRepository("downloads").findBy({ status: "complete" })
+      const torrentsComplated = await DataSourceRepo.getRepository("torrents").findBy({ status: "complete" })
+      return [...downloadComplated, ...torrentsComplated]
       
     }
     catch (error) {
@@ -86,4 +106,4 @@ const ipcGetdataHanlder = () => {
   })
   
 }
-export default ipcGetdataHanlder
+export default ipcGetDataHandler

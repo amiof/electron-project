@@ -17,12 +17,12 @@ export type TUri = {
   uri: string
 }
 export type Tfile = {
-  "completedLength": string,
-  "index": string,
-  "length": string,
-  "path": string,
-  "selected": string,
-  "uris": TUri[]
+  completedLength: string,
+  index: string,
+  length: string,
+  path: string,
+  selected: string,
+  uris: TUri[]
   
 }
 
@@ -36,21 +36,50 @@ export enum STATUS_TYPE {
 }
 
 export type TtellRes = {
-  bitfield: string
+  bittorrent?: {
+    announceList: string[][]
+  },
+  bitfield?: string
   completedLength: string
   connections: string
   dir: string
   downloadSpeed: string
-  errorCode: string
-  errorMessage: string
+  errorCode?: string
+  errorMessage?: string
   files: Tfile[]
+  numSeeders?: string
+  seeder?: string
+  infoHash?: string
   gid: string
-  "numPieces": string
-  "pieceLength": string
-  "status": STATUS_TYPE
-  "totalLength": string
-  "uploadLength": string
+  numPieces: string
+  pieceLength: string
+  status: STATUS_TYPE
+  totalLength: string
+  uploadSpeed?: string
+  uploadLength: string
 }
+
+// export type TTorrentRes = {
+//   bittorrent: {
+//     announceList: string[][]
+//   },
+//   completedLength: string
+//   connections: string
+//   dir: string
+//   downloadSpeed: string
+//   files: Tfile[]
+//   gid: string
+//   infoHash: string
+//   numPieces: string
+//   numSeeders: string
+//   pieceLength: string
+//   seeder: string
+//   status: STATUS_TYPE
+//   totalLength: string
+//   uploadLength: string
+//   uploadSpeed: string
+// }
+//
 
 export type TGetGlobalStateResponse = {
   downloadSpeed: string
@@ -71,3 +100,10 @@ export type TFileDetails = {
   isDirectory: boolean;
 }
 
+export type resMetadataUrls = {
+  fileName: string | null,
+  size: string | null,
+  typeUrl: "direct" | "torrent" | "magnet",
+  savePath: string
+  resume: boolean | null
+}

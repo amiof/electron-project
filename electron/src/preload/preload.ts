@@ -1,5 +1,13 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
-import { STATUS_TYPE, TtellRes } from "../types"
+import {
+  STATUS_TYPE,
+  TAria2Config,
+  TNotificationDetailes,
+  TOptionsConfig,
+  TProxyConfig,
+  TtellRes,
+  TTorrentConfig
+} from "../types"
 
 interface Aria2cResponse {
   jsonrpc: "2.0";
@@ -13,7 +21,7 @@ interface Aria2cResponse {
 
 // Define a type for the exposed API in the renderer
 interface ElectronAPI {
-  addDownloadDir: (url: string, dir?: string) => void;
+  addDownloadDir: (url: string, dir?: string, outFileName?: string, proxyConfig?: TProxyConfig | null, options?: TOptionsConfig | null) => void;
   onAria2cResponse: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
   removeAria2cListener: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void;
   getTellStatus: (gid: string) => Promise<unknown>,
@@ -36,7 +44,23 @@ interface ElectronAPI {
   unPauseByGid: (gid: string) => void,
   stopAllDownloads: () => void,
   removeDownloadByGid: (gid: string) => void
+  removeSelectedDownloads: (gidList: string[]) => void,
   openFolder: (path: string) => void
+  openOptionsPopup: (id: string) => Promise<unknown>,
+  setProxyConfig: (config: TProxyConfig) => Promise<unknown>,
+  getProxyConfig: () => Promise<unknown>,
+  setAria2Config: (config: TAria2Config) => Promise<unknown>,
+  getAria2Config: () => Promise<unknown>,
+  selectStorageDirectory: () => Promise<unknown>,
+  getSelectedStorageDirectory: () => Promise<string>,
+  setSelectedStorageDirectory: (basePath: string) => Promise<void>,
+  showNotification: (notif: TNotificationDetailes) => Promise<void>,
+  getTorrentConfig: () => Promise<TTorrentConfig>,
+  setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>,
+  getMetadataUrls: (url: string) => Promise<unknown>,
+  showContextMenu: (id: string) => Promise<unknown>,
+  onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => Promise<any>
+  
 }
 
 declare global {
@@ -47,7 +71,7 @@ declare global {
 
 // Expose only specific functions to the renderer process
 contextBridge.exposeInMainWorld("electronAPI", {
-  addDownloadDir: async (url: string, dir?: string) => await ipcRenderer.invoke("add-download-dir", url, dir),
+  addDownloadDir: async (url: string, dir?: string, outFileName?: string, proxyConfig?: TProxyConfig | null, options?: TOptionsConfig | null) => await ipcRenderer.invoke("add-download-dir", url, dir, outFileName, proxyConfig, options),
   getDownloads: () => ipcRenderer.invoke("get-downloads"),
   addLinkPopup: (id: string) => ipcRenderer.send("add-link-popup", id),
   closePopupWindow: (id: string) => ipcRenderer.send("close-popup", id),
@@ -57,6 +81,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   tellActive: () => ipcRenderer.invoke("tell-active"),
   tellStopped: () => ipcRenderer.invoke("tell-stoped"),
   tellWaiting: () => ipcRenderer.invoke("tell-waiting"),
+  
+  //popup
+  openOptionsPopup: (id: string) => ipcRenderer.send("open-options-popup", id),
   
   // update main window in start download
   setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),
@@ -70,11 +97,33 @@ contextBridge.exposeInMainWorld("electronAPI", {
   addLinkToDB: (downloadRow: TtellRes) => ipcRenderer.invoke("add-link-to-db", downloadRow),
   updateDownloadRowStatus: (gid: string, downloadRow: STATUS_TYPE) => ipcRenderer.invoke("update-downloadRow-status", gid, downloadRow),
   getCompletedRowFromDB: () => ipcRenderer.invoke("get-completed-row-from-db"),
+  
   //action handler
-  stopDownloadByGid: (gid: string) => ipcRenderer.invoke("stop-download-by-gid", gid),
+  stopDownloadByGid: (gid: string) => ipcRenderer.send("stop-download-by-gid", gid),
   unPauseAll: () => ipcRenderer.invoke("unpause-all"),
   unPauseByGid: (gid: string) => ipcRenderer.send("unpause-By-gid", gid),
   stopAllDownloads: () => ipcRenderer.send("stop-allDownloads"),
   removeDownloadByGid: (gid: string) => ipcRenderer.send("remove-download-by-gid", gid),
-  openFolder: (path: string) => ipcRenderer.send("open-folder", path)
+  removeSelectedDownloads: (gidList: string[]) => ipcRenderer.send("remove-selected-downloads", gidList),
+  openFolder: (path: string) => ipcRenderer.send("open-folder", path),
+  
+  //config
+  setProxyConfig: (config: TProxyConfig) => ipcRenderer.invoke("set-proxy-config", config),
+  getProxyConfig: () => ipcRenderer.invoke("get-proxy-config"),
+  setAria2Config: (config: TAria2Config) => ipcRenderer.invoke("set-aria2-config", config),
+  getAria2Config: () => ipcRenderer.invoke("get-aria2-config"),
+  selectStorageDirectory: () => ipcRenderer.invoke("select-storage-dir"),
+  getSelectedStorageDirectory: () => ipcRenderer.invoke("get-selected=storage-config-dir"),
+  setSelectedStorageDirectory: (basePath: string) => ipcRenderer.invoke("set-selected-storage-directory", basePath),
+  getTorrentConfig: () => ipcRenderer.invoke("get-torrents-config"),
+  setTorrentConfig: (config: TTorrentConfig) => ipcRenderer.invoke("set-torrents-config", config),
+  
+  //utils
+  showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes),
+  getMetadataUrls: (url: string) => ipcRenderer.invoke("get-metadata-urls", url),
+  showContextMenu: (id: string) => ipcRenderer.invoke("show-context-menu", id),
+  onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => {
+    ipcRenderer.on("context-menu-action", (_event, payload) => callback(payload))
+  }
+  
 })
