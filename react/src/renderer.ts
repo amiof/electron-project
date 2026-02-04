@@ -46,6 +46,7 @@ export interface IElectronAPI {
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>,
   getMetadataUrls: (url: string) => Promise<resMetadataUrls>,
   showContextMenu: (selectedItems: [] | TDownloads[]) => Promise<unknown>,
+  readClipboard: () => Promise<string>
   
 }
 

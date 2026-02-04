@@ -31,6 +31,13 @@ const AddLinkTab = () => {
   
   // add default save Path
   useEffect(() => {
+    
+    // read link from clipboard
+    (async () => {
+      const clipboardLink = await window.electronAPI.readClipboard()
+      setLinkAddress(clipboardLink)
+    })()
+    
     if (savePathStore) {
       setMetadataUrl({ ...metadataUrl, savePath: savePathStore })
     }

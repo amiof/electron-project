@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, Menu, Notification } from "electron"
+import { BrowserWindow, clipboard, ipcMain, Menu, Notification } from "electron"
 import { ACTIONS_CHANNELS, POPUP_CHANNELS, UTILS_CHANNELS } from "../channels"
 import { resMetadataUrls, STATUS_TYPE, TDownloads, TNotificationDetailes } from "../../types"
 import { directionFolder, extractFilenameFromDisposition, generateId } from "../../utils"
@@ -233,6 +233,15 @@ export const ipcUtilsHandler = () => {
     })
     
   })
- 
+  
+  ipcMain.handle(UTILS_CHANNELS.READ_CLIPBOARD, () => {
+    const text = clipboard.readText()
+    
+    if (text.startsWith("http://") || text.startsWith("https://") || text.startsWith("magnet:")) {
+      return text
+    }
+    return null
+  })
+  
   
 }

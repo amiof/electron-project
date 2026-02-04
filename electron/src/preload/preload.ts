@@ -60,6 +60,7 @@ interface ElectronAPI {
   getMetadataUrls: (url: string) => Promise<unknown>,
   showContextMenu: (id: string) => Promise<unknown>,
   onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => Promise<any>
+  readClipboard: () => Promise<string>
   
 }
 
@@ -124,6 +125,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   showContextMenu: (id: string) => ipcRenderer.invoke("show-context-menu", id),
   onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => {
     ipcRenderer.on("context-menu-action", (_event, payload) => callback(payload))
-  }
+  },
+  readClipboard: () => ipcRenderer.invoke("read-clipboard")
   
 })
