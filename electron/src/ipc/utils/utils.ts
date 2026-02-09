@@ -3,7 +3,7 @@ import { ACTIONS_CHANNELS, POPUP_CHANNELS, UTILS_CHANNELS } from "../channels"
 import { resMetadataUrls, STATUS_TYPE, TDownloads, TNotificationDetailes } from "../../types"
 import { directionFolder, extractFilenameFromDisposition, generateId } from "../../utils"
 import { createPopupWindow, iconPathContextMenu } from "../utils"
-import { mainWindow } from "../../main"
+import { aria2, mainWindow } from "../../main"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 export const ipcUtilsHandler = () => {
@@ -37,7 +37,31 @@ export const ipcUtilsHandler = () => {
     }
     
     if (url.startsWith("magnet:")) {
+      
       urlResponse.typeUrl = "magnet"
+      let downloadedMetadata: boolean = false
+      
+      const download = async () => {
+        const resAdduri = await aria2.sendAria2cRequest("addUri", [[url], {
+          "bt-metadata-only": true,
+          "bt-save-metadata": true,
+          "pause": true
+        }]) as string
+        
+        console.log("%c 1 --> Line: 46||utils.ts\n res: ", "color:#f0f;", resAdduri)
+        
+        if (resAdduri) {
+          downloadedMetadata = true
+        }
+        
+        
+        setTimeout(async () => {
+          const res = await aria2.sendAria2cRequest("tellStatus", [resAdduri, ["name", "files", "status"]])
+          console.log("%c 1 --> Line: 58||utils.ts\n res: ", "color:#f0f;", res)
+        }, 1000)
+      }
+      
+      
     }
     
     try {
@@ -50,7 +74,10 @@ export const ipcUtilsHandler = () => {
       const acceptRanges = response.headers.get("Accept-ranges")
       
       urlResponse.size = contentLength
-      urlResponse.fileName = fileName
+      
+      if (!url.startsWith("magnet:")) {
+        urlResponse.fileName = fileName
+      }
       
       if (fileName?.endsWith(".torrent") || url.startsWith(".torrent") ||
         contentType.includes("application/x-bittorrent") ||
