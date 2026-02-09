@@ -15,16 +15,29 @@ export let mainWindow: BrowserWindow | null
 
 checkSessionExists()
 
+const iconPath = () => {
+  if (process.platform === "win32") {
+    return path.join(process.resourcesPath, "assets", "icons", "icon.ico")
+  }
+  else if (process.platform === "darwin") {
+    return path.join(process.resourcesPath, "assets", "icons", "icon.icns")
+  }
+  else if (process.platform === "linux") {
+    return path.join(process.resourcesPath, "assets", "icons", "512x512.png")
+  }
+}
+
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1050,
+    width: 1000,
     title: "shabdiz",
     height: 500,
     autoHideMenuBar: true,
-    minWidth: 1000,
+    minWidth: 980,
     minHeight: 500,
     resizable: true,
-    icon:path.join(__dirname,"..","..","assets","icon.ico"),
+    icon: iconPath(),
     webPreferences: {
       preload: path.join(__dirname, "preload", "preload.js"),
       contextIsolation: true, // Crucial for security
@@ -32,17 +45,18 @@ function createWindow() {
     }
   })
   
+  mainWindow.setContentSize(1000, 500, true)
   if (process.env.NODE_ENV === "development") {
     // In development, load the React dev server.
     mainWindow.loadURL("http://localhost:3000")
     // mainWindow.webContents.openDevTools();
-    const iconPath = path.join(__dirname, "..", "..", "assets", "icon.png")
+    const iconPath = path.join(__dirname, "..", "..", "assets", "icons", "512x512.png")
     mainWindow.setIcon(iconPath)
   }
   else {
     
     if (process.platform === "linux") {
-      const iconPath = path.join(process.resourcesPath, "assets", "icon.png")
+      const iconPath = path.join(process.resourcesPath, "assets", "icons", "512x512.png")
       mainWindow.setIcon(iconPath)
     }
     

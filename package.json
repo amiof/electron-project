@@ -13,12 +13,12 @@
     "package:linux": "npm run build && electron-builder --linux",
     "package:linux:rpm": "npm run build && electron-builder --linux rpm --x64",
     "package:win": "npm run build && electron-builder --win",
+    "package:mac:zip": "npm run build && electron-builder --mac=zip",
     "postinstall": "electron-builder install-app-deps",
-    "icon-flatten": "electron-icon-builder --input=/assets/icon_1024x1024.png --output=./build --flatten"
+    "icon-flatten": "electron-icon-builder --input=assets/source.png --output=./assets --flatten"
   },
   "build": {
     "appId": "com.yourapp.id",
-    "icon": "assets",
     "directories": {
       "app": "electron",
       "output": "release",
@@ -62,7 +62,7 @@
         }
       ],
       "identity": null,
-      "icon": "icon"
+      "icon": "icons"
     },
     "dmg": {
       "writeUpdateInfo": true
@@ -73,7 +73,7 @@
         "portable"
       ],
       "signExts": false,
-      "icon": "icon",
+      "icon": "icons",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "nsis": {
@@ -95,7 +95,7 @@
         "AppImage",
         "deb"
       ],
-      "icon": "assets/icon.png",
+      "icon": "icons",
       "category": "Network"
     }
   },

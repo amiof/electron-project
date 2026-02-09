@@ -28,6 +28,7 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
     }
   })
   
+  popupWindow.setContentSize(width, height, true)
   ipcMain.on(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, (event: IpcMainEvent, id: string) => {
     if (popupWindow && id === windowId) {
       popupWindow.close() // Close the popup window
