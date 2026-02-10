@@ -38,9 +38,10 @@ const StorageConf = (props: Props) => {
   }
   
   return (
-    <div className="flex justify-center items-center w-full h-full">
+    <div className="flex justify-center pt-12 w-full h-full">
       <TextField
         label="Storage Path"
+        size={"small"}
         value={basePath || ""}
         sx={{ width: "80%" }}
         InputProps={{

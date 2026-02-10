@@ -58,7 +58,7 @@ const ProxyConfig = (props: Props) => {
   }
   
   return (
-    <div className={"w-full h-full flex flex-col items-center justify-center relative"}>
+    <div className={"w-full h-full flex items-start pt-12 justify-center relative"}>
       <form onSubmit={submitHandler}>
         <FormControl className={"gap-6"}>
           <div className={"flex items-center"}>
@@ -72,6 +72,7 @@ const ProxyConfig = (props: Props) => {
           
           <TextField
             name="ip"
+            size={"small"}
             value={formValues.ip || ""}
             onChange={handleInputChange("ip")}
             placeholder="example: 127.0.0.1"
@@ -81,6 +82,7 @@ const ProxyConfig = (props: Props) => {
           
           <TextField
             name="port"
+            size={"small"}
             value={formValues.port || ""}
             onChange={handleInputChange("port")}
             label="Port"
@@ -91,6 +93,7 @@ const ProxyConfig = (props: Props) => {
           
           <TextField
             name="proxyUsername"
+            size={"small"}
             value={formValues.proxyUserName || ""}
             onChange={handleInputChange("proxyUserName")}
             label="Username"
@@ -100,6 +103,7 @@ const ProxyConfig = (props: Props) => {
           
           <TextField
             name="proxyPassword"
+            size={"small"}
             value={formValues.proxyPassword || ""}
             onChange={handleInputChange("proxyPassword")}
             label="Password"

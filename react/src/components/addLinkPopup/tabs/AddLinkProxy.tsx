@@ -78,6 +78,7 @@ const AddLinkProxy = () => {
           <div className={"flex gap-5"}>
             <TextField
               name="ip"
+              size={"small"}
               value={formValues.ip || ""}
               onChange={handleInputChange("ip")}
               placeholder="example: 127.0.0.1"
@@ -87,6 +88,7 @@ const AddLinkProxy = () => {
             
             <TextField
               name="port"
+              size={"small"}
               value={formValues.port || ""}
               onChange={handleInputChange("port")}
               label="Port"
@@ -100,6 +102,7 @@ const AddLinkProxy = () => {
           <div className={"flex gap-5"}>
             <TextField
               name="proxyUsername"
+              size={"small"}
               value={formValues.proxyUserName || ""}
               onChange={handleInputChange("proxyUserName")}
               label="Username"
@@ -109,6 +112,7 @@ const AddLinkProxy = () => {
             
             <TextField
               name="proxyPassword"
+              size={"small"}
               value={formValues.proxyPassword || ""}
               onChange={handleInputChange("proxyPassword")}
               label="Password"

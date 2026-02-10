@@ -11,7 +11,7 @@ import TorrentConf from "@components/toolbar/ToolbarPopups/torrentConf.tsx"
 
 
 const OptionsPopup = () => {
-  const [value, setValue] = useState<TOptionsTabs>("proxy")
+  const [value, setValue] = useState<TOptionsTabs>("aria2")
   
   const location = useLocation()
   const id = getIdFromLocation(location, ":")

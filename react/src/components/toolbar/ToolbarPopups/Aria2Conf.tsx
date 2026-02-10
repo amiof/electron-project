@@ -85,7 +85,7 @@ const Aria2Conf = ({ id }: Props) => {
   }
   
   return (
-    <div className="flex justify-center items-center w-full h-full">
+    <div className="flex justify-center pt-12 w-full h-full">
       <form onSubmit={submitHandler} className="w-[80%]">
         <FormControl className="w-full gap-4">
           {aria2Fields.map(field => (

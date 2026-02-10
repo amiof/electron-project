@@ -86,7 +86,7 @@ const TorrentConf = ({ id }: Props) => {
   }
   
   return (
-    <div className="flex justify-center items-center w-full h-[530px] overflow-y-scroll">
+    <div className="flex justify-center items-start pt-8 w-full h-[88%] overflow-y-scroll">
       <form onSubmit={submitHandler} className="w-[80%] h-full">
         <FormControl className="w-full gap-3">
           {torrentFields.map(field => (
