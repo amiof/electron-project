@@ -29,13 +29,24 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
     await get().getTellStopped()
     await get().getTellActive()
     await get().getTellWaiting()
+    await get().getDownloadedFilesDetails()
+    
     const tellActive = get().tellActive
     const tellWaiting = get().tellWaiting
     const tellStopped = get().tellStopped
+    
     const completedRowsFromDB = get().completedRowFromDB
+    const filteredCompletedStop: TtellRes[] = []
+    for (const stopItem of tellStopped) {
+      const isNotDouble = completedRowsFromDB.every(completedItem => completedItem.gid !== stopItem.gid)
+      if (isNotDouble) {
+        filteredCompletedStop.push(stopItem)
+      }
+    }
+    
     const downloadedFilesDetails = get().downloadedFilesDetails
     
-    const downloadsRows: TDownloads[] = [...tellStopped, ...tellWaiting, ...tellActive, ...completedRowsFromDB].map((download, index) => {
+    const downloadsRows: TDownloads[] = [...filteredCompletedStop, ...tellWaiting, ...tellActive, ...completedRowsFromDB].map((download, index) => {
       const fileName = getFileName(download.files[0].path)
       const fileCreateAte = downloadedFilesDetails?.[fileName]?.createdAt ? downloadedFilesDetails[fileName].createdAt : new Date()
       return {
@@ -58,7 +69,7 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
   },
   getCompletedRowFromDB: async () => {
     const result = await window.electronAPI.getCompletedRowFromDB()
-    set({ completedRowFromDB: [...result] })
+    set({ completedRowFromDB: result })
   },
   getTellActive: async () => {
     const tellActive = await window.electronAPI.tellActive()
@@ -117,6 +128,9 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
   
   setSidebarSelectedLabel: (label: string) => {
     set({ sidebarSelectedLabel: label })
+  },
+  refreshMainTableId: (id: string) => {
+    set({ mainTableId: id })
   }
 
 

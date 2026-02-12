@@ -1,7 +1,7 @@
 // import useDownloaderStore from "@src/store/downloaderStore"
 import styles from "./style.module.scss"
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid"
-import { MouseEvent, useEffect, useState } from "react"
+import { MouseEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TDownloads, TtellRes } from "@src/types.ts"
 import { ProgressBar } from "react-progressbar-fancy"
@@ -19,8 +19,19 @@ const Main = () => {
   const searchValue = useDownloaderStore(state => state.searchValue)
   const sidebarSelectedLabel = useDownloaderStore(state => state.sidebarSelectedLabel)
   const downloadsGroupingByLabel = useDownloaderStore(state => state.downloadsGroupByLabel)
+  const mainTableId = useDownloaderStore(state => state.mainTableId)
   
   const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
+  const prevMainTableId = useRef(mainTableId)
+  
+  
+  // for do not loop when switch between sidebar item when select item remove all item
+  useLayoutEffect(() => {
+    if (rowSelectionModel) {
+      setRowSelectionModel([])
+      setSelectedRows([])
+    }
+  }, [sidebarSelectedLabel])
   
   let dataGridRow: TDownloads[]
   
@@ -45,13 +56,6 @@ const Main = () => {
     setActiveDownloads(result)
   })
   
-  // remove selected item context menu and update main download list
-  const clickedContextMenuItem = () => {
-    getAllDownloads()
-    setRowSelectionModel([])
-    setSelectedRows([])
-  }
-  
   useEffect(() => {
     window.electronAPI.onContextMenuAction((payload) => {
       if (typeof payload === "string") {
@@ -59,35 +63,36 @@ const Main = () => {
         switch (payload) {
           case "add-link":
             console.log(payload)
-            clickedContextMenuItem()
+            setRowSelectionModel([])
+            setSelectedRows([])
             break
           case "reload-app":
             window.location.reload()
-            clickedContextMenuItem()
             break
           case "delete-rows":
             console.log(payload)
-            clickedContextMenuItem()
+            window.location.reload()
             break
           case "resume":
             console.log(payload)
-            clickedContextMenuItem()
+            getAllDownloads()
+            setRowSelectionModel([])
+            setSelectedRows([])
             break
           case "stop-downloads":
             console.log(payload)
-            clickedContextMenuItem()
+            window.location.reload()
             break
           case "open-folders":
             console.log(payload)
-            clickedContextMenuItem()
+            setRowSelectionModel([])
+            setSelectedRows([])
             break
           case "open-options":
             console.log("open options")
-            clickedContextMenuItem()
             break
           case "add-scheduler":
             console.log(payload)
-            clickedContextMenuItem()
             break
           default:
             return undefined
@@ -114,12 +119,22 @@ const Main = () => {
     
   }, [])
   
+  
+  //for refresh mainTable when i other component need refresh main table
+  useLayoutEffect(() => {
+    if (prevMainTableId.current !== mainTableId) {
+      window.location.reload()
+    }
+  }, [mainTableId])
+  
   useEffect(() => {
     //for get session data in start app
     setTimeout(async () => {
       await getAllDownloads()
     }, 1000)
+    
   }, [])
+  
   
   useEffect(() => {
     let interval: NodeJS.Timeout | null

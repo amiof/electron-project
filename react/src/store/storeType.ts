@@ -14,6 +14,7 @@ export type TDownloaderState = {
   searchValue: string
   sidebarSelectedLabel: string
   downloadsGroupByLabel: Record<string, TDownloads[]>
+  mainTableId: string
 }
 
 export type TDownloaderActions = {
@@ -30,6 +31,7 @@ export type TDownloaderActions = {
   setSelectedRow: (Rows: TDownloads[]) => void
   setSearchValue: (text: string) => void
   setSidebarSelectedLabel: (label: string) => void
+  refreshMainTableId: (id: string) => void
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions
 
