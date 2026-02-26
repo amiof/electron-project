@@ -21,11 +21,11 @@
     "clsx": "^2.1.1",
     "lodash": "^4.17.21",
     "react": "^18.3.1",
-    "react-circular-progressbar": "^2.2.0",
     "react-dom": "^18.3.1",
     "react-progressbar-fancy": "^1.1.4",
     "react-router-dom": "^7.3.0",
     "tailwindcss": "^4.0.5",
+    "uplot": "^1.6.32",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

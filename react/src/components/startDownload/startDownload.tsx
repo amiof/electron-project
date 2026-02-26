@@ -1,11 +1,10 @@
 import { useLocation } from "react-router-dom"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { useEffect, useState } from "react"
-import { STATUS_TYPE, TtellRes } from "@src/types.ts"
+import { TtellRes } from "@src/types.ts"
 import { formatBytes, formatTime, getIdFromLocation, isMetadataPhase, isTorrentMode } from "@src/utils.ts"
 import styles from "./style.module.scss"
 import BackDetails from "@components/startDownload/BackDetails.tsx"
-import FrontDetails from "@components/startDownload/FrontDetails.tsx"
 import clsx from "clsx"
 import FolderIcon from "@src/assets/folderIcon.tsx"
 import LinkIcon from "@src/assets/LinkIcon.tsx"
@@ -33,7 +32,6 @@ const DownloadStart = () => {
   const setDownloadDataToElectron = useDownloaderStore(state => state.setActiveDataToElectron)
   
   const [downloadStatus, setDownloadStatus] = useState<TtellRes | null>(null)
-  const [showMore, setShowMore] = useState<boolean>(false)
   
   const addLinkToDB = window.electronAPI.addLinkToDB
   const changeStatusDownload = window.electronAPI.updateDownloadRowStatus
@@ -42,7 +40,7 @@ const DownloadStart = () => {
   const remainingBytes = downloadStatus ? +downloadStatus.totalLength - Number(downloadStatus.completedLength) : 0
   const remainingSeconds = downloadStatus && +downloadStatus.downloadSpeed > 0 ? remainingBytes / Number(downloadStatus?.downloadSpeed) : Infinity
   
-  const completeDownload = downloadStatus?.status === STATUS_TYPE.COMPLETE
+  // const completeDownload = downloadStatus?.status === STATUS_TYPE.COMPLETE
   const getDownloadedFilesDetails = useDownloaderStore(state => state.getDownloadedFilesDetails)
   
   useEffect(() => {
@@ -93,12 +91,6 @@ const DownloadStart = () => {
     
   }, [tellActive.length])
   
-  
-  useEffect(() => {
-    if (completeDownload) {
-      setShowMore(true)
-    }
-  }, [completeDownload])
   
   
   const isMetaData = downloadStatus ? isMetadataPhase(downloadStatus) : true
@@ -163,13 +155,9 @@ const DownloadStart = () => {
   return (
     <div className={"w-full h-full flex justify-center items-center overflow-hidden "}>
       <div className={styles.container}>
-        <div className={clsx(styles.card, showMore && "rotate-x-180")}>
-          <div className={clsx(styles.front, " border border-neutral-800 rounded-4xl")}>
-            <FrontDetails details={details} isMetaData={isMetaData} isTorrent={isTorrent}
-                          downloadStatus={downloadStatus} setShowMore={setShowMore} />
-          </div>
+        <div className={clsx(styles.card)}>
           <div className={styles.back}>
-            <BackDetails details={details} downloadStatus={downloadStatus} setShowMore={setShowMore}
+            <BackDetails details={details} downloadStatus={downloadStatus}
                          isMetaData={isMetaData} isTorrent={isTorrent} />
           </div>
         </div>
