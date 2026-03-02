@@ -59,6 +59,7 @@ export const checkAndCreateFolder = async () => {
       catch (error) {
         await fs.mkdir(targetPath, { recursive: true })
         console.log("your  folder  created:", targetPath)
+        console.error("error", error)
       }
     }
   }
@@ -142,13 +143,13 @@ export const directionFolder = (url: string) => {
 export const getFilesInDirectory = (directoryPath?: string): TFileDetails[] => {
   const routes = directoryPath ? [directoryPath] : savedPath()
   try {
-    let filesDetails: TFileDetails[] = []
+    const filesDetails: TFileDetails[] = []
     routes.map((route) => {
       const files = fsnp.readdirSync(route)
       const dir = files.map((file) => {
         const filePath = path.join(route, file)
         const stats = fsnp.statSync(filePath)
-        
+
         return {
           name: file,
           path: filePath,
@@ -158,7 +159,7 @@ export const getFilesInDirectory = (directoryPath?: string): TFileDetails[] => {
           isDirectory: stats.isDirectory()
         }
       })
-      
+
       filesDetails.push(...dir)
     })
     return filesDetails
@@ -185,7 +186,7 @@ export const savedPath = () => {
         break
       case "linux":
         basePath = basePathSelected ?? os.homedir()
-        
+
         folders.map((folder) => {
           const route = path.join(basePath, "Shabdiz-DM", folder)
           target.push(route)
@@ -201,7 +202,7 @@ export const savedPath = () => {
       default:
         throw new Error("your platform not  supported")
     }
-    
+
     return target
   }
   catch (error) {
@@ -217,7 +218,7 @@ export const getSessionPath = () => {
 export const checkSessionExists = () => {
   const sessionPath = getSessionPath()
   const parentDir = path.dirname(sessionPath)
-  
+
   if (!fsnp.existsSync(parentDir)) {
     fsnp.mkdirSync(parentDir, { recursive: true }) // This creates the full path
   }
@@ -312,6 +313,7 @@ export const extractFilenameFromDisposition = (headerValue: string | null) => {
     }
     catch (e) {
       // fallback if decode fails
+      console.log("errro", e)
     }
   }
   

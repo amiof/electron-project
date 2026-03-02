@@ -28,7 +28,7 @@ const ipcDownloadHandler = () => {
         }
       }
       
-      let optionsConfig = {} as any
+      const optionsConfig = {} as any
       if (options) {
         const { referrer, header, cookie, userAgent } = options
         if (referrer) optionsConfig["referrer"] = referrer

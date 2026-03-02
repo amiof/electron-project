@@ -11,7 +11,7 @@ export const ipcUtilsHandler = () => {
     UTILS_CHANNELS.SHOW_NOTIFICATION,
     (_event: IpcMainInvokeEvent, notifDetailes: TNotificationDetailes) => {
       const { title, body } = notifDetailes
-      
+
       const notif = new Notification({
         title: title,
         body: body
@@ -28,7 +28,7 @@ export const ipcUtilsHandler = () => {
   )
 
   ipcMain.handle(UTILS_CHANNELS.GET_METADATA_URLS, async (_event: IpcMainInvokeEvent, url: string) => {
-    let urlResponse: resMetadataUrls = {
+    const urlResponse: resMetadataUrls = {
       fileName: null,
       size: null,
       typeUrl: "direct",
@@ -50,7 +50,7 @@ export const ipcUtilsHandler = () => {
 
       urlResponse.size = contentLength
       urlResponse.fileName = fileName
-      
+
       if (
         fileName?.endsWith(".torrent") ||
         url.startsWith(".torrent") ||

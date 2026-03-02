@@ -7,7 +7,7 @@ import { TtellRes } from "../../types"
 import { InsertResult } from "typeorm"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
-let activeData: any[] = []
+const activeData: any[] = []
 
 const ipcGetDataHandler = () => {
   ipcMain.handle(GET_DATA_CHANNELS.GET_DOWNLOADS, async (event: IpcMainInvokeEvent) => {
@@ -19,6 +19,7 @@ const ipcGetDataHandler = () => {
     }
     catch (error) {
       throw new Error("Error while getting downloads")
+      console.error(error)
     }
   })
 
