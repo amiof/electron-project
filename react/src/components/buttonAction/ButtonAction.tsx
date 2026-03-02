@@ -7,9 +7,7 @@ type Props = {
   action: (() => void) | undefined
 }
 
-
 const ButtonAction = (props: Props) => {
-  
   const { title, iconElement, action } = props
   
   return (

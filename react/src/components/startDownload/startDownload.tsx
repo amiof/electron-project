@@ -23,40 +23,41 @@ export type TDetails = {
 }
 
 const DownloadStart = () => {
-  
   const location = useLocation()
   const gid = getIdFromLocation(location, ":")
-  const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
-  const tellActive = useDownloaderStore(state => state.tellActive)
-  const getTellActive = useDownloaderStore(state => state.getTellActive)
-  const setDownloadDataToElectron = useDownloaderStore(state => state.setActiveDataToElectron)
-  
+  const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
+  const tellActive = useDownloaderStore((state) => state.tellActive)
+  const getTellActive = useDownloaderStore((state) => state.getTellActive)
+  const setDownloadDataToElectron = useDownloaderStore((state) => state.setActiveDataToElectron)
+
   const [downloadStatus, setDownloadStatus] = useState<TtellRes | null>(null)
-  
+
   const addLinkToDB = window.electronAPI.addLinkToDB
   const changeStatusDownload = window.electronAPI.updateDownloadRowStatus
-  const currentDownloadRow = tellActive.find(downloadRow => downloadRow.gid === gid)
-  
+  const currentDownloadRow = tellActive.find((downloadRow) => downloadRow.gid === gid)
+
   const remainingBytes = downloadStatus ? +downloadStatus.totalLength - Number(downloadStatus.completedLength) : 0
-  const remainingSeconds = downloadStatus && +downloadStatus.downloadSpeed > 0 ? remainingBytes / Number(downloadStatus?.downloadSpeed) : Infinity
-  
+  const remainingSeconds =
+    downloadStatus && +downloadStatus.downloadSpeed > 0
+      ? remainingBytes / Number(downloadStatus?.downloadSpeed)
+      : Infinity
+
   // const completeDownload = downloadStatus?.status === STATUS_TYPE.COMPLETE
-  const getDownloadedFilesDetails = useDownloaderStore(state => state.getDownloadedFilesDetails)
-  
+  const getDownloadedFilesDetails = useDownloaderStore((state) => state.getDownloadedFilesDetails)
+
   useEffect(() => {
     //for add create add in dataGrid
     getDownloadedFilesDetails()
   }, [])
-  
+
   useEffect(() => {
-    
     if (currentDownloadRow) {
-      (async () => {
+      ;(async () => {
         await addLinkToDB(currentDownloadRow)
       })()
     }
   }, [tellActive.length])
-  
+
   useEffect(() => {
     let interval: NodeJS.Timeout | null
     if (tellActive.length) {
@@ -65,11 +66,11 @@ const DownloadStart = () => {
         await getTellActive()
         setDownloadStatus(tellStatus)
       }, 400)
-      
+
       setDownloadDataToElectron(tellActive[0])
     }
     else {
-      (async () => {
+      ;(async () => {
         const tellStatus = await window.electronAPI.getTellStatus(gid)
         setDownloadStatus(tellStatus)
       })()
@@ -82,25 +83,23 @@ const DownloadStart = () => {
         setDownloadStatus(null)
       }
       //for update status in db when closed popup
-      (async () => {
+      ;(async () => {
         const tellStatus = await window.electronAPI.getTellStatus(gid)
         await changeStatusDownload(tellStatus.gid, tellStatus)
       })()
-      
     }
-    
   }, [tellActive.length])
-  
-  
   
   const isMetaData = downloadStatus ? isMetadataPhase(downloadStatus) : true
   const isTorrent = downloadStatus ? isTorrentMode(downloadStatus) : false
   
-  const isTorrentsDetails = isTorrent ? [
-    { label: "Number Seeders", value: downloadStatus?.numSeeders ?? "0", showDetails: false },
-    { label: "Upload", value: downloadStatus?.uploadLength ?? "0", showDetails: false }
-  ] as TDetails[] : [] as TDetails[]
-  
+  const isTorrentsDetails = isTorrent
+    ? ([
+      { label: "Number Seeders", value: downloadStatus?.numSeeders ?? "0", showDetails: false },
+      { label: "Upload", value: downloadStatus?.uploadLength ?? "0", showDetails: false }
+    ] as TDetails[])
+    : ([] as TDetails[])
+
   const details: TDetails[] = [
     {
       label: "Speed : ",
@@ -157,13 +156,16 @@ const DownloadStart = () => {
       <div className={styles.container}>
         <div className={clsx(styles.card)}>
           <div className={styles.back}>
-            <BackDetails details={details} downloadStatus={downloadStatus}
-                         isMetaData={isMetaData} isTorrent={isTorrent} />
+            <BackDetails
+              details={details}
+              downloadStatus={downloadStatus}
+              isMetaData={isMetaData}
+              isTorrent={isTorrent}
+            />
           </div>
         </div>
       </div>
     </div>
-  
   )
 }
 

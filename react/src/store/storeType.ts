@@ -51,7 +51,6 @@ export type TAria2Config = {
   dnsServer: string
   minSplitSize: string
   connectTimeout: string
-  
 }
 
 export type TNotificationDetailes = {
@@ -60,7 +59,7 @@ export type TNotificationDetailes = {
 }
 
 export type TTorrentConfig = {
-  enableDht: boolean,
+  enableDht: boolean
   enableDht6: boolean
   enableLpd: boolean
   enablePeerExchange: boolean

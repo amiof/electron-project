@@ -8,23 +8,20 @@ import { ProgressBar } from "react-progressbar-fancy"
 import clsx from "clsx"
 import { searchInDownloadsRows } from "@src/utils.ts"
 
-
 const Main = () => {
-  
-  const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
-  const downloadsRow = useDownloaderStore(state => state.allDownloadsRow)
-  const tellActive = useDownloaderStore(state => state.tellActive)
-  const setSelectedRows = useDownloaderStore(state => state.setSelectedRow)
-  const selectedRows = useDownloaderStore(state => state.selectedRows)
-  const searchValue = useDownloaderStore(state => state.searchValue)
-  const sidebarSelectedLabel = useDownloaderStore(state => state.sidebarSelectedLabel)
-  const downloadsGroupingByLabel = useDownloaderStore(state => state.downloadsGroupByLabel)
-  const mainTableId = useDownloaderStore(state => state.mainTableId)
-  
+  const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
+  const downloadsRow = useDownloaderStore((state) => state.allDownloadsRow)
+  const tellActive = useDownloaderStore((state) => state.tellActive)
+  const setSelectedRows = useDownloaderStore((state) => state.setSelectedRow)
+  const selectedRows = useDownloaderStore((state) => state.selectedRows)
+  const searchValue = useDownloaderStore((state) => state.searchValue)
+  const sidebarSelectedLabel = useDownloaderStore((state) => state.sidebarSelectedLabel)
+  const downloadsGroupingByLabel = useDownloaderStore((state) => state.downloadsGroupByLabel)
+  const mainTableId = useDownloaderStore((state) => state.mainTableId)
+
   const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
   const prevMainTableId = useRef(mainTableId)
-  
-  
+
   // for do not loop when switch between sidebar item when select item remove all item
   useLayoutEffect(() => {
     if (rowSelectionModel) {
@@ -32,9 +29,9 @@ const Main = () => {
       setSelectedRows([])
     }
   }, [sidebarSelectedLabel])
-  
+
   let dataGridRow: TDownloads[]
-  
+
   if (sidebarSelectedLabel === "All Downloads" || sidebarSelectedLabel === "all" || sidebarSelectedLabel === "") {
     dataGridRow = downloadsRow
   }
@@ -48,7 +45,7 @@ const Main = () => {
     dataGridRow = downloadsGroupingByLabel[sidebarSelectedLabel.toLowerCase()]
     if (!dataGridRow) dataGridRow = []
   }
-  
+
   const [activeDownloads, setActiveDownloads] = useState<TtellRes | null>(null)
   
   window.electronAPI.onDataChange(async (data) => {
@@ -116,9 +113,7 @@ const Main = () => {
         }
       }
     })
-    
   }, [])
-  
   
   //for refresh mainTable when i other component need refresh main table
   useLayoutEffect(() => {
@@ -132,9 +127,7 @@ const Main = () => {
     setTimeout(async () => {
       await getAllDownloads()
     }, 1000)
-    
   }, [])
-  
   
   useEffect(() => {
     let interval: NodeJS.Timeout | null
@@ -193,15 +186,7 @@ const Main = () => {
       renderCell: (params) => {
         return (
           <div className={clsx("flex justify-between items-center  h-full", styles.progress)}>
-            <ProgressBar
-              label={""}
-              hideText={true}
-              progressColor={"green"}
-              darkTheme
-              score={
-                +params.row.Percentage!
-              }
-            />
+            <ProgressBar label={""} hideText={true} progressColor={"green"} darkTheme score={+params.row.Percentage!} />
             <div>{params.row.Percentage!}%</div>
           </div>
         )
@@ -240,7 +225,6 @@ const Main = () => {
   
   const rows = searchInDownloadsRows(dataGridRow, searchValue)
   
-  
   const rowSelectedHandler = (selectionModel: GridRowSelectionModel) => {
     setRowSelectionModel(selectionModel)
     const selectedDetails = rows.filter((row) => selectionModel.includes(row.Id!))
@@ -254,8 +238,7 @@ const Main = () => {
   }
   
   return (
-    <div className={styles.container}
-         onContextMenu={(e) => handleContextMenu(e)}>
+    <div className={styles.container} onContextMenu={(e) => handleContextMenu(e)}>
       <DataGrid
         getRowId={(row) => row.Id!}
         scrollbarSize={1}
@@ -302,7 +285,6 @@ const Main = () => {
             "& .MuiDataGrid-filler ": {
               borderColor: "var(--color-neutral-800)"
             }
-            
           },
           "& .MuiCheckbox-root ": {
             color: "white"

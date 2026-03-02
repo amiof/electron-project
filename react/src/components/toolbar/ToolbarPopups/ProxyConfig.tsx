@@ -3,15 +3,14 @@ import { useEffect, useState } from "react"
 import { TProxyConfig } from "@src/store/storeType.ts"
 
 type Props = {
-  id: string,
+  id: string
 }
 
 const ProxyConfig = (props: Props) => {
-  
   const { id } = props
-  
+
   const closePopupWindow = window.electronAPI.closePopupWindow
-  
+
   const [formValues, setFormValues] = useState<TProxyConfig>({
     proxyStatus: false,
     proxyType: "http",
@@ -20,29 +19,25 @@ const ProxyConfig = (props: Props) => {
     proxyUserName: "",
     proxyPassword: ""
   })
-  
+
   useEffect(() => {
-    (async () => {
-      const defaultProxyConfig = await window.electronAPI.getProxyConfig() as TProxyConfig
+    ;(async () => {
+      const defaultProxyConfig = (await window.electronAPI.getProxyConfig()) as TProxyConfig
       setFormValues(defaultProxyConfig)
     })()
   }, [])
   
-  const handleInputChange = (field: keyof TProxyConfig) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = field === "proxyStatus"
-      ? event.target.checked
-      : event.target.value
+  const handleInputChange = (field: keyof TProxyConfig) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = field === "proxyStatus" ? event.target.checked : event.target.value
     
-    setFormValues(prev => ({
+    setFormValues((prev) => ({
       ...prev,
       [field]: value
     }))
   }
-  
+
   const handleProxyTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValues(prev => ({
+    setFormValues((prev) => ({
       ...prev,
       proxyType: event.target.value as "http" | "https"
     }))
@@ -62,12 +57,10 @@ const ProxyConfig = (props: Props) => {
       <form onSubmit={submitHandler}>
         <FormControl className={"gap-6"}>
           <div className={"flex items-center"}>
-            <label id={"proxy-label"} className="mr-2">Proxy</label>
-            <Checkbox
-              name="proxyStatus"
-              checked={formValues.proxyStatus}
-              onChange={handleInputChange("proxyStatus")}
-            />
+            <label id={"proxy-label"} className="mr-2">
+              Proxy
+            </label>
+            <Checkbox name="proxyStatus" checked={formValues.proxyStatus} onChange={handleInputChange("proxyStatus")} />
           </div>
           
           <TextField
@@ -113,20 +106,19 @@ const ProxyConfig = (props: Props) => {
           />
           
           <FormLabel id="radio-Group">Proxy Type</FormLabel>
-          <RadioGroup
-            name="proxyType"
-            value={formValues.proxyType}
-            onChange={handleProxyTypeChange}
-            row
-          >
+          <RadioGroup name="proxyType" value={formValues.proxyType} onChange={handleProxyTypeChange} row>
             <FormControlLabel value="http" control={<Radio />} label="http" disabled={!formValues.proxyStatus} />
             <FormControlLabel value="https" control={<Radio />} label="https" disabled={!formValues.proxyStatus} />
           </RadioGroup>
         </FormControl>
         
         <div className={"w-full flex justify-end gap-2 absolute bottom-3 right-5"}>
-          <Button variant="contained" color="primary" type="submit">Save</Button>
-          <Button variant="outlined" onClick={() => closePopupWindow(id)}>Close</Button>
+          <Button variant="contained" color="primary" type="submit">
+            Save
+          </Button>
+          <Button variant="outlined" onClick={() => closePopupWindow(id)}>
+            Close
+          </Button>
         </div>
       </form>
     </div>

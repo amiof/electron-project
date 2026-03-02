@@ -12,7 +12,7 @@ import RemoveDoneIcon from "@mui/icons-material/RemoveDone"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 
 export type FileType =
-  "image"
+  | "image"
   | "pdf"
   | "doc"
   | "video"

@@ -1,12 +1,11 @@
 export type TFileDetails = {
-  name: string;
-  path: string;
-  size: number; // in bytes
-  createdAt: Date;
-  modifiedAt: Date;
-  isDirectory: boolean;
+  name: string
+  path: string
+  size: number // in bytes
+  createdAt: Date
+  modifiedAt: Date
+  isDirectory: boolean
 }
-
 
 // type for download db
 export type TUri = {
@@ -14,13 +13,12 @@ export type TUri = {
   uri: string
 }
 export type Tfile = {
-  "completedLength": string,
-  "index": string,
-  "length": string,
-  "path": string,
-  "selected": string,
-  "uris": TUri[]
-  
+  completedLength: string
+  index: string
+  length: string
+  path: string
+  selected: string
+  uris: TUri[]
 }
 
 export enum STATUS_TYPE {
@@ -29,13 +27,13 @@ export enum STATUS_TYPE {
   REMOVED = "removed",
   COMPLETE = "complete",
   PAUSED = "paused",
-  ACTIVE = "active",
+  ACTIVE = "active"
 }
 
 export type TtellRes = {
   bittorrent?: {
     announceList: string[][]
-  },
+  }
   bitfield?: string
   completedLength: string
   connections: string
@@ -58,24 +56,24 @@ export type TtellRes = {
 
 export type TTorrentRes = {
   bittorrent: {
-    announceList: string[][];
-  };
-  completedLength: string;
-  connections: string;
-  dir: string;
-  downloadSpeed: string;
-  files: Tfile[];
-  gid: string;
-  infoHash: string;
-  numPieces: string;
-  numSeeders: string;
-  pieceLength: string;
-  seeder: string;
-  status: STATUS_TYPE;
-  totalLength: string;
-  uploadLength: string;
-  uploadSpeed: string;
-};
+    announceList: string[][]
+  }
+  completedLength: string
+  connections: string
+  dir: string
+  downloadSpeed: string
+  files: Tfile[]
+  gid: string
+  infoHash: string
+  numPieces: string
+  numSeeders: string
+  pieceLength: string
+  seeder: string
+  status: STATUS_TYPE
+  totalLength: string
+  uploadLength: string
+  uploadSpeed: string
+}
 
 export type resMetadataUrls = {
   fileName: string | null
@@ -84,7 +82,6 @@ export type resMetadataUrls = {
   savePath: string
   resume: boolean | null
 }
-
 
 // downloads create in ui  -- some times need use in back
 export type TDownloads = {
@@ -128,9 +125,9 @@ export type TProxyConfig = {
   proxyType: "http" | "https"
 }
 export type TOptionsConfig = {
-  referrer?: string,
-  header?: string,
-  userAgent?: string,
+  referrer?: string
+  header?: string
+  userAgent?: string
   cookie?: string
 }
 
@@ -147,7 +144,7 @@ export type TNotificationDetailes = {
   body: string
 }
 export type TTorrentConfig = {
-  enableDht: boolean,
+  enableDht: boolean
   enableDht6: boolean
   enableLpd: boolean
   enablePeerExchange: boolean
@@ -161,7 +158,6 @@ export type TTorrentConfig = {
   maxOverallDownloadLimit: string
   tracker: string | null
 }
-
 
 // export type TTorrentRowDatabase = {
 //   bittorrent: {
@@ -209,7 +205,7 @@ export enum Aria2Methods {
   FORCE_PAUSE_ALL = "aria2.forcePauseAll",
   UNPAUSE = "aria2.unpause",
   UNPAUSE_ALL = "aria2.unpauseAll",
-  
+
   // Status Retrieval Methods
   TELL_STATUS = "aria2.tellStatus",
   GET_URIS = "aria2.getUris",
@@ -238,5 +234,5 @@ export enum Aria2Methods {
   // System Information Methods
   SYSTEM_MULTICALL = "system.multicall",
   SYSTEM_LIST_METHODS = "system.listMethods",
-  SYSTEM_LIST_NOTIFICATIONS = "system.listNotifications",
+  SYSTEM_LIST_NOTIFICATIONS = "system.listNotifications"
 }

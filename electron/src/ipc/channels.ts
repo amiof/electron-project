@@ -48,5 +48,4 @@ export const UTILS_CHANNELS = {
   SHOW_CONTEXT_MENU: "show-context-menu",
   CONTEXT_MENU_ACTION: "context-menu-action",
   READ_CLIPBOARD: "read-clipboard"
-  
 }

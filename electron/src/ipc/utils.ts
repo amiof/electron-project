@@ -27,7 +27,7 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
       nodeIntegration: false // Disable node integration in renderer
     }
   })
-  
+
   popupWindow.setContentSize(width, height, true)
   ipcMain.on(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, (event: IpcMainEvent, id: string) => {
     if (popupWindow && id === windowId) {
@@ -48,9 +48,7 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
   })
 }
 
-
 export const iconPathContextMenu = (iconName: string) => {
-  
   if (process.env.NODE_ENV === "development") {
     return path.join(__dirname, "..", "..", "..", "assets", `${iconName}`)
   }

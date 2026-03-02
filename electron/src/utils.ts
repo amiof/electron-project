@@ -10,10 +10,7 @@ import { electronStore } from "./store/electronStore"
 const basePathSelected = electronStore.get("selectedStorageDirectory")
 
 export const checkAndCreateFolder = async () => {
-  
   try {
-    
-    
     let target: string[]
     const platform = process.platform
     let basePath: string
@@ -56,17 +53,14 @@ export const checkAndCreateFolder = async () => {
     }
     for (const targetPath of target) {
       try {
-        
         await fs.access(targetPath)
         console.log("directory is available", targetPath)
       }
       catch (error) {
-        
         await fs.mkdir(targetPath, { recursive: true })
         console.log("your  folder  created:", targetPath)
       }
     }
-    
   }
   catch (error) {
     console.log("error  occured:", error)
@@ -74,10 +68,9 @@ export const checkAndCreateFolder = async () => {
 }
 
 export const getFolderFromUrl = (url: string) => {
-  
   const extension = url.split(".").pop()?.toLowerCase() || ""
   console.log("extention", extension)
-  
+
   const fileTypes: Record<string, string[]> = {
     videos: ["mp4", "mkv", "avi", "mov", "wmv", "flv", "webm"],
     musics: ["mp3", "wav", "aac", "flac", "ogg", "m4a"],
@@ -85,92 +78,72 @@ export const getFolderFromUrl = (url: string) => {
     images: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"],
     documents: ["pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx"]
   }
-  
+
   let folderExtention: string | null = null
-  
+
   for (const ext in fileTypes) {
-    
     fileTypes[ext].map((format) => {
-      
       if (format === extension) {
         folderExtention = ext
       }
-      
     })
   }
   if (folderExtention) {
-    
     return folderExtention
   }
   else {
-    
     return "other"
   }
-  
-  
 }
 
-
 export const directionFolder = (url: string) => {
-  
   try {
-    
     const folderName = getFolderFromUrl(url)
     const platform = process.platform
     let direction: string = ""
     let basePath
-    
-    
+
     switch (platform) {
       case "win32":
-        
         basePath = basePathSelected ?? app.getPath("downloads")
         direction = path.join(basePath, "Shabdiz-DM", folderName)
-        
+
         break
-      
+
       case "linux":
-        
         basePath = basePathSelected ?? os.homedir()
         direction = path.join(basePath, "Shabdiz-DM", folderName)
-        
+
         break
-      
+
       case "darwin":
-        
         basePath = basePathSelected ?? os.homedir()
         direction = path.join(basePath, "Shabdiz-DM", folderName)
-        
+
         break
-      
-      
+
       default:
         throw new Error("your platform not supported")
     }
-    
+
     if (direction) {
       return direction
-      
     }
     else {
       return " "
     }
-    
   }
   catch (error) {
     console.log("a error occurred:", error)
     return " "
   }
-  
 }
-
 
 export const getFilesInDirectory = (directoryPath?: string): TFileDetails[] => {
   const routes = directoryPath ? [directoryPath] : savedPath()
   try {
     let filesDetails: TFileDetails[] = []
-    routes.map(route => {
-      
+    routes.map((route) => {
       const files = fsnp.readdirSync(route)
       const dir = files.map((file) => {
         const filePath = path.join(route, file)
@@ -196,11 +169,8 @@ export const getFilesInDirectory = (directoryPath?: string): TFileDetails[] => {
   }
 }
 
-
 export const savedPath = () => {
-  
   try {
-    
     const target: string[] = []
     const platform = process.platform
     let basePath: string
@@ -208,7 +178,7 @@ export const savedPath = () => {
     switch (platform) {
       case "win32":
         basePath = basePathSelected ?? app.getPath("downloads")
-        folders.map(folder => {
+        folders.map((folder) => {
           const route = path.join(basePath, "Shabdiz-DM", folder)
           target.push(route)
         })
@@ -216,21 +186,20 @@ export const savedPath = () => {
       case "linux":
         basePath = basePathSelected ?? os.homedir()
         
-        folders.map(folder => {
+        folders.map((folder) => {
           const route = path.join(basePath, "Shabdiz-DM", folder)
           target.push(route)
         })
         break
       case "darwin":
         basePath = basePathSelected ?? os.homedir()
-        folders.map(folder => {
+        folders.map((folder) => {
           const route = path.join(basePath, "Shabdiz-DM", folder)
           target.push(route)
         })
         break
       default:
         throw new Error("your platform not  supported")
-      
     }
     
     return target
@@ -241,13 +210,11 @@ export const savedPath = () => {
   }
 }
 
-
 export const getSessionPath = () => {
   return path.join(app.getPath("userData"), "Shabdiz-data", "aria2.session")
 }
 
 export const checkSessionExists = () => {
-  
   const sessionPath = getSessionPath()
   const parentDir = path.dirname(sessionPath)
   
@@ -265,20 +232,18 @@ export const checkSessionExists = () => {
   }
 }
 
-
 export const aria2BinPath = () => {
   const systemPlatform = os.platform()
   let aria2cBinaryPath: string
   let basePath
   if (process.env.NODE_ENV === "development") {
-    basePath = path.join(__dirname, "..", "src", "release-aria2", "bin")  // for develop mode
+    basePath = path.join(__dirname, "..", "src", "release-aria2", "bin") // for develop mode
   }
   else {
     basePath = path.join(process.resourcesPath, "electron", "dist", "bin") //for product mode
   }
   
   try {
-    
     switch (systemPlatform) {
       case "win32":
         aria2cBinaryPath = path.join(basePath, "win", "aria2c.exe")
@@ -294,14 +259,12 @@ export const aria2BinPath = () => {
         throw new Error(`Unsupported platform: ${systemPlatform}`)
     }
     return aria2cBinaryPath
-    
   }
   catch (error) {
     console.error(error)
     return "aria2c"
   }
 }
-
 
 export const openFileExplorer = (directoryPath: string) => {
   const platform = os.platform() // Get the current operating system
@@ -364,4 +327,3 @@ export const extractFilenameFromDisposition = (headerValue: string | null) => {
 export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
-

@@ -3,15 +3,14 @@ import uPlot, { AlignedData, Options } from "uplot"
 import "uplot/dist/uPlot.min.css"
 
 type Props = {
-  speed: number,
-  width?: number,
-  height?: number,
+  speed: number
+  width?: number
+  height?: number
 }
 
 const MAX_POINTS = 100
 
 const SpeedGraph = (props: Props) => {
-  
   const { speed, width = 400, height = 220 } = props
   
   const chartRef = useRef<HTMLDivElement | null>(null)

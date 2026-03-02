@@ -17,13 +17,12 @@ export type TUri = {
   uri: string
 }
 export type Tfile = {
-  completedLength: string,
-  index: string,
-  length: string,
-  path: string,
-  selected: string,
+  completedLength: string
+  index: string
+  length: string
+  path: string
+  selected: string
   uris: TUri[]
-  
 }
 
 export enum STATUS_TYPE {
@@ -32,13 +31,13 @@ export enum STATUS_TYPE {
   REMOVED = "removed",
   COMPLETE = "complete",
   PAUSED = "paused",
-  ACTIVE = "active",
+  ACTIVE = "active"
 }
 
 export type TtellRes = {
   bittorrent?: {
     announceList: string[][]
-  },
+  }
   bitfield?: string
   completedLength: string
   connections: string
@@ -90,20 +89,19 @@ export type TGetGlobalStateResponse = {
   uploadSpeed: string
 }
 
-
 export type TFileDetails = {
-  name: string;
-  path: string;
-  size: number; // in bytes
-  createdAt: Date;
-  modifiedAt: Date;
-  isDirectory: boolean;
+  name: string
+  path: string
+  size: number // in bytes
+  createdAt: Date
+  modifiedAt: Date
+  isDirectory: boolean
 }
 
 export type resMetadataUrls = {
-  fileName: string | null,
-  size: string | null,
-  typeUrl: "direct" | "torrent" | "magnet",
+  fileName: string | null
+  size: string | null
+  typeUrl: "direct" | "torrent" | "magnet"
   savePath: string
   resume: boolean | null
 }

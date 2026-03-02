@@ -3,7 +3,6 @@ import { RichTreeView } from "@mui/x-tree-view/RichTreeView"
 import ITEMS from "@components/sidebar/sidebarConfig.tsx"
 import CustomTreeItem from "@components/sidebar/CustomTreeItem.tsx"
 
-
 const Sidebar = () => {
   return (
     <div className={styles.container}>

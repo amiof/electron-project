@@ -7,21 +7,20 @@ type Props = {
 }
 
 const StorageConf = (props: Props) => {
-  
   const { id } = props
   const closePopupWindow = window.electronAPI.closePopupWindow
-  
+
   const [basePath, setBasePath] = useState<string | null>(null)
-  
+
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const path = await window.electronAPI.getSelectedStorageDirectory()
       setBasePath(path)
     })()
   }, [])
   
   const handleSelectDirectory = async () => {
-    const selectedPath = await window.electronAPI.selectStorageDirectory() as string | null
+    const selectedPath = (await window.electronAPI.selectStorageDirectory()) as string | null
     if (selectedPath) {
       setBasePath(selectedPath)
       // Optionally save it back via another API call
@@ -57,8 +56,12 @@ const StorageConf = (props: Props) => {
       />
       
       <div className={"w-full flex justify-end gap-2 absolute bottom-3 right-5"}>
-        <Button variant="contained" color="primary" onClick={saveHandleer}>Save</Button>
-        <Button variant="outlined" onClick={() => closePopupWindow(id)}>Close</Button>
+        <Button variant="contained" color="primary" onClick={saveHandleer}>
+          Save
+        </Button>
+        <Button variant="outlined" onClick={() => closePopupWindow(id)}>
+          Close
+        </Button>
       </div>
     </div>
   )

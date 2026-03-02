@@ -5,7 +5,7 @@ import { STATUS_TYPE, Tfile, TTorrentRes } from "../../types"
 export class Torrent implements TTorrentRes {
   @PrimaryColumn({ type: "text", nullable: false })
   gid!: string
-  
+
   @Column({ type: "text", nullable: false })
   infoHash!: string
   

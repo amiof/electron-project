@@ -4,9 +4,8 @@ import { formatBytes, getFileName } from "@src/utils.ts"
 import { TDownloads, TFileDetails, TtellRes } from "@src/types.ts"
 import * as _ from "lodash"
 
-
-export type SetState = StoreApi<TDownloaderStore>["setState"];
-export type GetState = StoreApi<TDownloaderStore>["getState"];
+export type SetState = StoreApi<TDownloaderStore>["setState"]
+export type GetState = StoreApi<TDownloaderStore>["getState"]
 
 export const downloaderAction = (set: SetState, get: GetState): TDownloaderActions => ({
   getFiles: (file: string) => {
@@ -23,32 +22,38 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
     catch (error) {
       console.error(error)
     }
-    
   },
   getAllDownloadsRow: async () => {
     await get().getTellStopped()
     await get().getTellActive()
     await get().getTellWaiting()
     await get().getDownloadedFilesDetails()
-    
+
     const tellActive = get().tellActive
     const tellWaiting = get().tellWaiting
     const tellStopped = get().tellStopped
-    
+
     const completedRowsFromDB = get().completedRowFromDB
     const filteredCompletedStop: TtellRes[] = []
     for (const stopItem of tellStopped) {
-      const isNotDouble = completedRowsFromDB.every(completedItem => completedItem.gid !== stopItem.gid)
+      const isNotDouble = completedRowsFromDB.every((completedItem) => completedItem.gid !== stopItem.gid)
       if (isNotDouble) {
         filteredCompletedStop.push(stopItem)
       }
     }
-    
+
     const downloadedFilesDetails = get().downloadedFilesDetails
     
-    const downloadsRows: TDownloads[] = [...filteredCompletedStop, ...tellWaiting, ...tellActive, ...completedRowsFromDB].map((download, index) => {
+    const downloadsRows: TDownloads[] = [
+      ...filteredCompletedStop,
+      ...tellWaiting,
+      ...tellActive,
+      ...completedRowsFromDB
+    ].map((download, index) => {
       const fileName = getFileName(download.files[0].path)
-      const fileCreateAte = downloadedFilesDetails?.[fileName]?.createdAt ? downloadedFilesDetails[fileName].createdAt : new Date()
+      const fileCreateAte = downloadedFilesDetails?.[fileName]?.createdAt
+        ? downloadedFilesDetails[fileName].createdAt
+        : new Date()
       return {
         Id: index + 1,
         FileName: fileName,
@@ -57,7 +62,9 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
         Size: formatBytes(+download.totalLength),
         CreatedAt: fileCreateAte,
         CompletedSize: formatBytes(+download.completedLength),
-        Percentage: isNaN(+download.completedLength / +download.totalLength) ? 0 : Number(((+download.completedLength / +download.totalLength) * 100).toFixed(0)),
+        Percentage: isNaN(+download.completedLength / +download.totalLength)
+          ? 0
+          : Number(((+download.completedLength / +download.totalLength) * 100).toFixed(0)),
         Status: download?.status,
         Gid: download?.gid,
         NumberConnections: download?.connections
@@ -111,10 +118,13 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
   getDownloadedFilesDetails: async () => {
     const filesDetails = await window.electronAPI.getDownloadedFilesDetails()
     //change array to object
-    const filesObject: Record<string, TFileDetails> = filesDetails.reduce((acc, file) => {
-      acc[file.name] = file
-      return acc
-    }, {} as Record<string, TFileDetails>)
+    const filesObject: Record<string, TFileDetails> = filesDetails.reduce(
+      (acc, file) => {
+        acc[file.name] = file
+        return acc
+      },
+      {} as Record<string, TFileDetails>
+    )
     set({ downloadedFilesDetails: { ...filesObject } })
   },
   
@@ -132,12 +142,11 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
   refreshMainTableId: (id: string) => {
     set({ mainTableId: id })
   }
-
-
-// removeFile: (file: string) => {
-//   set((state) => ({ files: state.files.filter(f => f !== file) }));
-// },
-// clearFiles: () => {
-//   set({ files: [] });
-// },
+  
+  // removeFile: (file: string) => {
+  //   set((state) => ({ files: state.files.filter(f => f !== file) }));
+  // },
+  // clearFiles: () => {
+  //   set({ files: [] });
+  // },
 })

@@ -5,7 +5,6 @@ export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
 
-
 export const formatBytes = (bytes: number, decimals = 2) => {
   if (bytes === 0) return "0 Bytes"
   const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
@@ -34,17 +33,14 @@ export const formatTime = (seconds: number) => {
   const hours = Math.floor(seconds / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
   const secs = Math.floor(seconds % 60)
-  
+
   return `${hours}h ${minutes}m ${secs}s`
 }
 
 export const searchInDownloadsRows = (data: TDownloads[], searchValue: string) => {
-  
   if (searchValue === "") return data
-  return data.filter(item => item.FileName.toLowerCase().includes(searchValue.toLowerCase()))
-  
+  return data.filter((item) => item.FileName.toLowerCase().includes(searchValue.toLowerCase()))
 }
-
 
 export const isMetadataPhase = (tellStatus: TtellRes): boolean => {
   return (

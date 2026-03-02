@@ -5,28 +5,23 @@ type Props = {
   percent: number
   width?: string
   gridTemp?: string
-  
 }
 
 const ChunkMap = (props: Props) => {
-  
-  
   const { percent, width, gridTemp } = props
   const [chunks, setChunks] = useState<boolean[]>(Array(100).fill(false))
   const [animatingIndexes, setAnimatingIndexes] = useState<number[]>([])
-  
+
   useEffect(() => {
     const targetCount = Math.floor(percent)
-    
+
     setChunks((prev) => {
       const currentCount = prev.filter(Boolean).length
       if (targetCount <= currentCount) return prev
       
       const newChunks = [...prev]
-      const emptyIndexes = newChunks
-        .map((val, idx) => (!val ? idx : -1))
-        .filter((idx) => idx !== -1)
-      
+      const emptyIndexes = newChunks.map((val, idx) => (!val ? idx : -1)).filter((idx) => idx !== -1)
+
       const toActivate = targetCount - currentCount
       const activated: number[] = []
       
@@ -59,7 +54,6 @@ const ChunkMap = (props: Props) => {
         border: "1px solid #2e2e2e",
         borderRadius: "8px",
         padding: "5px"
-        
       }}
     >
       {chunks.map((filled, index) => {
@@ -81,9 +75,7 @@ const ChunkMap = (props: Props) => {
               // boxShadow: isAnimating
               //   ? "0 0 12px #4caf50"
               //   : "none",
-              boxShadow: isAnimating
-                ? "0 0 6px red"
-                : "none",
+              boxShadow: isAnimating ? "0 0 6px red" : "none",
               transition: "all 100ms ease"
             }}
           />

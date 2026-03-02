@@ -12,21 +12,19 @@ import AddLinkOptions from "@components/addLinkPopup/tabs/AddLinkOptions.tsx"
 import useAddLinkStore from "@components/addLinkPopup/store/addLinkStore.ts"
 
 const AddLinkPopup = () => {
-  
   const closePopupWindow = window.electronAPI.closePopupWindow
   const addDownloadDir = window.electronAPI.addDownloadDir
   const addDownloadPopup = window.electronAPI.addDownloadPopup
-  
+
   const location = useLocation()
   const id = getIdFromLocation(location, ":")
   
-  const linkAddressStore = useAddLinkStore(state => state.linkAddressStore)
-  const savePathStore = useAddLinkStore(state => state.savePathStore)
-  const fileNameStore = useAddLinkStore(state => state.fileNameStore)
-  const proxyConfigs = useAddLinkStore(state => state.proxyConfig)
-  const options = useAddLinkStore(state => state.options)
-  
-  
+  const linkAddressStore = useAddLinkStore((state) => state.linkAddressStore)
+  const savePathStore = useAddLinkStore((state) => state.savePathStore)
+  const fileNameStore = useAddLinkStore((state) => state.fileNameStore)
+  const proxyConfigs = useAddLinkStore((state) => state.proxyConfig)
+  const options = useAddLinkStore((state) => state.options)
+
   const downloadHandler = async () => {
     if (linkAddressStore) {
       const gid = await addDownloadDir(linkAddressStore, savePathStore, fileNameStore, proxyConfigs, options)
@@ -34,9 +32,9 @@ const AddLinkPopup = () => {
       closePopupWindow(id)
     }
   }
-  
+
   const [value, setValue] = useState<TAddLinkTabs>("Link")
-  
+
   const handleChange = (_event: React.SyntheticEvent, newValue: TAddLinkTabs) => {
     setValue(newValue)
   }
@@ -54,16 +52,10 @@ const AddLinkPopup = () => {
     }
   }
   
-  
   return (
-    
     <div className={"h-full w-full flex flex-col "}>
       <div className={"w-full px-10"}>
-        
-        <Tabs orientation={"horizontal"} variant="scrollable"
-              value={value}
-              onChange={handleChange}
-        >
+        <Tabs orientation={"horizontal"} variant="scrollable" value={value} onChange={handleChange}>
           <Tab label={"Link"} value={"Link"} iconPosition={"start"} icon={<AddLink sx={{ rotate: "120deg" }} />} />
           <Tab label={"Proxy"} value={"Proxy"} iconPosition={"start"} icon={<VpnLock />} />
           <Tab label={"Options"} value={"Options"} iconPosition={"start"} icon={<Settings />} />
@@ -74,19 +66,30 @@ const AddLinkPopup = () => {
       </div>
       <div className={"flex items-center justify-between w-full px-10 h-[20%]"}>
         <div className={"flex gap-2 "}>
-          <Button variant={"outlined"} color={"success"} size={"small"}
-                  endIcon={<DownloadOutlinedIcon />}
-                  disabled={!linkAddressStore || !savePathStore}
-                  onClick={downloadHandler}>download</Button>
-          <Button variant={"outlined"} size={"small"}
-                  disabled={!linkAddressStore || !savePathStore}
-                  endIcon={<AddCircleOutlineOutlinedIcon />}>add</Button>
+          <Button
+            variant={"outlined"}
+            color={"success"}
+            size={"small"}
+            endIcon={<DownloadOutlinedIcon />}
+            disabled={!linkAddressStore || !savePathStore}
+            onClick={downloadHandler}
+          >
+            download
+          </Button>
+          <Button
+            variant={"outlined"}
+            size={"small"}
+            disabled={!linkAddressStore || !savePathStore}
+            endIcon={<AddCircleOutlineOutlinedIcon />}
+          >
+            add
+          </Button>
         </div>
-        <Button variant={"outlined"} color={"error"} size={"small"}
-                onClick={() => closePopupWindow(id)}>Cancel</Button>
+        <Button variant={"outlined"} color={"error"} size={"small"} onClick={() => closePopupWindow(id)}>
+          Cancel
+        </Button>
       </div>
     </div>
-  
   )
 }
 

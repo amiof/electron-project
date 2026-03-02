@@ -2,6 +2,8 @@
   "name": "downloader",
   "version": "1.0.0",
   "scripts": {
+    "lint": "biome check .",
+    "format": "biome format . --write",
     "start": "concurrently \"npm run start:react\"  \"npm run start:electron\"",
     "start:react": "cd react && npm run dev",
     "start:electron": "cd electron && npm run start",
@@ -110,6 +112,7 @@
     "dotenv": "^16.4.7"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.4",
     "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
     "electron-icon-builder": "^2.0.1"

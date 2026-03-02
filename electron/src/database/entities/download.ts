@@ -1,12 +1,11 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
 import { STATUS_TYPE, Tfile, TtellRes } from "../../types"
 
-
 @Entity("downloads")
 export class Download implements TtellRes {
   @PrimaryGeneratedColumn()
   Id!: number
-  
+
   @Column({ type: "text", nullable: false })
   bitfield!: string
   
@@ -29,7 +28,9 @@ export class Download implements TtellRes {
   errorMessage!: string
   
   @Column({
-    type: "text", nullable: false, default: "[]",
+    type: "text",
+    nullable: false,
+    default: "[]",
     transformer: {
       to: (value: Tfile[]) => JSON.stringify(value),
       from: (value: string) => JSON.parse(value)

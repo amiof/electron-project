@@ -17,14 +17,14 @@ const darkTheme = createTheme({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={darkTheme}>
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/popup/:id" element={<AddLinkPopup />} />
-        <Route path="/downloadStart/:id" element={<DownloadStart />} />
-        <Route path="options/:id" element={<OptionsPopup />} />
-      </Routes>
-    </HashRouter>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/popup/:id" element={<AddLinkPopup />} />
+          <Route path="/downloadStart/:id" element={<DownloadStart />} />
+          <Route path="options/:id" element={<OptionsPopup />} />
+        </Routes>
+      </HashRouter>
     </ThemeProvider>
   </StrictMode>
 )

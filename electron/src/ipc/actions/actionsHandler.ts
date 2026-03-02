@@ -6,16 +6,14 @@ import { openFileExplorer } from "../../utils"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 export const ipcActionsHandler = () => {
-  
   ipcMain.on(ACTIONS_CHANNELS.STOP_DOWNLOAD_BY_GID, async (_: IpcMainInvokeEvent, gid: string) => {
     return await aria2.sendAria2cRequest("pause", [gid])
-    
   })
-  
+
   ipcMain.handle(ACTIONS_CHANNELS.UNPAUSE_ALL, async (_: IpcMainInvokeEvent) => {
     return await aria2.sendAria2cRequest("unpauseAll")
   })
-  
+
   ipcMain.on(ACTIONS_CHANNELS.UNPAUSE_BY_GID, async (_: IpcMainEvent, gid: string) => {
     try {
       await aria2.sendAria2cRequest("unpause", [gid])
@@ -24,7 +22,7 @@ export const ipcActionsHandler = () => {
       console.log(error)
     }
   })
-  
+
   ipcMain.on(ACTIONS_CHANNELS.STOP_ALL_DOWNLOADS, async (_: IpcMainInvokeEvent) => {
     try {
       await aria2.sendAria2cRequest("pauseAll")
@@ -39,7 +37,6 @@ export const ipcActionsHandler = () => {
       await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
       await aria2.sendAria2cRequest("remove", [gid])
       await aria2.sendAria2cRequest("removeDownloadResult", [gid])
-      
     }
     catch (error) {
       console.log(error)
@@ -62,5 +59,4 @@ export const ipcActionsHandler = () => {
       console.error(error)
     }
   })
-  
 }

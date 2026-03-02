@@ -50,6 +50,5 @@ export const electronStore = new Store<Schema>({
       maxOverallDownloadLimit: "0",
       tracker: null
     }
-    
   }
 })

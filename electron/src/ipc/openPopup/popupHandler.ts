@@ -4,7 +4,6 @@ import { createPopupWindow } from "../utils"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 const ipcPopupHandler = () => {
-  
   ipcMain.on(POPUP_CHANNELS.ADD_LINK_POPUP, (event: IpcMainEvent, id) => {
     createPopupWindow({ windowTitle: "addLink", height: 470, width: 650, hashRoute: `popup/:${id}`, windowId: id })
   })
@@ -29,7 +28,5 @@ const ipcPopupHandler = () => {
       windowId: id
     })
   })
-  
-  
 }
 export default ipcPopupHandler

@@ -27,7 +27,6 @@ const iconPath = () => {
   }
 }
 
-
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -44,7 +43,7 @@ function createWindow() {
       nodeIntegration: false // Disable node integration in renderer
     }
   })
-  
+
   mainWindow.setContentSize(1000, 500, true)
   if (process.env.NODE_ENV === "development") {
     // In development, load the React dev server.
@@ -54,7 +53,6 @@ function createWindow() {
     mainWindow.setIcon(iconPath)
   }
   else {
-    
     if (process.platform === "linux") {
       const iconPath = path.join(process.resourcesPath, "assets", "icons", "512x512.png")
       mainWindow.setIcon(iconPath)
@@ -65,22 +63,17 @@ function createWindow() {
     const indexPath = path.join(process.resourcesPath, "react", "dist", "index.html")
     // mainWindow.loadFile(indexPath);
     mainWindow.loadFile(indexPath).catch((err) => console.error("Failed to load index.html:", err))
-    
   }
   
   mainWindow.on("closed", () => {
     mainWindow = null
   })
 }
-
 //  create folders for download files
-(async () => {
-  
+;(async () => {
   await checkAndCreateFolder()
   await DataSourceRepo.initialize()
-  
 })()
-
 
 // app.on("ready", createWindow);
 
@@ -122,7 +115,6 @@ app.on("activate", () => {
     createWindow()
   }
 })
-
 
 // IPC handlers
 ipcDownloadHandler()

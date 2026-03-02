@@ -3,14 +3,12 @@ import { useEffect, useState } from "react"
 import useAddLinkStore from "@components/addLinkPopup/store/addLinkStore.ts"
 import { TAddLinkOptions } from "@components/addLinkPopup/store/addLinkStoreType.ts"
 
-
 const AddLinkOptions = () => {
-  
-  const setOptionItem = useAddLinkStore(state => state.setOptionsItem)
-  const optionsStore = useAddLinkStore(state => state.options)
-  
+  const setOptionItem = useAddLinkStore((state) => state.setOptionsItem)
+  const optionsStore = useAddLinkStore((state) => state.options)
+
   const [formValues, setFormValues] = useState<TAddLinkOptions | null>(null)
-  
+
   useEffect(() => {
     if (!formValues) {
       setFormValues(optionsStore)
@@ -19,7 +17,7 @@ const AddLinkOptions = () => {
   
   const handleChange = (field: keyof TAddLinkOptions) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    setFormValues(prev => ({
+    setFormValues((prev) => ({
       ...prev,
       [field]: value
     }))
@@ -30,7 +28,6 @@ const AddLinkOptions = () => {
   return (
     <div className={"w-full h-full px-20 "}>
       <div className={"w-full h-full gap-6 flex flex-col items-center justify-center  "}>
-        
         <TextField
           size={"small"}
           name="referre"
@@ -48,7 +45,6 @@ const AddLinkOptions = () => {
           value={formValues?.header || ""}
           label="header"
         />
-        
         
         <TextField
           size={"small"}
@@ -68,8 +64,6 @@ const AddLinkOptions = () => {
           label="cookie"
         />
       </div>
-    
-    
     </div>
   )
 }

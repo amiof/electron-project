@@ -5,23 +5,9 @@ const proxyConfig = electronStore.get("proxyConfig") || {}
 const aria2Config = electronStore.get("aria2Config") || {}
 const torrentConfig = electronStore.get("torrentConfig") || {}
 
-const {
-  maxConnectionSplit,
-  maxConnection,
-  connectTimeout,
-  minSplitSize,
-  maxDownloadLimit,
-  dnsServer
-} = aria2Config
+const { maxConnectionSplit, maxConnection, connectTimeout, minSplitSize, maxDownloadLimit, dnsServer } = aria2Config
 
-const {
-  ip,
-  port,
-  proxyPassword,
-  proxyType,
-  proxyStatus,
-  proxyUserName
-} = proxyConfig
+const { ip, port, proxyPassword, proxyType, proxyStatus, proxyUserName } = proxyConfig
 
 // Build proxy-related args only if proxy is enabled
 const proxyArgs = []

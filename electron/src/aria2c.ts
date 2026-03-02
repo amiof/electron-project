@@ -3,12 +3,11 @@ import WebSocket from "ws"
 import { aria2BinPath } from "./utils"
 import { config } from "./aria2Config"
 
-
 interface Aria2cRequest {
-  jsonrpc: "2.0";
-  id: string;
-  method: string;
-  params: (string | any[])[]; // Allow for different parameter types
+  jsonrpc: "2.0"
+  id: string
+  method: string
+  params: (string | any[])[] // Allow for different parameter types
 }
 
 // interface Aria2cResponse {
@@ -28,7 +27,7 @@ export default class aria2c {
   aria2cSecret: string = "test" // STORE SECURELY! Use electron-store
   aria2cPort: number = 6800
   requestMap = new Map()
-  
+
   start() {
     this.aria2cProcess = spawn(aria2BinPath(), [
       ...config,
@@ -36,14 +35,15 @@ export default class aria2c {
       `--rpc-secret=${this.aria2cSecret}`
     ])
     
-    this.aria2cProcess.stdout!.on("data", (data: Buffer) => { // Use non-null assertion (!) if sure it's not null
+    this.aria2cProcess.stdout!.on("data", (data: Buffer) => {
+      // Use non-null assertion (!) if sure it's not null
       console.log(`aria2c stdout: ${data}`)
     })
-    
+
     this.aria2cProcess.stderr!.on("data", (data: Buffer) => {
       console.error(`aria2c stderr: ${data}`)
     })
-    
+
     this.aria2cProcess.on("close", (code: number) => {
       console.log(`aria2c exited with code ${code}`)
       this.ws = null
@@ -52,7 +52,6 @@ export default class aria2c {
   
   // Handle connection open
   connect() {
-    
     this.ws = new WebSocket("ws://localhost:6800/jsonrpc")
     this.ws.onopen = () => {
       console.log("Connected to Aria2")
@@ -88,7 +87,6 @@ export default class aria2c {
     this.ws.onerror = (error) => {
       console.error("An error occurred:", error)
     }
-    
   }
   
   async sendAria2cRequest(method: string, params: any[] = [], id: string = this.generateId()) {
@@ -108,7 +106,6 @@ export default class aria2c {
             return reject(new Error("Request timed out"))
           }
         }, 5000)
-        
       })
     }
     else {
@@ -119,6 +116,4 @@ export default class aria2c {
   generateId(): string {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
   }
-  
-  
 }

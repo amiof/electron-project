@@ -28,18 +28,21 @@ type actionButton = {
   action?: () => void
 }
 const BackDetails = (props: Props) => {
-  
   const { details, downloadStatus, isTorrent, isMetaData } = props
-  
+
   const location = useLocation()
   const gid = getIdFromLocation(location, ":")
   const closePopup = window.electronAPI.closePopupWindow
-  const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
-  
+  const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
+
   const [open, setOpen] = useState(false)
   
-  const percentage = !isMetaData ? downloadStatus ? +(+downloadStatus?.completedLength / +downloadStatus?.totalLength * 100).toFixed(0) : 0 : 0
-  
+  const percentage = !isMetaData
+    ? downloadStatus
+      ? +((+downloadStatus?.completedLength / +downloadStatus?.totalLength) * 100).toFixed(0)
+      : 0
+    : 0
+
   const actionButtonData: actionButton[] = [
     {
       action: () => {
@@ -72,17 +75,14 @@ const BackDetails = (props: Props) => {
       title: "open"
     }
   ]
-  
-  
+
   return (
     <>
       <div className={styles.backDetailsContainer}>
         <div className={"h-full w-[50%] flex flex-col justify-between items-center"}>
           <div className={"h-[68%] border border-neutral-700 rounded-4xl w-full  flex flex-wrap gap-x-5 px-3"}>
-            
             <div className={"pt-4"}>
-              {
-                isTorrent &&
+              {isTorrent && (
                 <>
                   {/*<div className={"absolute top-15 right-4"}>*/}
                   {/*  <Tooltip title={findSeed?.label ?? "seed"} placement="bottom">*/}
@@ -98,11 +98,10 @@ const BackDetails = (props: Props) => {
                     <MagnetIcon style={{ fontSize: "46px" }} />
                   </div>
                 </>
-              }
-              {
-                details.map((item, index) =>
-                  (
-                    item.showDetails &&
+              )}
+              {details.map(
+                (item, index) =>
+                  item.showDetails && (
                     <div key={`details-${index}`} className="flex items-center gap-2 max-w-[50%]">
                       <Tooltip title={item.value} placement="bottom">
                         <div className="inline-flex items-center shrink-0 gap-1.5">
@@ -110,26 +109,21 @@ const BackDetails = (props: Props) => {
                           <span className="font-medium">{item.label}</span>
                         </div>
                       </Tooltip>
-
-                      <span className="truncate text-neutral-400">
-                           {item.value}
-                     </span>
+                      
+                      <span className="truncate text-neutral-400">{item.value}</span>
                     </div>
                   )
-                )
-              }
+              )}
             </div>
           </div>
-          
+
           <div
-            className={"flex flex-col gap-x-5 flex-wrap w-full h-[30%] border border-neutral-700 rounded-4xl  items-center justify-evenly"}>
+            className={
+              "flex flex-col gap-x-5 flex-wrap w-full h-[30%] border border-neutral-700 rounded-4xl  items-center justify-evenly"
+            }
+          >
             <div className={"px-6 w-full"}>
-              <ProgressBar
-                progressColor={"green"}
-                label={""}
-                darkTheme
-                score={percentage}
-              />
+              <ProgressBar progressColor={"green"} label={""} darkTheme score={percentage} />
             </div>
             
             <SpeedDial
@@ -164,7 +158,6 @@ const BackDetails = (props: Props) => {
                     backgroundColor: "#222",
                     padding: "4px"
                   }}
-                
                 />
               ))}
             </SpeedDial>
@@ -173,12 +166,11 @@ const BackDetails = (props: Props) => {
         
         <div className={"w-[50%] h-full flex justify-center border border-neutral-700 rounded-4xl"}>
           <div className={"h-full w-full px-8  flex flex-col items-center justify-evenly"}>
-            {
-              isTorrent &&
+            {isTorrent && (
               <div className={"absolute top-2 left-3"}>
                 <MagnetIcon style={{ fontSize: "46px" }} />
               </div>
-            }
+            )}
             <SpeedGraph speed={Number(downloadStatus?.downloadSpeed) || 0} />
             <ChunkMap percent={percentage} width={"100%"} gridTemp={"repeat(20, 1fr)"} />
           </div>

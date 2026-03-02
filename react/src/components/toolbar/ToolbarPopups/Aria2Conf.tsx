@@ -49,7 +49,7 @@ const aria2Fields: Aria2Field[] = [
 
 const Aria2Conf = ({ id }: Props) => {
   const closePopupWindow = window.electronAPI.closePopupWindow
-  
+
   const [formValue, setFormValue] = useState<TAria2Config>({
     minSplitSize: "8M",
     connectTimeout: "60",
@@ -58,7 +58,7 @@ const Aria2Conf = ({ id }: Props) => {
     maxConnection: "8",
     dnsServer: "8.8.8.8"
   })
-  
+
   useEffect(() => {
     ;(async () => {
       const defaultConfig = await window.electronAPI.getAria2Config()
@@ -66,15 +66,13 @@ const Aria2Conf = ({ id }: Props) => {
     })()
   }, [])
   
-  const handleChange =
-    (key: keyof TAria2Config) =>
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormValue(prev => ({
-          ...prev,
-          [key]: event.target.value
-        }))
-      }
-  
+  const handleChange = (key: keyof TAria2Config) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValue((prev) => ({
+      ...prev,
+      [key]: event.target.value
+    }))
+  }
+
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault()
     window.electronAPI.setAria2Config(formValue)
@@ -88,7 +86,7 @@ const Aria2Conf = ({ id }: Props) => {
     <div className="flex justify-center pt-12 w-full h-full">
       <form onSubmit={submitHandler} className="w-[80%]">
         <FormControl className="w-full gap-4">
-          {aria2Fields.map(field => (
+          {aria2Fields.map((field) => (
             <div className={"flex items-center justify-between "}>
               <p>{field.label}</p>
               
