@@ -19,7 +19,7 @@ export interface IElectronAPI {
   tellStopped: () => Promise<TtellRes[]>
   tellWaiting: () => Promise<TtellRes[]>
   getGlobalStates: () => Promise<TGetGlobalStateResponse>
-  addDownloadPopup: (id: string) => void
+  addDownloadPopup: (id: string, windowTitle?: string) => void
   getTellStatus: (gid: string) => Promise<TtellRes>
   setActiveDownloadData: (data: TtellRes) => void
   getActiveDownloadData: () => Promise<TtellRes[]>

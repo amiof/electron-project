@@ -32,7 +32,7 @@ interface ElectronAPI {
   removeAria2cListener: (callback: (event: IpcRendererEvent, response: Aria2cResponse) => void) => void
   getTellStatus: (gid: string) => Promise<unknown>
   getGlobalStates: () => Promise<unknown>
-  addDownloadPopup: (id: string) => void
+  addDownloadPopup: (id: string, windowTitle?: string) => void
   addLinkPopup: (id: string) => void
   closePopupWindow: (id: string) => void
   tellActive: () => Promise<unknown>
@@ -88,7 +88,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   addLinkPopup: (id: string) => ipcRenderer.send("add-link-popup", id),
   closePopupWindow: (id: string) => ipcRenderer.send("close-popup", id),
   getTellStatus: (gid: string) => ipcRenderer.invoke("get-tell-status", gid),
-  addDownloadPopup: (id: string) => ipcRenderer.invoke("popup-start-download", id),
+  addDownloadPopup: (id: string, windowTitle?: string) => ipcRenderer.invoke("popup-start-download", id, windowTitle),
   getGlobalStates: () => ipcRenderer.invoke("get-global-state"),
   tellActive: () => ipcRenderer.invoke("tell-active"),
   tellStopped: () => ipcRenderer.invoke("tell-stoped"),

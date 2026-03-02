@@ -82,7 +82,7 @@ export const ipcUtilsHandler = () => {
           urlResponse.size = null
         }
         urlResponse.fileName = fileName
-        
+
         if (
           fileName?.endsWith(".torrent") ||
           url.startsWith(".torrent") ||
@@ -91,7 +91,7 @@ export const ipcUtilsHandler = () => {
         ) {
           urlResponse.typeUrl = "torrent"
         }
-        
+
         //for check resumeable link
         urlResponse.resume = !!(contentLength2 && acceptRanges === "bytes")
       }
@@ -184,8 +184,9 @@ export const ipcUtilsHandler = () => {
           click: () => {
             isResume.map((item) => {
               const gid = item?.Gid
+              const fileName = item?.FileName
               createPopupWindow({
-                windowTitle: "download",
+                windowTitle: fileName?.trim() ? fileName : "download",
                 height: 400,
                 width: 900,
                 hashRoute: `downloadStart/:${gid}`,

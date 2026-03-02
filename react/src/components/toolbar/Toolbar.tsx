@@ -39,7 +39,7 @@ const Toolbar = () => {
       title: "Resume",
       action: () => {
         if (getSelectedRows[0]?.Gid) {
-          window.electronAPI.addDownloadPopup(getSelectedRows[0].Gid)
+          window.electronAPI.addDownloadPopup(getSelectedRows[0].Gid, getSelectedRows[0].FileName)
           window.electronAPI.unPauseByGid(getSelectedRows[0].Gid)
           getAllDownloads()
         }

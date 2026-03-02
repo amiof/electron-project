@@ -18,7 +18,7 @@ const AddLinkPopup = () => {
 
   const location = useLocation()
   const id = getIdFromLocation(location, ":")
-  
+
   const linkAddressStore = useAddLinkStore((state) => state.linkAddressStore)
   const savePathStore = useAddLinkStore((state) => state.savePathStore)
   const fileNameStore = useAddLinkStore((state) => state.fileNameStore)
@@ -28,7 +28,7 @@ const AddLinkPopup = () => {
   const downloadHandler = async () => {
     if (linkAddressStore) {
       const gid = await addDownloadDir(linkAddressStore, savePathStore, fileNameStore, proxyConfigs, options)
-      addDownloadPopup(gid)
+      addDownloadPopup(gid, fileNameStore)
       closePopupWindow(id)
     }
   }
