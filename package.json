@@ -17,7 +17,7 @@
     "package:win": "npm run build && electron-builder --win",
     "package:mac:zip": "npm run build && electron-builder --mac=zip",
     "postinstall": "electron-builder install-app-deps",
-    "icon-flatten": "electron-icon-builder --input=assets/source.png --output=./assets --flatten"
+    "icon-flatten": "electron-icon-builder --input=assets/shabdiz.png --output=./assets --flatten"
   },
   "build": {
     "appId": "com.yourapp.id",
