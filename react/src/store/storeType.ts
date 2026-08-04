@@ -1,4 +1,4 @@
-import { TDownloads, TFileDetails, TtellRes } from "@src/types.ts"
+import { TDownloads, TFileDetails, TSchedulerGid, TtellRes } from "@src/types.ts"
 
 export type TDownloaderState = {
   files: string[] | null
@@ -15,6 +15,7 @@ export type TDownloaderState = {
   sidebarSelectedLabel: string
   downloadsGroupByLabel: Record<string, TDownloads[]>
   mainTableId: string
+  schedulerGidRows: TSchedulerGid[]
 }
 
 export type TDownloaderActions = {
@@ -28,6 +29,7 @@ export type TDownloaderActions = {
   getActiveDataFromElectron: () => Promise<void>
   getDownloadedFilesDetails: () => Promise<void>
   getCompletedRowFromDB: () => Promise<void>
+  getSchedulerGidRow: () => Promise<void>
   setSelectedRow: (Rows: TDownloads[]) => void
   setSearchValue: (text: string) => void
   setSidebarSelectedLabel: (label: string) => void

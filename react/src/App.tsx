@@ -11,10 +11,12 @@ import useDownloaderStore from "@src/store/downloaderStore.ts"
 function App() {
   const getDownloadedFilesDetails = useDownloaderStore((state) => state.getDownloadedFilesDetails)
   const getCompletedRowsFromDB = useDownloaderStore((state) => state.getCompletedRowFromDB)
+  const getSchedulerGidRow = useDownloaderStore((state) => state.getSchedulerGidRow)
 
   useEffect(() => {
     getCompletedRowsFromDB()
     getDownloadedFilesDetails()
+    getSchedulerGidRow()
   }, [])
   
   return (

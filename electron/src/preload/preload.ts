@@ -53,6 +53,7 @@ interface ElectronAPI {
   removeSelectedDownloads: (gidList: string[]) => void
   openFolder: (path: string) => void
   openOptionsPopup: (id: string) => Promise<unknown>
+  openSchedulerPopup: (id: string) => Promise<unknown>
   setProxyConfig: (config: TProxyConfig) => Promise<unknown>
   getProxyConfig: () => Promise<unknown>
   setAria2Config: (config: TAria2Config) => Promise<unknown>
@@ -67,6 +68,16 @@ interface ElectronAPI {
   showContextMenu: (id: string) => Promise<unknown>
   onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => Promise<any>
   readClipboard: () => Promise<string>
+  addSchedulerTime: (
+    startTime: string | undefined,
+    endTime: string | undefined,
+    keepAlive: boolean,
+    powerOff: boolean
+  ) => Promise<unknown>
+  
+  getSchedulerDownloadRows: () => Promise<unknown>
+  addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
+  removeRowsFromSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
 }
 
 declare global {
@@ -97,6 +108,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   //popup
   openOptionsPopup: (id: string) => ipcRenderer.send("open-options-popup", id),
   
+  //popup open scheduler
+  openSchedulerPopup: (id: string) => ipcRenderer.send("open-scheduler-popup", id),
+
   // update main window in start download
   setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),
   getActiveDownloadData: () => ipcRenderer.invoke("get-download-data-active"),
@@ -104,7 +118,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("data-change", (_event, data) => callback(data))
   },
   getDownloadedFilesDetails: () => ipcRenderer.invoke("get-downloaded-files-details"),
-  
+
   // use DataBase
   addLinkToDB: (downloadRow: TtellRes) => ipcRenderer.invoke("add-link-to-db", downloadRow),
   updateDownloadRowStatus: (gid: string, downloadRow: STATUS_TYPE) =>
@@ -138,5 +152,21 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => {
     ipcRenderer.on("context-menu-action", (_event, payload) => callback(payload))
   },
-  readClipboard: () => ipcRenderer.invoke("read-clipboard")
+  readClipboard: () => ipcRenderer.invoke("read-clipboard"),
+  
+  //scheduler
+  addSchedulerTime: (
+    startTime: string | undefined,
+    endTime: string | undefined,
+    keepAlive: boolean,
+    powerOff: boolean
+  ) => ipcRenderer.invoke("add-scheduler-time", startTime, endTime, keepAlive, powerOff),
+  
+  getSchedulerDownloadRows: () => ipcRenderer.invoke("get-scheduler-download-rows"),
+  
+  addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) =>
+    ipcRenderer.send("add-rows-to-scheduler-queue", downloadRows),
+  
+  removeRowsFromSchedulerQueue: (downloadRows: TtellRes[]) =>
+    ipcRenderer.invoke("remove-rows-from-scheduler-queue", downloadRows)
 })

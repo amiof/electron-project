@@ -10,6 +10,8 @@ export type TDownloads = {
   CompletedSize?: string
   Gid: string
   NumberConnections: string
+  isTorrent: boolean
+  schedulerQueue: boolean
 }
 
 export type TUri = {
@@ -56,6 +58,12 @@ export type TtellRes = {
   totalLength: string
   uploadSpeed?: string
   uploadLength: string
+  schedulerQueue?: boolean
+}
+export type TSchedulerGid = {
+  id: number
+  gid: string
+  CreatedAt?: Date
 }
 
 // export type TTorrentRes = {

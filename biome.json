@@ -407,7 +407,7 @@
           },
           "suspicious": {
             "noAsyncPromiseExecutor": "off",
-            "noConsole": "off",
+            "noConsole": "warn",
             "noExplicitAny": "off",
             "noTsIgnore": "off"
           }

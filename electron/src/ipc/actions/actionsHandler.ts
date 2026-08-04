@@ -13,8 +13,8 @@ export const ipcActionsHandler = () => {
   ipcMain.handle(ACTIONS_CHANNELS.UNPAUSE_ALL, async (_: IpcMainInvokeEvent) => {
     return await aria2.sendAria2cRequest("unpauseAll")
   })
-
-  ipcMain.on(ACTIONS_CHANNELS.UNPAUSE_BY_GID, async (_: IpcMainEvent, gid: string) => {
+  
+  ipcMain.on(ACTIONS_CHANNELS.UNPAUSE_BY_GID, async (_: any, gid: string) => {
     try {
       await aria2.sendAria2cRequest("unpause", [gid])
     }

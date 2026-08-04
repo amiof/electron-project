@@ -10,8 +10,12 @@ import "./store/electronStore"
 import { ipcActionsHandler } from "./ipc/actions/actionsHandler"
 import { ipcConfigHandler } from "./ipc/config/configHandler"
 import { ipcUtilsHandler } from "./ipc/utils/utils"
+import { ipcSchedulerHandler } from "./ipc/scheduler/scheduler"
+import { SchedulerProcess } from "./schedulerProcess/schedulerProcess"
 
 export let mainWindow: BrowserWindow | null
+
+export const schedulers: Record<string, NodeJS.Timeout> = {}
 
 checkSessionExists()
 
@@ -47,7 +51,7 @@ function createWindow() {
   mainWindow.setContentSize(1000, 500, true)
   if (process.env.NODE_ENV === "development") {
     // In development, load the React dev server.
-    mainWindow.loadURL("http://localhost:3000")
+    mainWindow.loadURL("http://localhost:3353")
     // mainWindow.webContents.openDevTools();
     const iconPath = path.join(__dirname, "..", "..", "assets", "icons", "512x512.png")
     mainWindow.setIcon(iconPath)
@@ -57,14 +61,14 @@ function createWindow() {
       const iconPath = path.join(process.resourcesPath, "assets", "icons", "512x512.png")
       mainWindow.setIcon(iconPath)
     }
-    
+
     // In production, load the built index.html from extraResources.
     // Using process.resourcesPath ensures we reference the correct folder outside the asar.
     const indexPath = path.join(process.resourcesPath, "react", "dist", "index.html")
     // mainWindow.loadFile(indexPath);
     mainWindow.loadFile(indexPath).catch((err) => console.error("Failed to load index.html:", err))
   }
-  
+
   mainWindow.on("closed", () => {
     mainWindow = null
   })
@@ -85,15 +89,19 @@ app.on("window-all-closed", () => {
 
 export const aria2 = new aria2c()
 
+export const schedulerInstance = new SchedulerProcess()
+
 app.whenReady().then(() => {
   createWindow()
   // startAria2c();
   aria2.start()
   
+  schedulerInstance.initScheduler()
+
   // setTimeout(connectToAria2c, 1000);
   setTimeout(() => aria2.connect(), 1000)
-  // setInterval(()=>aria2.sendAria2cRequest('aria2.getVersion'), 3000);
-  
+  // setInterval(()=>aria2.sendAria2cRequest('aria2.getVersion'), 3353);
+
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -123,3 +131,4 @@ ipcPopupHandler()
 ipcActionsHandler()
 ipcConfigHandler()
 ipcUtilsHandler()
+ipcSchedulerHandler()

@@ -1,5 +1,5 @@
 import Store from "electron-store"
-import { TAria2Config, TProxyConfig, TTorrentConfig } from "../types"
+import { TAria2Config, TProxyConfig, TScheduler, TTorrentConfig } from "../types"
 
 interface Schema {
   theme: string
@@ -9,6 +9,7 @@ interface Schema {
   aria2Config: TAria2Config
   selectedStorageDirectory: string | null
   torrentConfig: TTorrentConfig
+  scheduler: TScheduler
 }
 
 //add electron-store for save settings to config.json
@@ -49,6 +50,12 @@ export const electronStore = new Store<Schema>({
       maxUploadLimit: "1K",
       maxOverallDownloadLimit: "0",
       tracker: null
+    },
+    scheduler: {
+      startTime: undefined,
+      endTime: undefined,
+      keepAlive: false,
+      powerOff: false
     }
   }
 })

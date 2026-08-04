@@ -2,6 +2,7 @@ import { ChildProcess, spawn } from "child_process"
 import WebSocket from "ws"
 import { aria2BinPath } from "./utils"
 import { config } from "./aria2Config"
+import { EventEmitter } from "node:events"
 
 interface Aria2cRequest {
   jsonrpc: "2.0"
@@ -21,12 +22,16 @@ interface Aria2cRequest {
 // }
 //
 
-export default class aria2c {
+export default class aria2c extends EventEmitter {
   ws: WebSocket | null = null
   aria2cProcess: ChildProcess | null = null
   aria2cSecret: string = "test" // STORE SECURELY! Use electron-store
   aria2cPort: number = 6800
   requestMap = new Map()
+  
+  constructor() {
+    super()
+  }
 
   start() {
     this.aria2cProcess = spawn(aria2BinPath(), [
@@ -71,10 +76,18 @@ export default class aria2c {
         if (data.id && this.requestMap.has(data.id)) {
           this.requestMap.get(data.id)(data.result)
           this.requestMap.delete(data.id)
-          console.log("data", data)
+          console.log("data Evnet ", data)
         }
         else if (data.method) {
           console.log("Aria2 Event:", data.method, data.params)
+          // can get this event in out of aria2 like this aira2.on(eventname,(envent)=>{})
+          // onDownloadStart
+          // onDownloadPause
+          // onDownloadComplete
+          // onDownloadError
+          const eventName = data.method.replace("aria2.", "")
+          this.emit(eventName, data.params[0])
+          
         }
         // console.log("Message:", response)
       }

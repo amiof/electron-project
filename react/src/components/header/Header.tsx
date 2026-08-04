@@ -75,7 +75,7 @@ const Header = () => {
         placeholder={"search in the list"}
         onChange={(e) => setInputText(e.target.value)}
         sx={{
-          backgroundColor: "rgba(255, 255, 255, 0.08)",
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
           borderRadius: "15px",
           color: "white",
           width: "230px",

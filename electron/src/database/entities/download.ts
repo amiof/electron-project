@@ -8,7 +8,7 @@ export class Download implements TtellRes {
 
   @Column({ type: "text", nullable: false })
   bitfield!: string
-  
+
   @Column({ type: "text", nullable: false })
   completedLength!: string
   
@@ -56,6 +56,9 @@ export class Download implements TtellRes {
   @Column({ type: "text", nullable: false })
   uploadLength!: string
   
+  @Column({ type: "boolean", nullable: false, default: false })
+  schedulerQueue!: boolean
+
   @CreateDateColumn({ type: "datetime", nullable: false })
   createdAt!: Date
 }

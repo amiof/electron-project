@@ -17,6 +17,7 @@ const useDownloaderStore = create<TDownloaderStore>((set, get) => ({
   sidebarSelectedLabel: "",
   downloadsGroupByLabel: { null: [] },
   mainTableId: "initial",
+  schedulerGidRows: [],
   ...downloaderAction(set, get)
 }))
 

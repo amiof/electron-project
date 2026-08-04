@@ -38,7 +38,7 @@ const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
     parent: "none"
   },
   { id: "3", label: "Finished", fileType: "finish", parent: "none" },
-  { id: "4", label: "Trash", fileType: "trash", parent: "none" }
+  { id: "4", label: "Queue", fileType: "queue", parent: "none" }
 ]
 
 export default ITEMS

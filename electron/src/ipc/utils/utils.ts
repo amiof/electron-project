@@ -1,5 +1,5 @@
 import { BrowserWindow, clipboard, ipcMain, Menu, Notification } from "electron"
-import { ACTIONS_CHANNELS, POPUP_CHANNELS, UTILS_CHANNELS } from "../channels"
+import { ACTIONS_CHANNELS, POPUP_CHANNELS, SCHEDULE_CHANNELS, UTILS_CHANNELS } from "../channels"
 import { resMetadataUrls, STATUS_TYPE, TDownloads, TNotificationDetailes } from "../../types"
 import { directionFolder, extractFilenameFromDisposition, generateId } from "../../utils"
 import { createPopupWindow, iconPathContextMenu } from "../utils"
@@ -98,13 +98,13 @@ export const ipcUtilsHandler = () => {
       catch (error) {
         console.error("error in get url header2", error)
       }
-      
+
       console.error("error in get url header1", error)
     }
-    
+
     return urlResponse
   })
-  
+
   ipcMain.handle(
     UTILS_CHANNELS.SHOW_CONTEXT_MENU,
     async (event: IpcMainInvokeEvent, selectedDownloadRow: TDownloads[] | []) => {
@@ -113,7 +113,8 @@ export const ipcUtilsHandler = () => {
       const isResume = selectedDownloadRow.filter(
         (item) => item.Status !== STATUS_TYPE.ACTIVE && item.Status !== STATUS_TYPE.COMPLETE
       )
-      
+      const isScheduler = selectedDownloadRow.some((row) => row.schedulerQueue === true)
+
       const menu = Menu.buildFromTemplate([
         {
           label: "Add new link",
@@ -219,10 +220,21 @@ export const ipcUtilsHandler = () => {
         {
           label: "Add to scheduler ",
           visible: !!selectedDownloadRow.length,
+          enabled: !isScheduler,
           icon: iconPathContextMenu("scheduler-32.png"),
           click: () => {
-            console.log("scheduler")
+            ipcMain.emit(SCHEDULE_CHANNELS.ADD_ROWS_TO_SCHEDULER_QUEUE, event, selectedDownloadRow)
             mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "add-scheduler")
+          }
+        },
+        {
+          label: "Remove from scheduler ",
+          visible: !!selectedDownloadRow.length,
+          enabled: isScheduler,
+          icon: iconPathContextMenu("scheduler-32.png"),
+          click: () => {
+            ipcMain.emit(SCHEDULE_CHANNELS.Remove_Rows_From_SCHEDULE_QUEUE, event, selectedDownloadRow)
+            mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "remove-scheduler")
           }
         }
       ])

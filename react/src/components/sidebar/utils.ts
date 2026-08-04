@@ -4,12 +4,12 @@ import ArticleIcon from "@mui/icons-material/Article"
 import VideoCameraBackIcon from "@mui/icons-material/VideoCameraBack"
 import FolderRounded from "@mui/icons-material/FolderRounded"
 import FolderOpenIcon from "@mui/icons-material/FolderOpen"
-import DeleteIcon from "@mui/icons-material/Delete"
 import FolderZipIcon from "@mui/icons-material/FolderZip"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import AppsIcon from "@mui/icons-material/Apps"
 import RemoveDoneIcon from "@mui/icons-material/RemoveDone"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import { Queue } from "@mui/icons-material"
 
 export type FileType =
   | "image"
@@ -18,7 +18,7 @@ export type FileType =
   | "video"
   | "folder"
   | "pinned"
-  | "trash"
+  | "queue"
   | "music"
   | "zip"
   | "all"
@@ -39,8 +39,8 @@ export const getIconFromFileType = (fileType: FileType) => {
       return FolderRounded
     case "pinned":
       return FolderOpenIcon
-    case "trash":
-      return DeleteIcon
+    case "queue":
+      return Queue
     case "music":
       return MusicNoteIcon
     case "zip":

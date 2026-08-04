@@ -1,6 +1,6 @@
 import { StoreApi } from "zustand"
 import { TDownloaderActions, TDownloaderStore } from "./storeType"
-import { formatBytes, getFileName } from "@src/utils.ts"
+import { formatBytes, getFileName, isTorrentMode } from "@src/utils.ts"
 import { TDownloads, TFileDetails, TtellRes } from "@src/types.ts"
 import * as _ from "lodash"
 
@@ -28,10 +28,13 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
     await get().getTellActive()
     await get().getTellWaiting()
     await get().getDownloadedFilesDetails()
+    await get().getSchedulerGidRow()
+    
 
     const tellActive = get().tellActive
     const tellWaiting = get().tellWaiting
     const tellStopped = get().tellStopped
+    const schedulerGidRows = get().schedulerGidRows
 
     const completedRowsFromDB = get().completedRowFromDB
     const filteredCompletedStop: TtellRes[] = []
@@ -43,7 +46,7 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
     }
 
     const downloadedFilesDetails = get().downloadedFilesDetails
-    
+
     const downloadsRows: TDownloads[] = [
       ...filteredCompletedStop,
       ...tellWaiting,
@@ -67,7 +70,11 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
           : Number(((+download.completedLength / +download.totalLength) * 100).toFixed(0)),
         Status: download?.status,
         Gid: download?.gid,
-        NumberConnections: download?.connections
+        NumberConnections: download?.connections,
+        isTorrent: isTorrentMode(download),
+        schedulerQueue: schedulerGidRows.some((row) => {
+          return row.gid === download.gid
+        })
       }
     })
     set({ allDownloadsRow: [...downloadsRows] })
@@ -141,6 +148,10 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
   },
   refreshMainTableId: (id: string) => {
     set({ mainTableId: id })
+  },
+  getSchedulerGidRow: async () => {
+    const gidRows = await window.electronAPI.getSchedulerDownloadRows()
+    set({ schedulerGidRows: gidRows })
   }
   
   // removeFile: (file: string) => {

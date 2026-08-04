@@ -41,18 +41,21 @@ const Main = () => {
   else if (sidebarSelectedLabel === "UnFinished") {
     dataGridRow = downloadsRow.filter((item) => item.Status !== "complete")
   }
+  else if (sidebarSelectedLabel === "Queue") {
+    dataGridRow = downloadsRow.filter((item) => item.schedulerQueue)
+  }
   else {
     dataGridRow = downloadsGroupingByLabel[sidebarSelectedLabel.toLowerCase()]
     if (!dataGridRow) dataGridRow = []
   }
 
   const [activeDownloads, setActiveDownloads] = useState<TtellRes | null>(null)
-  
+
   window.electronAPI.onDataChange(async (data) => {
     const result = await data
     setActiveDownloads(result)
   })
-  
+
   useEffect(() => {
     window.electronAPI.onContextMenuAction((payload) => {
       if (typeof payload === "string") {
@@ -90,6 +93,11 @@ const Main = () => {
             break
           case "add-scheduler":
             console.log(payload)
+            window.location.reload()
+            break
+          case "remove-scheduler":
+            console.log(payload)
+            window.location.reload()
             break
           default:
             return undefined

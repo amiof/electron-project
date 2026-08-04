@@ -81,7 +81,7 @@ const BackDetails = (props: Props) => {
       <div className={styles.backDetailsContainer}>
         <div className={"h-full w-[50%] flex flex-col justify-between items-center"}>
           <div className={"h-[68%] border border-neutral-700 rounded-4xl w-full  flex flex-wrap gap-x-5 px-3"}>
-            <div className={"pt-4"}>
+            <div className={"pt-4 w-full"}>
               {isTorrent && (
                 <>
                   {/*<div className={"absolute top-15 right-4"}>*/}
@@ -102,7 +102,7 @@ const BackDetails = (props: Props) => {
               {details.map(
                 (item, index) =>
                   item.showDetails && (
-                    <div key={`details-${index}`} className="flex items-center gap-2 max-w-[50%]">
+                    <div key={`details-${index}`} className="flex items-center gap-2 max-w-[100%] ">
                       <Tooltip title={item.value} placement="bottom">
                         <div className="inline-flex items-center shrink-0 gap-1.5">
                           {item.icon}
@@ -110,7 +110,7 @@ const BackDetails = (props: Props) => {
                         </div>
                       </Tooltip>
                       
-                      <span className="truncate text-neutral-400">{item.value}</span>
+                      <span className="text-neutral-400 truncate">{item.value}</span>
                     </div>
                   )
               )}

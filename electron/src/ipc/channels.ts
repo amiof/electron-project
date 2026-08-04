@@ -18,7 +18,8 @@ export const POPUP_CHANNELS = {
   ADD_LINK_POPUP: "add-link-popup",
   CLOSE_POPUP_WINDOW: "close-popup",
   POPUP_START_DOWNLOAD: "popup-start-download",
-  POPUP_OPEN_OPTIONS: "open-options-popup"
+  POPUP_OPEN_OPTIONS: "open-options-popup",
+  POPUP_OPEN_SCHEDULER: "open-scheduler-popup"
 }
 
 export const ACTIONS_CHANNELS = {
@@ -48,4 +49,10 @@ export const UTILS_CHANNELS = {
   SHOW_CONTEXT_MENU: "show-context-menu",
   CONTEXT_MENU_ACTION: "context-menu-action",
   READ_CLIPBOARD: "read-clipboard"
+}
+export const SCHEDULE_CHANNELS = {
+  GET_SCHEDULER_DOWNLOAD_ROWS: "get-scheduler-download-rows",
+  ADD_ROWS_TO_SCHEDULER_QUEUE: "add-rows-to-scheduler-queue",
+  Remove_Rows_From_SCHEDULE_QUEUE: "remove-rows-From-scheduler-queue",
+  ADD_SCHEDULER_TIME: "add-scheduler-time"
 }

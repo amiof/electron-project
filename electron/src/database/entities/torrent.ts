@@ -8,7 +8,7 @@ export class Torrent implements TTorrentRes {
 
   @Column({ type: "text", nullable: false })
   infoHash!: string
-  
+
   @Column({
     type: "text",
     nullable: false,
@@ -78,4 +78,7 @@ export class Torrent implements TTorrentRes {
   
   @UpdateDateColumn({ type: "datetime", nullable: false })
   updatedAt!: Date
+  
+  @Column({ type: "boolean", nullable: false, default: false })
+  schedulerQueue!: boolean
 }

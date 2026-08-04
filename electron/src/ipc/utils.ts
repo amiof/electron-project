@@ -37,9 +37,9 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
   })
   popupWindow.setMenuBarVisibility(false)
   const isDev = process.env.NODE_ENV === "development"
-  
+
   const popupURL = isDev
-    ? `http://localhost:3000/#/${hashRoute}`
+    ? `http://localhost:3353/#/${hashRoute}`
     : `file://${path.join(process.resourcesPath, "react", "dist", "index.html")}#/${hashRoute}`
   popupWindow.loadURL(popupURL)
   
@@ -56,3 +56,4 @@ export const iconPathContextMenu = (iconName: string) => {
     return path.join(process.resourcesPath, "assets", `${iconName}`)
   }
 }
+

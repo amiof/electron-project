@@ -32,6 +32,11 @@ const Toolbar = () => {
     const id = generateId()
     openOptionsPopup(id)
   }
+  
+  const openSchedulerHandler = () => {
+    const id = generateId()
+    openSchedulerPopup(id)
+  }
 
   const firstButtonActions: TButtonActions[] = [
     {
@@ -89,7 +94,8 @@ const Toolbar = () => {
 
     {
       IconElement: <PendingActionsOutlinedIcon fontSize={"medium"} />,
-      title: "Scheduler"
+      title: "Scheduler",
+      action: openSchedulerHandler
     },
     {
       IconElement: <ReplyOutlinedIcon sx={{ transform: "ScaleX(-1)" }} fontSize={"medium"} />,
@@ -100,7 +106,8 @@ const Toolbar = () => {
   const addDownloadDir = window.electronAPI.addDownloadDir
   const addLinkPopup = window.electronAPI.addLinkPopup
   const openOptionsPopup = window.electronAPI.openOptionsPopup
-  
+  const openSchedulerPopup = window.electronAPI.openSchedulerPopup
+
   const getAllDownloadRow = useDownloaderStore((state) => state.getAllDownloadsRow)
 
   const clickHandler = async () => {

@@ -1,4 +1,11 @@
-import { resMetadataUrls, TDownloads, TFileDetails, TGetGlobalStateResponse, TtellRes } from "@src/types.ts"
+import {
+  resMetadataUrls,
+  TDownloads,
+  TFileDetails,
+  TGetGlobalStateResponse,
+  TSchedulerGid,
+  TtellRes
+} from "@src/types.ts"
 import { TAria2Config, TNotificationDetailes, TProxyConfig, TTorrentConfig } from "@src/store/storeType.ts"
 import { TAddLinkOptions } from "@components/addLinkPopup/store/addLinkStoreType.ts"
 
@@ -46,6 +53,13 @@ export interface IElectronAPI {
   removeSelectedDownloads: (gidList: string[]) => void
   openFolder: (path: string) => void
   openOptionsPopup: (id: string) => Promise<string>
+  openSchedulerPopup: (id: string) => Promise<void>
+  addSchedulerTime: (
+    startTime: string | undefined,
+    endTime: string | undefined,
+    keepAlive: boolean,
+    powerOff: boolean
+  ) => Promise<unknown>
   setProxyConfig: (config: TProxyConfig) => Promise<unknown>
   getProxyConfig: () => Promise<TProxyConfig>
   setAria2Config: (config: TAria2Config) => Promise<unknown>
@@ -59,6 +73,8 @@ export interface IElectronAPI {
   getMetadataUrls: (url: string) => Promise<resMetadataUrls>
   showContextMenu: (selectedItems: [] | TDownloads[]) => Promise<unknown>
   readClipboard: () => Promise<string>
+  getSchedulerDownloadRows: () => Promise<TSchedulerGid[]>
+  addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
 }
 
 declare global {

@@ -52,6 +52,7 @@ export type TtellRes = {
   totalLength: string
   uploadSpeed?: string
   uploadLength: string
+  schedulerQueue?: boolean
 }
 
 export type TTorrentRes = {
@@ -96,6 +97,8 @@ export type TDownloads = {
   CompletedSize?: string
   Gid: string
   NumberConnections: string
+  isTorrent: boolean
+  schedulerQueue: boolean
 }
 
 // export type TtellRes = {
@@ -158,6 +161,19 @@ export type TTorrentConfig = {
   maxOverallDownloadLimit: string
   tracker: string | null
 }
+export type TScheduler = {
+  startTime: string | undefined
+  endTime: string | undefined
+  keepAlive: boolean
+  powerOff: boolean
+}
+
+export type TSchedulerDatabase = {
+  id: number
+  gid: string
+  CreatedAt?: Date
+}
+
 
 // export type TTorrentRowDatabase = {
 //   bittorrent: {

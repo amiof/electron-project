@@ -225,7 +225,7 @@ export const checkSessionExists = () => {
   if (!fsnp.existsSync(sessionPath)) {
     const fd = fsnp.openSync(sessionPath, "w")
     fsnp.closeSync(fd)
-    
+
     console.log("session file  created ✌ ")
   }
   else {
@@ -243,7 +243,7 @@ export const aria2BinPath = () => {
   else {
     basePath = path.join(process.resourcesPath, "electron", "dist", "bin") //for product mode
   }
-  
+
   try {
     switch (systemPlatform) {
       case "win32":
@@ -329,3 +329,82 @@ export const extractFilenameFromDisposition = (headerValue: string | null) => {
 export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
+
+// time must be like "12:30" for use this function
+// export const diffTimeNow = (time: string) => {
+//   const [h, m] = time.split(":").map(Number)
+//
+//   const now = new Date()
+//   const target = new Date()
+//
+//   target.setHours(h, m, 0, 0)
+//
+//   return target.getTime() - now.getTime()
+// }
+//
+// // for set setTimeout for run action
+// export const schedulerRun = (startTime: string | null, endTime: string | null) => {
+//   if (startTime) {
+//     const startDiff = diffTimeNow(startTime)
+//
+//     schedulers["start"] = setTimeout(() => {
+//       console.log("start time reached")
+//
+//       if (!schedulers["end"]) {
+//         clearScheduler()
+//       }
+//     }, startDiff)
+//   }
+//
+//   if (endTime) {
+//     const endDiff = diffTimeNow(endTime)
+//     // end timer
+//     schedulers["end"] = setTimeout(() => {
+//       console.log("end time reached")
+//       clearScheduler()
+//       // powerOffSystem()
+//     }, endDiff)
+//   }
+//
+//   console.log("active timers:", schedulers)
+// }
+// // for clear scheduler setTimeout id and store scheduler
+// export const clearScheduler = () => {
+//   if (schedulers["start"]) {
+//     clearTimeout(schedulers["start"])
+//   }
+//
+//   if (schedulers["end"]) {
+//     clearTimeout(schedulers["end"])
+//   }
+//
+//   const storeScheduler: TScheduler = {
+//     startTime: undefined,
+//     endTime: undefined,
+//     keepAlive: false,
+//     powerOff: false
+//   }
+//   electronStore.set("scheduler", storeScheduler)
+// }
+//
+// when program start check if set scheduler in store run scheduler
+// export const initScheduler = () => {
+//   const schedulerStore = electronStore.get("scheduler")
+//   const { startTime, endTime } = schedulerStore
+//   if (startTime) {
+//     schedulerRun(startTime, endTime)
+//   } else {
+//     clearScheduler()
+//   }
+// }
+//
+// export const powerOffSystem = () => {
+//   const platform = os.platform()
+//   if (platform === "win32") {
+//     exec("shutdown /s /t 0")
+//   } else if (platform === "linux") {
+//     exec("shutdown now")
+//   } else if (platform === "darwin") {
+//     exec("sudo shutdown -h now")
+//   }
+// }
