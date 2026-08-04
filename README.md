@@ -1,5 +1,5 @@
 <div  align="center">
-  <img src="./assets/256x256.png" alt="icon"/>
+  <img src="./assets/icons/256x256.png" alt="icon"/>
 </div>
 
 ## 📥 Shabdiz Download Manager
