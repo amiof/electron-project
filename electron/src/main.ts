@@ -1,21 +1,21 @@
 import { app, BrowserWindow } from "electron"
 import path from "path"
 import aria2c from "./aria2c"
-import { checkAndCreateFolder, checkSessionExists } from "./utils"
 import { DataSourceRepo } from "./database/database"
 import ipcDownloadHandler from "./ipc/download/downloadHandler"
 import ipcGetDataHandler from "./ipc/getData/getDataHandler"
 import ipcPopupHandler from "./ipc/openPopup/popupHandler"
+import { checkAndCreateFolder, checkSessionExists } from "./utils"
 import "./store/electronStore"
 import { ipcActionsHandler } from "./ipc/actions/actionsHandler"
 import { ipcConfigHandler } from "./ipc/config/configHandler"
-import { ipcUtilsHandler } from "./ipc/utils/utils"
 import { ipcSchedulerHandler } from "./ipc/scheduler/scheduler"
+import { ipcUtilsHandler } from "./ipc/utils/utils"
 import { SchedulerProcess } from "./schedulerProcess/schedulerProcess"
 
 export let mainWindow: BrowserWindow | null
 
-export const schedulers: Record<string, NodeJS.Timeout> = {}
+export const schedulers: Record<string, ReturnType<typeof setInterval> | undefined> = {}
 
 checkSessionExists()
 

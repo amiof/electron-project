@@ -122,23 +122,23 @@ const Main = () => {
       }
     })
   }, [])
-  
+
   //for refresh mainTable when i other component need refresh main table
   useLayoutEffect(() => {
     if (prevMainTableId.current !== mainTableId) {
       window.location.reload()
     }
   }, [mainTableId])
-  
+
   useEffect(() => {
     //for get session data in start app
     setTimeout(async () => {
       await getAllDownloads()
     }, 1000)
   }, [])
-  
+
   useEffect(() => {
-    let interval: NodeJS.Timeout | null
+    let interval: ReturnType<typeof setInterval> | null
     if (tellActive.length) {
       interval = setInterval(async () => {
         await getAllDownloads()
@@ -193,9 +193,18 @@ const Main = () => {
       width: 200,
       renderCell: (params) => {
         return (
-          <div className={clsx("flex justify-between items-center  h-full", styles.progress)}>
-            <ProgressBar label={""} hideText={true} progressColor={"green"} darkTheme score={+params.row.Percentage!} />
-            <div>{params.row.Percentage!}%</div>
+          <div className={clsx("flex flex-col items-center", styles.progress)}>
+            <div className="h-[75%]">{params.row.Percentage!}%</div>
+            
+            <ProgressBar
+              label={""}
+              hideText={true}
+              className={styles.fixProgress}
+              disableGlow={false}
+              progressColor={"green"}
+              darkTheme={true}
+              score={+params.row.Percentage!}
+            />
           </div>
         )
       },
@@ -294,9 +303,6 @@ const Main = () => {
               borderColor: "var(--color-neutral-800)"
             }
           },
-          "& .MuiCheckbox-root ": {
-            color: "white"
-          },
           // scrollbar
           "& .MuiDataGrid-scrollbar": {
             transition: "all 0.3s ease",
@@ -304,6 +310,18 @@ const Main = () => {
             "&:hover": {
               height: "30% !important"
             }
+          },
+          ".MuiDataGrid-row.Mui-selected": {
+            backgroundColor: "rgb(208 213 217 / 10% )"
+          },
+          "& .MuiCheckbox-root ": {
+            color: "#ececec4a"
+          },
+          "& .MuiCheckbox-root.Mui-checked": {
+            color: "#7ac279"
+          },
+          "& .MuiDataGrid-cell:focus-within": {
+            outline: "none"
           }
         }}
       />

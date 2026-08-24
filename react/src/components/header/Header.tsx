@@ -31,7 +31,7 @@ const Header = () => {
   }, [inputText])
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null
+    let interval: ReturnType<typeof setInterval> | null
     
     if (tellActive.length) {
       ;(async () => {

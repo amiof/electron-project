@@ -6,14 +6,14 @@ import { formatBytes, formatTime, getIdFromLocation, isMetadataPhase, isTorrentM
 import styles from "./style.module.scss"
 import BackDetails from "@components/startDownload/BackDetails.tsx"
 import clsx from "clsx"
-import FolderIcon from "@src/assets/folderIcon.tsx"
-import LinkIcon from "@src/assets/LinkIcon.tsx"
-import SpeedTestIcon from "@src/assets/SpeedTestIcon.tsx"
-import ConnectionIcon from "@src/assets/ConnectionIcon.tsx"
-import StatusIcon from "@src/assets/StatusIcon.tsx"
-import FileSizeIcon from "@src/assets/FileSizeIcon.tsx"
-import DownloadSizeIcon from "@src/assets/DownloadSizeIcon.tsx"
-import TimeEtaIcon from "@src/assets/TimeEtaIcon.tsx"
+import SpeedIcon from "@mui/icons-material/Speed"
+import SaveIcon from "@mui/icons-material/Save"
+import HubIcon from "@mui/icons-material/Hub"
+import TaskAltIcon from "@mui/icons-material/TaskAlt"
+import SaveAsIcon from "@mui/icons-material/SaveAs"
+import SaveAltIcon from "@mui/icons-material/SaveAlt"
+import AccessTimeIcon from "@mui/icons-material/AccessTime"
+import InsertLinkIcon from "@mui/icons-material/InsertLink"
 
 export type TDetails = {
   label: string
@@ -59,7 +59,7 @@ const DownloadStart = () => {
   }, [tellActive.length])
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null
+    let interval: ReturnType<typeof setInterval> | null
     if (tellActive.length) {
       interval = setInterval(async () => {
         const tellStatus = await window.electronAPI.getTellStatus(gid)
@@ -104,49 +104,49 @@ const DownloadStart = () => {
     {
       label: "Speed : ",
       value: downloadStatus ? formatBytes(+downloadStatus.downloadSpeed, 1) : 0,
-      icon: <SpeedTestIcon />,
+      icon: <SpeedIcon color={"success"} />,
       showDetails: true
     },
     {
       label: "Link : ",
       value: downloadStatus?.files[0].uris[0]?.uri ?? "",
-      icon: <LinkIcon />,
+      icon: <InsertLinkIcon color={"success"} />,
       showDetails: true
     },
     {
       label: "Saved Path : ",
       value: downloadStatus?.dir ?? "",
-      icon: <FolderIcon />,
+      icon: <SaveIcon color={"success"} />,
       showDetails: true
     },
     {
       label: "Connection :",
       value: downloadStatus?.connections ?? 0,
-      icon: <ConnectionIcon />,
+      icon: <HubIcon color={"success"} />,
       showDetails: true
     },
     {
       label: "Status :",
       value: downloadStatus?.status ?? "",
-      icon: <StatusIcon />,
+      icon: <TaskAltIcon color={"success"} />,
       showDetails: true
     },
     {
       label: "File Size:",
       value: downloadStatus ? formatBytes(+downloadStatus?.totalLength) : 0,
-      icon: <FileSizeIcon />,
+      icon: <SaveAsIcon color={"success"} />,
       showDetails: true
     },
     {
       label: "Downloaded Size:",
       value: downloadStatus ? formatBytes(+downloadStatus?.completedLength) : 0,
-      icon: <DownloadSizeIcon />,
+      icon: <SaveAltIcon color={"success"} />,
       showDetails: true
     },
     {
       label: "Eta :",
       value: formatTime(remainingSeconds),
-      icon: <TimeEtaIcon />,
+      icon: <AccessTimeIcon color={"success"} />,
       showDetails: true
     },
     ...isTorrentsDetails

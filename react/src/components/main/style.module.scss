@@ -4,7 +4,24 @@
 }
 
 .progress {
+  height: 100%;
   :global(.particlesContainer) {
     display: none;
+  }
+  
+  .fixProgress {
+    :global(.progressTrack) {
+      height: 3px !important;
+      background: rgb(245 245 245 / 5%) !important;
+      
+    }
+  ;
+    
+    :global(.progressFill) {
+      height: 5px;
+      transition: none !important;
+      animation: none !important;
+    }
+    
   }
 }

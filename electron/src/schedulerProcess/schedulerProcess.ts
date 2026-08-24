@@ -1,14 +1,14 @@
-import os from "os"
 import { exec } from "node:child_process"
-import { aria2, schedulers } from "../main"
 import { clearTimeout } from "node:timers"
-import { TScheduler, TSchedulerDatabase } from "../types"
-import { electronStore } from "../store/electronStore"
 import { ipcMain, powerSaveBlocker } from "electron"
+import os from "os"
+import { In } from "typeorm"
 import { DataSourceRepo } from "../database/database"
 import { ACTIONS_CHANNELS, POPUP_CHANNELS } from "../ipc/channels"
 import { createPopupWindow } from "../ipc/utils"
-import { In } from "typeorm"
+import { aria2, schedulers } from "../main"
+import { electronStore } from "../store/electronStore"
+import { TScheduler, TSchedulerDatabase } from "../types"
 
 export class SchedulerProcess {
   
@@ -19,6 +19,7 @@ export class SchedulerProcess {
   private activeGid: string | undefined = undefined
   private counterDownload: number = 0
   private successDownloadedGid: string[] = []
+  private aria2ListenersInitialized = false
   
   // time must be like "12:30" for use this function
   diffTimeNow = (time: string) => {
@@ -29,10 +30,14 @@ export class SchedulerProcess {
     
     target.setHours(h, m, 0, 0)
     
+    if (target <= now) {
+      target.setDate(target.getDate() + 1)
+    }
+    
     return target.getTime() - now.getTime()
   }
   
-  run = (startTime: string | undefined, endTime: string | undefined, powerOffStatus?: boolean) => {
+  run = (startTime: string | undefined, endTime: string | undefined, powerOffStatus?: boolean, keepAliveItem?: boolean) => {
     if (startTime) {
       const startDiff = this.diffTimeNow(startTime)
       
@@ -43,38 +48,21 @@ export class SchedulerProcess {
           await this.downloadRow()
         }
         
-        aria2.on("onDownloadComplete", async ({ gid }) => {
-          console.log("✅ Download finished:", gid)
-          ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", gid)
-          this.successDownloadedGid.push(gid)
-          await this.deletedDownloadedGidFromDb([gid])
-          
-          if (this.queueGid.length) {
-            await this.downloadRow()
-          }
-          else {
-            this.counterDownload = 0
-          }
-        })
-        
-        aria2.on("onDownloadPause", ({ gid }) => {
-          console.log("⏸️  Download paused:", gid)
-        })
-        
-        aria2.on("onDownloadError", async ({ gid }) => {
-          console.log("⛔ Download failed:", gid)
-          this.errorGid.push(gid)
-          ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", gid)
-          if (this.queueGid.length) {
-            await this.downloadRow()
-          }
-        })
-        
         if (!schedulers["end"]) {
           this.clearScheduler()
         }
+        
+        if (keepAliveItem) {
+          this.setKeepAlive(true)
+        }
+        else {
+          this.setKeepAlive(false)
+        }
+        
       }, startDiff)
     }
+    
+    this.setupAria2Listeners()
     
     if (endTime) {
       const endDiff = this.diffTimeNow(endTime)
@@ -94,9 +82,61 @@ export class SchedulerProcess {
           }, 2000)
         }
       }, endDiff)
+      
+      this.counterDownload = 0
     }
     
     console.log("active timers:", schedulers)
+  }
+  setupAria2Listeners = () => {
+    if (this.aria2ListenersInitialized) {
+      return
+    }
+    this.aria2ListenersInitialized = true
+    
+    aria2.on("onDownloadComplete", async ({ gid }) => {
+      console.log("✅ Download finished:", gid)
+      
+      ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", gid)
+      
+      this.successDownloadedGid.push(gid)
+      
+      await this.deletedDownloadedGidFromDb([gid])
+      
+      if (this.activeGid === gid) {
+        this.activeGid = undefined
+      }
+      
+      if (this.queueGid.length) {
+        await this.downloadRow()
+      }
+      else {
+        this.counterDownload = 0
+      }
+    })
+    
+    aria2.on("onDownloadPause", ({ gid }) => {
+      console.log("⏸️ Download paused:", gid)
+    })
+    
+    aria2.on("onDownloadError", async ({ gid }) => {
+      console.log("⛔ Download failed:", gid)
+      
+      this.errorGid.push(gid)
+      
+      ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", gid)
+      
+      if (this.activeGid === gid) {
+        this.activeGid = undefined
+      }
+      
+      if (this.queueGid.length) {
+        await this.downloadRow()
+      }
+      else {
+        this.counterDownload = 0
+      }
+    })
   }
   
   powerOffSystem = () => {
@@ -115,10 +155,12 @@ export class SchedulerProcess {
   clearScheduler = () => {
     if (schedulers["start"]) {
       clearTimeout(schedulers["start"])
+      schedulers["start"] = undefined
     }
     
     if (schedulers["end"]) {
       clearTimeout(schedulers["end"])
+      schedulers["end"] = undefined
     }
     
     const storeScheduler: TScheduler = {
@@ -127,6 +169,7 @@ export class SchedulerProcess {
       keepAlive: false,
       powerOff: false
     }
+    
     electronStore.set("scheduler", storeScheduler)
   }
   
@@ -147,34 +190,24 @@ export class SchedulerProcess {
       this.clearScheduler()
     }
     // change power save
-    if (keepAlive) {
-      this.setKeepAlive(keepAlive)
-    }
-    else {
-      this.setKeepAlive(false)
-    }
+    this.setKeepAlive(keepAlive)
   }
   
   setKeepAlive = (keepAlive: boolean) => {
+    this.clearKeepAlive()
+    
     this.keepAlive = keepAlive
-    if (this.keepAlive) {
-      // dont allow off display
+    
+    if (keepAlive) {
       this.blockerId = powerSaveBlocker.start("prevent-display-sleep")
     }
     else {
-      if (this.blockerId) {
-        powerSaveBlocker.stop(this.blockerId)
-        //allow work download manager and off display
-        this.blockerId = powerSaveBlocker.start("prevent-app-suspension")
-      }
-      else {
-        this.blockerId = powerSaveBlocker.start("prevent-app-suspension")
-      }
+      this.blockerId = powerSaveBlocker.start("prevent-app-suspension")
     }
   }
   
   clearKeepAlive = () => {
-    if (this.blockerId) {
+    if (this.blockerId != null) {
       powerSaveBlocker.stop(this.blockerId)
       this.blockerId = null
     }
@@ -188,30 +221,33 @@ export class SchedulerProcess {
   
   downloadRow = async () => {
     const databaseGid = this.queueGid.shift()
-    this.activeGid = databaseGid?.gid
+    
+    if (!databaseGid?.gid) {
+      return
+    }
+    
+    const { gid } = databaseGid
+    
+    this.activeGid = gid
     this.counterDownload++
     
-    if (databaseGid?.gid) {
-      const { gid } = databaseGid
-      createPopupWindow({
-        windowTitle: "download",
-        height: 400,
-        width: 900,
-        hashRoute: `downloadStart/:${gid}`,
-        windowId: gid
-      })
-      ipcMain.emit(ACTIONS_CHANNELS.UNPAUSE_BY_GID, "queue", gid)
-      
-    }
-  }
-  deletedDownloadedGidFromDb = async (gids: string[]) => {
+    createPopupWindow({
+      windowTitle: "download",
+      height: 400,
+      width: 900,
+      hashRoute: `downloadStart/:${gid}`,
+      windowId: gid
+    })
     
+    ipcMain.emit(ACTIONS_CHANNELS.UNPAUSE_BY_GID, "queue", gid)
+  }
+  
+  deletedDownloadedGidFromDb = async (gids: string[]) => {
     const repo = DataSourceRepo.getRepository("scheduler")
     
     const rows = await repo.findBy({ gid: In(gids) })
     
     await repo.delete({ gid: In(rows.map((r) => r.gid)) })
-    
   }
   
   endedDownload = async () => {

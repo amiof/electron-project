@@ -118,7 +118,7 @@ export const ipcUtilsHandler = () => {
       const menu = Menu.buildFromTemplate([
         {
           label: "Add new link",
-          icon: iconPathContextMenu("plus-32.png"),
+          icon: iconPathContextMenu("plus-32i.png"),
           visible: !selectedDownloadRow.length,
           click: () => {
             const id = generateId()
@@ -129,7 +129,7 @@ export const ipcUtilsHandler = () => {
         {
           label: "Options",
           visible: !selectedDownloadRow.length,
-          icon: iconPathContextMenu("setting-32.png"),
+          icon: iconPathContextMenu("option-32i.png"),
           click: () => {
             const id = generateId()
             ipcMain.emit(POPUP_CHANNELS.POPUP_OPEN_OPTIONS, event, id)
@@ -140,7 +140,7 @@ export const ipcUtilsHandler = () => {
           label: "Reload",
           visible: !selectedDownloadRow.length,
           role: "reload",
-          icon: iconPathContextMenu("reload-32.png"),
+          icon: iconPathContextMenu("reload-32i.png"),
           click: () => {
             mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "reload-app")
           }
@@ -149,14 +149,14 @@ export const ipcUtilsHandler = () => {
           label: "Quite",
           visible: !selectedDownloadRow.length,
           role: "quit",
-          icon: iconPathContextMenu("exit-32.png")
+          icon: iconPathContextMenu("exit-32i.png")
         },
         //-------------
         {
           // icon:path.join(process.resourcesPath, "assets", "icon_32x32.png"),
           // icon:path.join(__dirname,"..","..","..","..","assets","icon_32x32.png"),
-          label: "Delete selected rows",
-          icon: iconPathContextMenu("delete-32.png"),
+          label: "Delete rows",
+          icon: iconPathContextMenu("delete-32i.png"),
           visible: !!selectedDownloadRow.length,
           click: () => {
             const gidList = selectedDownloadRow.map((selected) => selected.Gid)
@@ -165,8 +165,8 @@ export const ipcUtilsHandler = () => {
           }
         },
         {
-          label: "Stop selected rows",
-          icon: iconPathContextMenu("pause-32.png"),
+          label: "Stop rows",
+          icon: iconPathContextMenu("pause-32i.png"),
           visible: !!selectedDownloadRow.length,
           enabled: !!isActive.length,
           click: () => {
@@ -181,7 +181,7 @@ export const ipcUtilsHandler = () => {
           label: "Resume downloads",
           visible: !!selectedDownloadRow.length,
           enabled: !!isResume.length,
-          icon: iconPathContextMenu("resume-32.png"),
+          icon: iconPathContextMenu("resume-32i.png"),
           click: () => {
             isResume.map((item) => {
               const gid = item?.Gid
@@ -209,7 +209,7 @@ export const ipcUtilsHandler = () => {
         {
           label: "Open folder",
           visible: !!selectedDownloadRow.length,
-          icon: iconPathContextMenu("folder-32.png"),
+          icon: iconPathContextMenu("folder-32i.png"),
           click: () => {
             selectedDownloadRow.map((item) => {
               ipcMain.emit(ACTIONS_CHANNELS.OPEN_FOLDER, event, item.SavePath)
@@ -218,20 +218,20 @@ export const ipcUtilsHandler = () => {
           }
         },
         {
-          label: "Add to scheduler ",
+          label: "Add to scheduler",
           visible: !!selectedDownloadRow.length,
           enabled: !isScheduler,
-          icon: iconPathContextMenu("scheduler-32.png"),
+          icon: iconPathContextMenu("schedule-32i.png"),
           click: () => {
             ipcMain.emit(SCHEDULE_CHANNELS.ADD_ROWS_TO_SCHEDULER_QUEUE, event, selectedDownloadRow)
             mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "add-scheduler")
           }
         },
         {
-          label: "Remove from scheduler ",
+          label: "Remove scheduler",
           visible: !!selectedDownloadRow.length,
           enabled: isScheduler,
-          icon: iconPathContextMenu("scheduler-32.png"),
+          icon: iconPathContextMenu("scheduler-32i.png"),
           click: () => {
             ipcMain.emit(SCHEDULE_CHANNELS.Remove_Rows_From_SCHEDULE_QUEUE, event, selectedDownloadRow)
             mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "remove-scheduler")
