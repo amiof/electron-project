@@ -34,6 +34,9 @@ interface ElectronAPI {
   getGlobalStates: () => Promise<unknown>
   addDownloadPopup: (id: string, windowTitle?: string) => void
   addLinkPopup: (id: string) => void
+  openSharePopup: (id: string) => Promise<unknown>
+  setSelectedRowsForShare: (rows: unknown[]) => void
+  getSelectedRowsForShare: () => Promise<unknown[]>
   closePopupWindow: (id: string) => void
   tellActive: () => Promise<unknown>
   tellStopped: () => Promise<unknown>
@@ -74,7 +77,7 @@ interface ElectronAPI {
     keepAlive: boolean,
     powerOff: boolean
   ) => Promise<unknown>
-  
+
   getSchedulerDownloadRows: () => Promise<unknown>
   addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
   removeRowsFromSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
@@ -110,6 +113,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   
   //popup open scheduler
   openSchedulerPopup: (id: string) => ipcRenderer.send("open-scheduler-popup", id),
+  
+  //popup open share
+  openSharePopup: (id: string) => ipcRenderer.send("open-share-popup", id),
+  //share - selected rows
+  setSelectedRowsForShare: (rows: unknown[]) => ipcRenderer.send("set-selected-rows-for-share", rows),
+  getSelectedRowsForShare: () => ipcRenderer.invoke("get-selected-rows-for-share"),
 
   // update main window in start download
   setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),

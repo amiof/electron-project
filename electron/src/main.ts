@@ -12,6 +12,7 @@ import { ipcConfigHandler } from "./ipc/config/configHandler"
 import { ipcSchedulerHandler } from "./ipc/scheduler/scheduler"
 import { ipcUtilsHandler } from "./ipc/utils/utils"
 import { SchedulerProcess } from "./schedulerProcess/schedulerProcess"
+import ipcShareHandler from "./ipc/sahre/shareHandler"
 
 export let mainWindow: BrowserWindow | null
 
@@ -132,3 +133,4 @@ ipcActionsHandler()
 ipcConfigHandler()
 ipcUtilsHandler()
 ipcSchedulerHandler()
+ipcShareHandler()

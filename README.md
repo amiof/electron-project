@@ -19,7 +19,6 @@ A modern, cross-platform download manager built with Electron, React, and aria2c
 
 
 
-
 ## 🚀 Features
 
 - **High-Speed Downloads**: Leverages aria2c for fast, multi-threaded downloading
@@ -31,6 +30,11 @@ A modern, cross-platform download manager built with Electron, React, and aria2c
 - **State Management**: Efficient state handling with Zustand
 - **Multiple Downloads**: Handle multiple simultaneous downloads
 - **Download Queue**: Organize and prioritize your downloads
+- **Scheduler**: Schedule downloads to start and stop at specific times
+- **Share**: Copy download info to clipboard for easy sharing
+- **Proxy Support**: Configure HTTP/HTTPS proxy settings
+- **Torrent Configuration**: Fine-tune DHT, peer exchange, seed ratio and more
+- **Storage Management**: Select and manage download storage directories
 
 ## 🏗️ Tech Stack
 
@@ -38,10 +42,13 @@ A modern, cross-platform download manager built with Electron, React, and aria2c
 - **React 18** - Modern UI library
 - **TypeScript** - Type-safe development
 - **Material-UI (MUI)** - Component library
+- **MUI X DataGrid** - Data grid for download list
+- **MUI X TreeView** - Sidebar tree navigation
 - **Vite** - Fast build tool and dev server
 - **Zustand** - Lightweight state management
 - **React Router** - Navigation
-- **SCSS/Tailwind CSS** - Styling
+- **Tailwind CSS** - Utility-first styling
+- **SCSS Modules** - Component-scoped styles
 
 ### Backend (Electron)
 - **Electron** - Cross-platform desktop framework
@@ -55,20 +62,20 @@ A modern, cross-platform download manager built with Electron, React, and aria2c
 
 Before you begin, ensure you have the following installed:
 - **Node.js** (v18 or higher)
-- **npm** or **yarn**
+- **npm**
 - **Git**
 
 ## 🐛 Known Issues
 
 - aria2c binaries are included for Windows and macOS. Linux users need to install aria2c separately.
 
-  
+
 ## 🛠️ Installation
 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/amiof/electron-project.git
-   cd downloader
+   cd electron-project
    ```
 
 2. **Install root dependencies**
@@ -162,70 +169,100 @@ The packaged applications will be in the `release` folder.
 ## 📁 Project Structure
 
 ```
-downloader/
-├── assets/                 # Application icons and images
-├── build/                  # Build resources (icons)
-├── electron/              # Electron main process
+electron-project/
+├── assets/                    # Application icons and images
+├── electron/                  # Electron main process
 │   ├── src/
+│   │   ├── main.ts            # Electron main e
+ntry point
 │   │   ├── aria2c.ts          # aria2c process management
 │   │   ├── aria2Config.ts     # aria2c configuration
-│   │   ├── main.ts            # Electron main entry point
+│   │   ├── types.ts           # Shared TypeScript types
+│   │   ├── utils.ts           # Utility functions
 │   │   ├── database/          # TypeORM database setup
+│   │   │   ├── database.ts    # Database connection
 │   │   │   └── entities/      # Database entities
 │   │   ├── ipc/               # IPC handlers
-│   │   │   ├── actions/       # Download actions
+│   │   │   ├── channels.ts    # IPC channel definitions
+│   │   │   ├── utils.ts       # IPC utility functions
+│   │   │   ├── actions/       # Download actions (stop, resume, etc.)
+│   │   │   ├── config/        # App config handlers (proxy, aria2, torrent)
 │   │   │   ├── download/      # Download management
-│   │   │   ├── getData/       # Data retrieval
-│   │   │   └── openPopup/     # Popup handling
+│   │   │   ├── getData/       # Data retrieval handlers
+│   │   │   ├── openPopup/     # Popup window handlers
+│   │   │   ├── scheduler/     # Scheduler IPC handler
+│   │   │   ├── share/         # Share download info handler
+│   │   │   └── utils/         # IPC utilities
 │   │   ├── preload/           # Preload scripts
+│   │   │   └── preload.ts     # Context bridge API
 │   │   ├── release-aria2/     # aria2c binaries
 │   │   │   └── bin/
 │   │   │       ├── macOS/     # macOS aria2c binary
 │   │   │       └── win/       # Windows aria2c binary
+│   │   ├── schedulerProcess/  # Scheduler process logic
+│   │   │   └── schedulerProcess.ts
 │   │   └── store/             # Electron store
+│   │       └── electronStore.ts
 │   └── package.json
-├── react/                 # React frontend
-│   ├── public/
+├── react/                     # React frontend
 │   ├── src/
 │   │   ├── components/        # React components
-│   │   │   ├── addLinkPopup/
-│   │   │   ├── buttonAction/
-│   │   │   ├── header/
-│   │   │   ├── main/
-│   │   │   ├── sidebar/
-│   │   │   ├── startDownload/
-│   │   │   └── toolbar/
+│   │   │   ├── addLinkPopup/  # Add download link popup
+│   │   │   ├── buttonAction/  # Toolbar button action component
+│   │   │   ├── header/        # App header with speed display & search
+│   │   │   ├── main/          # Main download list (DataGrid)
+│   │   │   ├── sidebar/       # Sidebar navigation tree
+│   │   │   ├── startDownload/ # Download start dialog
+│   │   │   └── toolbar/       # Toolbar with action buttons
+│   │   │       └── ToolbarPopups/
+│   │   │           ├── OptionsPopup.tsx    # Options/settings panel
+│   │   │           ├── SchedulerPopup.tsx  # Download scheduler
+│   │   │           ├── SharePopup.tsx      # Share download info
+│   │   │           ├── ProxyConfig.tsx     # Proxy settings
+│   │   │           ├── Aria2Conf.tsx       # aria2c configuration
+│   │   │           ├── StorageConf.tsx     # Storage directory settings
+│   │   │           └── torrentConf.tsx     # Torrent settings
 │   │   ├── hooks/             # Custom React hooks
 │   │   ├── store/             # Zustand stores
+│   │   │   ├── downloaderStore.ts    # Download state store
+│   │   │   ├── downloaderAction.ts   # Download actions
+│   │   │   └── storeType.ts          # Store type definitions
 │   │   ├── assets/            # Images and icons
+│   │   ├── types.ts           # Frontend type definitions
+│   │   ├── renderer.ts        # Electron API type definitions
+│   │   ├── utils.ts           # Utility functions
 │   │   ├── App.tsx            # Main App component
 │   │   └── main.tsx           # React entry point
+│   ├── index.html
+│   ├── vite.config.ts         # Vite configuration
 │   └── package.json
-├── package.json           # Root package.json
+├── package.json               # Root package.json
+├── biome.json                 # Biome linter/formatter config
 └── README.md
 ```
 
 ## 🔧 Configuration
 
 ### aria2c Configuration
-
 The application uses aria2c for download management. Configuration can be found in:
 - `electron/src/aria2Config.ts` - aria2c settings
 - `electron/src/aria2c.ts` - aria2c process management
+- `react/src/components/toolbar/ToolbarPopups/Aria2Conf.tsx` - UI configuration panel
 
 ### Database
-
 The application uses SQLite with TypeORM. Database entities are located in:
 - `electron/src/database/entities/`
+- `electron/src/database/database.ts` - Database connection setup
 
 ## 🌐 How It Works
 
 1. **Electron Main Process**: Manages the application lifecycle and spawns the aria2c process
-2. **aria2c**: Handles the actual downloading with support for multiple protocols (HTTP, HTTPS, FTP, etc.)
+2. **aria2c**: Handles the actual downloading with support for multiple protocols (HTTP, HTTPS,FTP, etc.)
 3. **WebSocket Connection**: Establishes a WebSocket connection to aria2c's JSON-RPC interface for real-time communication
 4. **IPC Communication**: Electron's IPC handles communication between the main process and React renderer
 5. **React Frontend**: Displays the UI and allows users to interact with downloads
 6. **Database**: Stores download history and metadata persistently
+7. **Scheduler**: Runs a separate process to manage timed download start/stop and optional system shutdown
 
 
 ## 🙏 Acknowledgments
@@ -239,7 +276,3 @@ The application uses SQLite with TypeORM. Database entities are located in:
 ## 📝 License
 
 This project is licensed under the GPL v2 License.
-
-
-
-

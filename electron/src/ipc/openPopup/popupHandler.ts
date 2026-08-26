@@ -39,5 +39,14 @@ const ipcPopupHandler = () => {
       windowId: id
     })
   })
+  ipcMain.on(POPUP_CHANNELS.POPUP_OPEN_SHARE, (event: IpcMainInvokeEvent, id) => {
+    createPopupWindow({
+      windowTitle: "share",
+      height: 500,
+      width: 600,
+      hashRoute: `share/:${id}`,
+      windowId: id
+    })
+  })
 }
 export default ipcPopupHandler

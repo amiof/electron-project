@@ -19,7 +19,12 @@ export const POPUP_CHANNELS = {
   CLOSE_POPUP_WINDOW: "close-popup",
   POPUP_START_DOWNLOAD: "popup-start-download",
   POPUP_OPEN_OPTIONS: "open-options-popup",
-  POPUP_OPEN_SCHEDULER: "open-scheduler-popup"
+  POPUP_OPEN_SCHEDULER: "open-scheduler-popup",
+  POPUP_OPEN_SHARE: "open-share-popup"
+}
+export const SHARE_CHANNELS = {
+  SET_SELECTED_ROWS_FOR_SHARE: "set-selected-rows-for-share",
+  GET_SELECTED_ROWS_FOR_SHARE: "get-selected-rows-for-share"
 }
 
 export const ACTIONS_CHANNELS = {

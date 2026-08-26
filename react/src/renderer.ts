@@ -60,6 +60,9 @@ export interface IElectronAPI {
     keepAlive: boolean,
     powerOff: boolean
   ) => Promise<unknown>
+  openSharePopup: (id: string) => Promise<void>
+  setSelectedRowsForShare: (rows: TDownloads[]) => void
+  getSelectedRowsForShare: () => Promise<TDownloads[]>
   setProxyConfig: (config: TProxyConfig) => Promise<unknown>
   getProxyConfig: () => Promise<TProxyConfig>
   setAria2Config: (config: TAria2Config) => Promise<unknown>

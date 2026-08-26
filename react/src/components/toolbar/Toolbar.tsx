@@ -37,6 +37,16 @@ const Toolbar = () => {
     const id = generateId()
     openSchedulerPopup(id)
   }
+  
+  
+  const openShareHandler = () => {
+    // Send selected rows to main process before opening popup
+    window.electronAPI.setSelectedRowsForShare(getSelectedRows)
+    const id = generateId()
+    openSharePopup(id)
+  }
+  
+  
 
   const firstButtonActions: TButtonActions[] = [
     {
@@ -99,7 +109,8 @@ const Toolbar = () => {
     },
     {
       IconElement: <ReplyOutlinedIcon sx={{ transform: "ScaleX(-1)" }} fontSize={"medium"} />,
-      title: "Share"
+      title: "Share",
+      action: openShareHandler
     }
   ]
 
@@ -107,6 +118,7 @@ const Toolbar = () => {
   const addLinkPopup = window.electronAPI.addLinkPopup
   const openOptionsPopup = window.electronAPI.openOptionsPopup
   const openSchedulerPopup = window.electronAPI.openSchedulerPopup
+  const openSharePopup = window.electronAPI.openSharePopup
 
   const getAllDownloadRow = useDownloaderStore((state) => state.getAllDownloadsRow)
 
