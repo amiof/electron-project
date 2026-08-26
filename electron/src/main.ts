@@ -15,7 +15,7 @@ import { SchedulerProcess } from "./schedulerProcess/schedulerProcess"
 
 export let mainWindow: BrowserWindow | null
 
-export const schedulers: Record<string, ReturnType<typeof setInterval> | undefined> = {}
+export const schedulers: Record<string, ReturnType<typeof setTimeout> | undefined> = {}
 
 checkSessionExists()
 

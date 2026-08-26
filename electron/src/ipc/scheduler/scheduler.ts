@@ -44,7 +44,7 @@ export const ipcSchedulerHandler = () => {
       schedulerInstance.clearScheduler()
       schedulerInstance.setTimeToElectronStore(schedulerConfig, 1000)
       schedulerInstance.setKeepAlive(keepAlive)
-      schedulerInstance.run(startTime, endTime, powerOff)
+      schedulerInstance.run({ startTime, endTime, powerOff })
     }
   )
 }

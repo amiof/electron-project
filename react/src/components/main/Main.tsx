@@ -138,7 +138,7 @@ const Main = () => {
   }, [])
 
   useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null
+    let interval: ReturnType<typeof setTimeout> | null
     if (tellActive.length) {
       interval = setInterval(async () => {
         await getAllDownloads()

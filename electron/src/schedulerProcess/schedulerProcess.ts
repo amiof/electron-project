@@ -10,25 +10,159 @@ import { aria2, schedulers } from "../main"
 import { electronStore } from "../store/electronStore"
 import { TScheduler, TSchedulerDatabase } from "../types"
 
+/** Scheduler timer keys */
+const SCHEDULER_KEYS = {
+  START: "start",
+  END: "end"
+} as const
+
+/** Shutdown commands per platform */
+const SHUTDOWN_COMMANDS: Record<string, string> = {
+  win32: "shutdown /s /t 0",
+  linux: "shutdown now",
+  darwin: "sudo shutdown -h now"
+}
+
+/** Parameters for starting the scheduler */
+interface SchedulerRunParams {
+  startTime: string | undefined
+  endTime: string | undefined
+  powerOff?: boolean
+  keepAlive?: boolean
+}
+
 export class SchedulerProcess {
-  
-  private keepAlive: undefined | boolean = false
+  private enableListener = false
   private blockerId: number | null = null
-  private queueGid: TSchedulerDatabase[] = []
-  private errorGid: string[] = []
+  private downloadQueue: TSchedulerDatabase[] = []
   private activeGid: string | undefined = undefined
-  private counterDownload: number = 0
-  private successDownloadedGid: string[] = []
+  private counterDownload = 0
   private aria2ListenersInitialized = false
   
-  // time must be like "12:30" for use this function
-  diffTimeNow = (time: string) => {
-    const [h, m] = time.split(":").map(Number)
+  /**
+   * Start the scheduler with specified times and options
+   */
+  run = ({ startTime, endTime, powerOff = false, keepAlive = false }: SchedulerRunParams): void => {
+    if (startTime) {
+      const startDiff = this.diffTimeNow(startTime)
+      
+      schedulers[SCHEDULER_KEYS.START] = setTimeout(async () => {
+        console.log("[Scheduler] Start time reached")
+        this.enableListener = true
+        this.setupAria2Listeners()
+        
+        await this.refreshDownloadQueue()
+        
+        if (this.counterDownload === 0) {
+          await this.startNextDownload()
+        }
+        
+        if (!schedulers[SCHEDULER_KEYS.END]) {
+          this.clearScheduler()
+        }
+        
+        this.setKeepAlive(keepAlive)
+      }, startDiff)
+    }
+    
+    if (endTime) {
+      const endDiff = this.diffTimeNow(endTime)
+      
+      schedulers[SCHEDULER_KEYS.END] = setTimeout(() => {
+        this.enableListener = false
+        console.log("[Scheduler] End time reached")
+        this.clearScheduler()
+        
+        this.stopActiveDownload()
+        this.closeActivePopup()
+        
+        if (powerOff) {
+          setTimeout(() => this.powerOffSystem(), 2000)
+        }
+      }, endDiff)
+      
+      this.counterDownload = 0
+    }
+    
+    console.log("[Scheduler] Active timers:", schedulers)
+  }
+  
+  /**
+   * Clear all scheduler timers and reset store
+   */
+  clearScheduler = (): void => {
+    if (schedulers[SCHEDULER_KEYS.START]) {
+      clearTimeout(schedulers[SCHEDULER_KEYS.START])
+      schedulers[SCHEDULER_KEYS.START] = undefined
+    }
+    
+    if (schedulers[SCHEDULER_KEYS.END]) {
+      clearTimeout(schedulers[SCHEDULER_KEYS.END])
+      schedulers[SCHEDULER_KEYS.END] = undefined
+    }
+    
+    const resetConfig: TScheduler = {
+      startTime: undefined,
+      endTime: undefined,
+      keepAlive: false,
+      powerOff: false
+    }
+    
+    electronStore.set("scheduler", resetConfig)
+  }
+  
+  /**
+   * Save scheduler config to electron store with delay
+   * @param config - Scheduler configuration
+   * @param delay - Delay in milliseconds
+   */
+  setTimeToElectronStore = (config: TScheduler, delay: number): void => {
+    setTimeout(() => {
+      electronStore.set("scheduler", config)
+    }, delay)
+  }
+  
+  /**
+   * Initialize scheduler from stored config on app start
+   */
+  initScheduler = (): void => {
+    const schedulerStore = electronStore.get("scheduler")
+    const { startTime, endTime, powerOff, keepAlive } = schedulerStore
+    
+    if (startTime) {
+      this.run({ startTime, endTime, powerOff, keepAlive })
+    }
+    else {
+      this.clearScheduler()
+    }
+    
+    this.setKeepAlive(keepAlive)
+  }
+  
+  /**
+   * Set power save blocker mode
+   * @param enabled - Whether to keep system awake
+   */
+  setKeepAlive = (enabled: boolean): void => {
+    this.clearKeepAlive()
+    
+    const blockType = enabled ? "prevent-display-sleep" : "prevent-app-suspension"
+    
+    this.blockerId = powerSaveBlocker.start(blockType)
+  }
+  
+  /**
+   * Calculate time difference from now to a target time
+   * @param time - Target time in "HH:MM" format
+   * @returns Milliseconds until target time
+   */
+  private diffTimeNow = (time: string): number => {
+    const [hours, minutes] = time.split(":").map(Number)
     
     const now = new Date()
     const target = new Date()
     
-    target.setHours(h, m, 0, 0)
+    target.setHours(hours, minutes, 0, 0)
     
     if (target <= now) {
       target.setDate(target.getDate() + 1)
@@ -37,69 +171,20 @@ export class SchedulerProcess {
     return target.getTime() - now.getTime()
   }
   
-  run = (startTime: string | undefined, endTime: string | undefined, powerOffStatus?: boolean, keepAliveItem?: boolean) => {
-    if (startTime) {
-      const startDiff = this.diffTimeNow(startTime)
-      
-      schedulers["start"] = setTimeout(async () => {
-        console.log("start time reached")
-        await this.getDownloadGid()
-        if (this.counterDownload === 0) {
-          await this.downloadRow()
-        }
-        
-        if (!schedulers["end"]) {
-          this.clearScheduler()
-        }
-        
-        if (keepAliveItem) {
-          this.setKeepAlive(true)
-        }
-        else {
-          this.setKeepAlive(false)
-        }
-        
-      }, startDiff)
-    }
-    
-    this.setupAria2Listeners()
-    
-    if (endTime) {
-      const endDiff = this.diffTimeNow(endTime)
-      // end timer
-      schedulers["end"] = setTimeout(() => {
-        console.log("end time reached")
-        this.clearScheduler()
-        
-        if (this.activeGid) {
-          //stop download before power off
-          ipcMain.emit(ACTIONS_CHANNELS.STOP_DOWNLOAD_BY_GID, "stop", this.activeGid)
-          ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", this.activeGid)
-        }
-        if (powerOffStatus) {
-          setTimeout(() => {
-            this.powerOffSystem()
-          }, 2000)
-        }
-      }, endDiff)
-      
-      this.counterDownload = 0
-    }
-    
-    console.log("active timers:", schedulers)
-  }
-  setupAria2Listeners = () => {
+  /**
+   * Setup aria2 event listeners for download lifecycle
+   */
+  private setupAria2Listeners = (): void => {
     if (this.aria2ListenersInitialized) {
       return
     }
     this.aria2ListenersInitialized = true
     
     aria2.on("onDownloadComplete", async ({ gid }) => {
-      console.log("✅ Download finished:", gid)
+      if (!this.enableListener) return
       
+      console.log(`[Scheduler] Download completed: ${gid}`)
       ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", gid)
-      
-      this.successDownloadedGid.push(gid)
       
       await this.deletedDownloadedGidFromDb([gid])
       
@@ -107,8 +192,8 @@ export class SchedulerProcess {
         this.activeGid = undefined
       }
       
-      if (this.queueGid.length) {
-        await this.downloadRow()
+      if (this.downloadQueue.length) {
+        await this.startNextDownload()
       }
       else {
         this.counterDownload = 0
@@ -116,22 +201,25 @@ export class SchedulerProcess {
     })
     
     aria2.on("onDownloadPause", ({ gid }) => {
-      console.log("⏸️ Download paused:", gid)
+      if (this.enableListener) {
+        console.log(`[Scheduler] Download paused: ${gid}`)
+      }
     })
     
     aria2.on("onDownloadError", async ({ gid }) => {
-      console.log("⛔ Download failed:", gid)
+      if (!this.enableListener) return
       
-      this.errorGid.push(gid)
+      console.log(`[Scheduler] Download failed: ${gid}`)
       
-      ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", gid)
+      ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", gid
+      )
       
       if (this.activeGid === gid) {
         this.activeGid = undefined
       }
       
-      if (this.queueGid.length) {
-        await this.downloadRow()
+      if (this.downloadQueue.length) {
+        await this.startNextDownload()
       }
       else {
         this.counterDownload = 0
@@ -139,95 +227,56 @@ export class SchedulerProcess {
     })
   }
   
-  powerOffSystem = () => {
+  /**
+   * Shutdown the system based on current platform
+   */
+  private powerOffSystem = (): void => {
     const platform = os.platform()
-    if (platform === "win32") {
-      exec("shutdown /s /t 0")
-    }
-    else if (platform === "linux") {
-      exec("shutdown now")
-    }
-    else if (platform === "darwin") {
-      exec("sudo shutdown -h now")
+    const command = SHUTDOWN_COMMANDS[platform]
+    
+    if (command) {
+      exec(command, (error) => {
+        if (error) {
+          console.error(`[Scheduler] Shutdown failed: ${error.message}`)
+        }
+      })
     }
   }
   
-  clearScheduler = () => {
-    if (schedulers["start"]) {
-      clearTimeout(schedulers["start"])
-      schedulers["start"] = undefined
-    }
-    
-    if (schedulers["end"]) {
-      clearTimeout(schedulers["end"])
-      schedulers["end"] = undefined
-    }
-    
-    const storeScheduler: TScheduler = {
-      startTime: undefined,
-      endTime: undefined,
-      keepAlive: false,
-      powerOff: false
-    }
-    
-    electronStore.set("scheduler", storeScheduler)
-  }
-  
-  setTimeToElectronStore = (schedulerConfig: TScheduler, delay: number) => {
-    setTimeout(() => {
-      electronStore.set("scheduler", schedulerConfig)
-    }, delay)
-  }
-  
-  // when program start check if set scheduler in store run scheduler
-  initScheduler = () => {
-    const schedulerStore = electronStore.get("scheduler")
-    const { startTime, endTime, powerOff, keepAlive } = schedulerStore
-    if (startTime) {
-      this.run(startTime, endTime, powerOff)
-    }
-    else {
-      this.clearScheduler()
-    }
-    // change power save
-    this.setKeepAlive(keepAlive)
-  }
-  
-  setKeepAlive = (keepAlive: boolean) => {
-    this.clearKeepAlive()
-    
-    this.keepAlive = keepAlive
-    
-    if (keepAlive) {
-      this.blockerId = powerSaveBlocker.start("prevent-display-sleep")
-    }
-    else {
-      this.blockerId = powerSaveBlocker.start("prevent-app-suspension")
-    }
-  }
-  
-  clearKeepAlive = () => {
+  /**
+   * Stop power save blocker
+   */
+  private clearKeepAlive = (): void => {
     if (this.blockerId != null) {
       powerSaveBlocker.stop(this.blockerId)
       this.blockerId = null
     }
-    this.keepAlive = false
   }
   
-  getDownloadGid = async () => {
-    this.queueGid = (await DataSourceRepo.getRepository("scheduler").find()) as TSchedulerDatabase[]
-    // console.log("%c 1 --> Line: 144||schedulerProcess.ts\n this.schedulerGids: ","color:#f0f;", this.schedulerGids);
+  /**
+   * Fetch download queue from database
+   */
+  private refreshDownloadQueue = async (): Promise<void> => {
+    try {
+      this.downloadQueue = (await DataSourceRepo.getRepository("scheduler").find()) as TSchedulerDatabase[]
+    }
+    catch (error) {
+      console.error("[Scheduler] Failed to fetch download queue:", error)
+      this.downloadQueue = []
+    }
   }
   
-  downloadRow = async () => {
-    const databaseGid = this.queueGid.shift()
+  /**
+   * Start next download in queue
+   */
+  private startNextDownload = async (): Promise<void> => {
+    const nextItem = this.downloadQueue.shift()
     
-    if (!databaseGid?.gid) {
+    if (!nextItem?.gid) {
       return
     }
     
-    const { gid } = databaseGid
-    
+    const { gid } = nextItem
     this.activeGid = gid
     this.counterDownload++
     
@@ -242,20 +291,35 @@ export class SchedulerProcess {
     ipcMain.emit(ACTIONS_CHANNELS.UNPAUSE_BY_GID, "queue", gid)
   }
   
-  deletedDownloadedGidFromDb = async (gids: string[]) => {
-    const repo = DataSourceRepo.getRepository("scheduler")
-    
-    const rows = await repo.findBy({ gid: In(gids) })
-    
-    await repo.delete({ gid: In(rows.map((r) => r.gid)) })
+  /**
+   * Stop the currently active download
+   */
+  private stopActiveDownload = (): void => {
+    if (this.activeGid) {
+      ipcMain.emit(ACTIONS_CHANNELS.STOP_DOWNLOAD_BY_GID, "stop", this.activeGid)
+    }
   }
   
-  endedDownload = async () => {
-    if (this.queueGid.length === 0 && this.successDownloadedGid.length) {
-      await this.getDownloadGid()
-      if (this.queueGid.length > 0) {
-        await this.downloadRow()
-      }
+  /**
+   * Close popup window for active download
+   */
+  private closeActivePopup = (): void => {
+    if (this.activeGid) {
+      ipcMain.emit(POPUP_CHANNELS.CLOSE_POPUP_WINDOW, "close", this.activeGid)
+    }
+  }
+  
+  /**
+   * Delete completed downloads from database
+   */
+  private deletedDownloadedGidFromDb = async (gids: string[]): Promise<void> => {
+    try {
+      const repo = DataSourceRepo.getRepository("scheduler")
+      const rows = await repo.findBy({ gid: In(gids) })
+      await repo.delete({ gid: In(rows.map((r) => r.gid)) })
+    }
+    catch (error) {
+      console.error("[Scheduler] Failed to delete from database:", error)
     }
   }
 }
