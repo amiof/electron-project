@@ -139,19 +139,19 @@ const SharePopup = () => {
         >
           Close
         </Button>
-        <Button
-          variant="contained"
-          onClick={copyToClipboard}
-          startIcon={copied ? <CheckCircleOutlineIcon /> : <ContentCopyOutlinedIcon />}
-          sx={{
-            backgroundColor: copied ? "#4caf50" : undefined,
-            "&:hover": {
-              backgroundColor: copied ? "#43a047" : undefined
-            }
-          }}
-        >
-          {copied ? "Copied!" : "Copy to Clipboard"}
-        </Button>
+        {/*<Button*/}
+        {/*  variant="contained"*/}
+        {/*  onClick={copyToClipboard}*/}
+        {/*  startIcon={copied ? <CheckCircleOutlineIcon /> : <ContentCopyOutlinedIcon />}*/}
+        {/*  sx={{*/}
+        {/*    backgroundColor: copied ? "#4caf50" : undefined,*/}
+        {/*    "&:hover": {*/}
+        {/*      backgroundColor: copied ? "#43a047" : undefined*/}
+        {/*    }*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  {copied ? "Copied!" : "Copy to Clipboard"}*/}
+        {/*</Button>*/}
       </div>
       
       <Snackbar
