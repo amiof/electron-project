@@ -33,7 +33,7 @@ const ipcPopupHandler = () => {
     console.log(id)
     createPopupWindow({
       windowTitle: "scheduler",
-      height: 300,
+      height: 350,
       width: 400,
       hashRoute: `scheduler/:${id}`,
       windowId: id
