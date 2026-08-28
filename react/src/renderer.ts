@@ -1,13 +1,14 @@
+import { TAddLinkOptions } from "@components/addLinkPopup/store/addLinkStoreType.ts"
+import { TAria2Config, TNotificationDetailes, TProxyConfig, TTorrentConfig } from "@src/store/storeType.ts"
 import {
   resMetadataUrls,
   TDownloads,
   TFileDetails,
   TGetGlobalStateResponse,
+  TSchedulerConfig,
   TSchedulerGid,
   TtellRes
 } from "@src/types.ts"
-import { TAria2Config, TNotificationDetailes, TProxyConfig, TTorrentConfig } from "@src/store/storeType.ts"
-import { TAddLinkOptions } from "@components/addLinkPopup/store/addLinkStoreType.ts"
 
 export interface IElectronAPI {
   addDownload: (url: string) => void
@@ -78,6 +79,8 @@ export interface IElectronAPI {
   readClipboard: () => Promise<string>
   getSchedulerDownloadRows: () => Promise<TSchedulerGid[]>
   addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
+  getSchedulerConfig: () => Promise<TSchedulerConfig>
+  onSchedulerConfigUpdated: (callback: (config: TSchedulerConfig) => void) => () => void
 }
 
 declare global {

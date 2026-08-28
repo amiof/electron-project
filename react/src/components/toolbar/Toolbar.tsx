@@ -1,24 +1,26 @@
-import styles from "./style.module.scss"
-import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined"
-import StopOutlinedIcon from "@mui/icons-material/StopOutlined"
-import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined"
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined"
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined"
-import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlined"
-import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined"
 import ButtonAction from "@components/buttonAction/ButtonAction.tsx"
-import { ReactElement } from "react"
-import { Divider, IconButton, InputAdornment, TextField } from "@mui/material"
 import AddLinkOutlinedIcon from "@mui/icons-material/AddLinkOutlined"
 import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined"
+import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined"
+import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined"
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined"
+import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlined"
+import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined"
+import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined"
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
+import StopOutlinedIcon from "@mui/icons-material/StopOutlined"
+import { Divider, IconButton, InputAdornment, TextField } from "@mui/material"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { generateId } from "@src/utils.ts"
+import { ReactElement, useEffect, useState } from "react"
+import styles from "./style.module.scss"
 
 type TButtonActions = {
   IconElement: ReactElement
   title: string
   action?: () => void
+  badgeActive?: boolean
+  tooltipText?: string
 }
 
 const Toolbar = () => {
@@ -27,26 +29,47 @@ const Toolbar = () => {
   const getCompletedRowsDB = useDownloaderStore((state) => state.getCompletedRowFromDB)
   const setSelectedRows = useDownloaderStore((state) => state.setSelectedRow)
   const refreshMainTableId = useDownloaderStore((state) => state.refreshMainTableId)
+  
+  const [schedulerConfig, setSchedulerConfig] = useState<{
+    startTime: string | undefined
+    endTime: string | undefined
+  } | null>(null)
+  
+  useEffect(() => {
+    const unsubscribe = window.electronAPI.onSchedulerConfigUpdated((config) => {
+      if (config.startTime && config.endTime) {
+        setSchedulerConfig({ startTime: config.startTime, endTime: config.endTime })
+      }
+      else {
+        setSchedulerConfig(null)
+      }
+    })
+    
+    window.electronAPI.getSchedulerConfig().then((config) => {
+      if (config.startTime && config.endTime) {
+        setSchedulerConfig({ startTime: config.startTime, endTime: config.endTime })
+      }
+    })
+    
+    return unsubscribe
+  }, [])
 
   const openOptionsHandler = () => {
     const id = generateId()
     openOptionsPopup(id)
   }
-  
+
   const openSchedulerHandler = () => {
     const id = generateId()
     openSchedulerPopup(id)
   }
-  
-  
+
   const openShareHandler = () => {
     // Send selected rows to main process before opening popup
     window.electronAPI.setSelectedRowsForShare(getSelectedRows)
     const id = generateId()
     openSharePopup(id)
   }
-  
-  
 
   const firstButtonActions: TButtonActions[] = [
     {
@@ -105,7 +128,9 @@ const Toolbar = () => {
     {
       IconElement: <PendingActionsOutlinedIcon fontSize={"medium"} />,
       title: "Scheduler",
-      action: openSchedulerHandler
+      action: openSchedulerHandler,
+      badgeActive: !!schedulerConfig,
+      tooltipText: schedulerConfig ? `Scheduled: ${schedulerConfig.startTime} → ${schedulerConfig.endTime}` : undefined
     },
     {
       IconElement: <ReplyOutlinedIcon sx={{ transform: "ScaleX(-1)" }} fontSize={"medium"} />,
@@ -211,6 +236,8 @@ const Toolbar = () => {
             iconElement={item.IconElement}
             title={item.title}
             action={item.action}
+            badgeActive={item.badgeActive}
+            tooltipText={item.tooltipText}
           />
         ))}
       </div>

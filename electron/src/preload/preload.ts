@@ -81,6 +81,18 @@ interface ElectronAPI {
   getSchedulerDownloadRows: () => Promise<unknown>
   addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
   removeRowsFromSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
+  getSchedulerConfig: () => Promise<{
+    startTime: string | undefined;
+    endTime: string | undefined;
+    keepAlive: boolean;
+    powerOff: boolean
+  }>
+  onSchedulerConfigUpdated: (callback: (config: {
+    startTime: string | undefined;
+    endTime: string | undefined;
+    keepAlive: boolean;
+    powerOff: boolean
+  }) => void) => () => void
 }
 
 declare global {
@@ -177,5 +189,22 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.send("add-rows-to-scheduler-queue", downloadRows),
   
   removeRowsFromSchedulerQueue: (downloadRows: TtellRes[]) =>
-    ipcRenderer.invoke("remove-rows-from-scheduler-queue", downloadRows)
+    ipcRenderer.invoke("remove-rows-from-scheduler-queue", downloadRows),
+  
+  getSchedulerConfig: () => ipcRenderer.invoke("get-scheduler-config"),
+  onSchedulerConfigUpdated: (callback: (config: {
+    startTime: string | undefined;
+    endTime: string | undefined;
+    keepAlive: boolean;
+    powerOff: boolean
+  }) => void) => {
+    const listener = (_event: IpcRendererEvent, config: {
+      startTime: string | undefined;
+      endTime: string | undefined;
+      keepAlive: boolean;
+      powerOff: boolean
+    }) => callback(config)
+    ipcRenderer.on("scheduler-config-updated", listener)
+    return () => ipcRenderer.removeListener("scheduler-config-updated", listener)
+  }
 })

@@ -1,10 +1,10 @@
 import { exec } from "node:child_process"
 import { clearTimeout } from "node:timers"
-import { ipcMain, powerSaveBlocker } from "electron"
+import { ipcMain, powerSaveBlocker, webContents } from "electron"
 import os from "os"
 import { In } from "typeorm"
 import { DataSourceRepo } from "../database/database"
-import { ACTIONS_CHANNELS, POPUP_CHANNELS } from "../ipc/channels"
+import { ACTIONS_CHANNELS, POPUP_CHANNELS, SCHEDULE_CHANNELS } from "../ipc/channels"
 import { createPopupWindow } from "../ipc/utils"
 import { aria2, schedulers } from "../main"
 import { electronStore } from "../store/electronStore"
@@ -109,6 +109,9 @@ export class SchedulerProcess {
     }
     
     electronStore.set("scheduler", resetConfig)
+    webContents.getAllWebContents().forEach((contents) => {
+      contents.send(SCHEDULE_CHANNELS.SCHEDULER_CONFIG_UPDATED, resetConfig)
+    })
   }
   
   /**

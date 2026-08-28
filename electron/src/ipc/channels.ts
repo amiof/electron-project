@@ -59,5 +59,7 @@ export const SCHEDULE_CHANNELS = {
   GET_SCHEDULER_DOWNLOAD_ROWS: "get-scheduler-download-rows",
   ADD_ROWS_TO_SCHEDULER_QUEUE: "add-rows-to-scheduler-queue",
   Remove_Rows_From_SCHEDULE_QUEUE: "remove-rows-From-scheduler-queue",
-  ADD_SCHEDULER_TIME: "add-scheduler-time"
+  ADD_SCHEDULER_TIME: "add-scheduler-time",
+  GET_SCHEDULER_CONFIG: "get-scheduler-config",
+  SCHEDULER_CONFIG_UPDATED: "scheduler-config-updated"
 }

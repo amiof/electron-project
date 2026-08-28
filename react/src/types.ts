@@ -113,3 +113,11 @@ export type resMetadataUrls = {
   savePath: string
   resume: boolean | null
 }
+
+export type TSchedulerConfig = {
+  startTime: string | undefined
+  endTime: string | undefined
+  keepAlive: boolean
+  powerOff: boolean
+}
+

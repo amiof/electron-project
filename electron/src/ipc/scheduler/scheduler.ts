@@ -1,9 +1,10 @@
-import { ipcMain } from "electron"
+import { ipcMain, webContents } from "electron"
 import { SCHEDULE_CHANNELS } from "../channels"
 import { DataSourceRepo } from "../../database/database"
 import { TDownloads } from "../../types"
 import { In } from "typeorm"
 import { schedulerInstance } from "../../main"
+import { electronStore } from "../../store/electronStore"
 
 export const ipcSchedulerHandler = () => {
   ipcMain.handle(SCHEDULE_CHANNELS.GET_SCHEDULER_DOWNLOAD_ROWS, () => {
@@ -32,8 +33,6 @@ export const ipcSchedulerHandler = () => {
   ipcMain.handle(
     SCHEDULE_CHANNELS.ADD_SCHEDULER_TIME,
     (_, startTime: string | undefined, endTime: string | undefined, keepAlive: boolean, powerOff: boolean) => {
-      console.log(startTime, endTime, keepAlive, powerOff)
-      
       const schedulerConfig = {
         startTime,
         endTime,
@@ -42,9 +41,17 @@ export const ipcSchedulerHandler = () => {
       }
       
       schedulerInstance.clearScheduler()
-      schedulerInstance.setTimeToElectronStore(schedulerConfig, 1000)
+      electronStore.set("scheduler", schedulerConfig)
       schedulerInstance.setKeepAlive(keepAlive)
-      schedulerInstance.run({ startTime, endTime, powerOff })
+      schedulerInstance.run({ startTime, endTime, powerOff, keepAlive })
+      webContents.getAllWebContents().forEach((contents) => {
+        contents.send(SCHEDULE_CHANNELS.SCHEDULER_CONFIG_UPDATED, schedulerConfig)
+      })
+      return schedulerConfig
     }
   )
+  
+  ipcMain.handle(SCHEDULE_CHANNELS.GET_SCHEDULER_CONFIG, () => {
+    return electronStore.get("scheduler")
+  })
 }
