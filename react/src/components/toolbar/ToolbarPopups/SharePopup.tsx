@@ -10,15 +10,15 @@ const SharePopup = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [rowsToShare, setRowsToShare] = useState<TDownloads[]>([])
   const [loading, setLoading] = useState(true)
-  
+
   const allDownloadsRow = useDownloaderStore((state) => state.allDownloadsRow)
-  
+
   useEffect(() => {
     const fetchSelectedRows = async () => {
       try {
         // Get selected rows from main process
         const selectedRows = await window.electronAPI.getSelectedRowsForShare()
-        
+
         if (selectedRows && selectedRows.length > 0) {
           // Use selected rows if available
           setRowsToShare(selectedRows as TDownloads[])
@@ -97,7 +97,8 @@ const SharePopup = () => {
   }
   
   return (
-    <div className="w-full h-full flex flex-col p-4">
+    <div
+      className="w-full h-full flex flex-col p-4 bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-white">Share Downloads Info</h2>
         <Tooltip title={copied ? "Copied!" : "Copy to Clipboard"}>

@@ -34,7 +34,8 @@ const OptionsPopup = () => {
   }
   
   return (
-    <div className={"w-full h-full flex"}>
+    <div
+      className={"w-full h-full flex bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]"}>
       <div className={"w-1/4 h-full border-r border-r-stone-700"}>
         <Tabs orientation={"vertical"} variant="scrollable" value={value} onChange={handleChange}>
           <Tab label={"aria2"} value={"aria2"} iconPosition={"start"} icon={<PlayForWork />} />

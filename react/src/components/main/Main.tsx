@@ -268,7 +268,10 @@ const Main = () => {
         sx={{
           border: "none",
           "& .MuiDataGrid-container--top [role=row]": {
-            backgroundColor: "var(--color-neutral-900)",
+            //use this when dont want be transparent
+            // backgroundColor: "var(--color-neutral-900)",
+            backgroundColor: "transparent",
+            backdropFilter: "blur(10px)",
             color: "white"
           },
           "& .MuiDataGrid-cell": {

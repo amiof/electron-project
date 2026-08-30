@@ -80,7 +80,8 @@ const BackDetails = (props: Props) => {
     <>
       <div className={styles.backDetailsContainer}>
         <div className={"h-full w-[50%] flex flex-col justify-between items-center"}>
-          <div className={"h-[68%] border border-neutral-700 rounded-4xl w-full  flex flex-wrap gap-x-5 px-3"}>
+          <div
+            className={"h-[68%] border border-neutral-700 rounded-4xl w-full  flex flex-wrap gap-x-5 px-3 backdrop-blur-xl bg-white/2 shadow-xl"}>
             <div className={"pt-4 w-full"}>
               {isTorrent && (
                 <>
@@ -119,7 +120,7 @@ const BackDetails = (props: Props) => {
 
           <div
             className={
-              "flex flex-col gap-x-5 flex-wrap w-full h-[30%] border border-neutral-700 rounded-4xl  items-center justify-evenly"
+              "flex flex-col gap-x-5 flex-wrap w-full h-[30%] border border-neutral-700 rounded-4xl  items-center justify-evenly backdrop-blur-lg bg-white/2 shadow-xl"
             }
           >
             <div className={"px-6 w-full"}>
@@ -164,7 +165,8 @@ const BackDetails = (props: Props) => {
           </div>
         </div>
         
-        <div className={"w-[50%] h-full flex justify-center border border-neutral-700 rounded-4xl"}>
+        <div
+          className={"w-[50%] h-full flex justify-center border border-neutral-700 rounded-4xl backdrop-blur-2xl bg-white/2  shadow-xl "}>
           <div className={"h-full w-full px-8  flex flex-col items-center justify-evenly"}>
             {isTorrent && (
               <div className={"absolute top-2 left-3"}>

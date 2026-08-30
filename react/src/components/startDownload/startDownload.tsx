@@ -152,7 +152,7 @@ const DownloadStart = () => {
     ...isTorrentsDetails
   ]
   return (
-    <div className={"w-full h-full flex justify-center items-center overflow-hidden "}>
+    <div className={clsx("w-full h-full flex justify-center items-center overflow-hidden", styles.backgroundStyle)}>
       <div className={styles.container}>
         <div className={clsx(styles.card)}>
           <div className={styles.back}>
