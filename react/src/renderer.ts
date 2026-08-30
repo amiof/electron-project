@@ -81,6 +81,16 @@ export interface IElectronAPI {
   addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
   getSchedulerConfig: () => Promise<TSchedulerConfig>
   onSchedulerConfigUpdated: (callback: (config: TSchedulerConfig) => void) => () => void
+  // Edit download options
+  getDownloadOptions: (gid: string) => Promise<Record<string, string>>
+  getDownloadInfo: (gid: string) => Promise<unknown>
+  getSelectedDownloadForEdit: () => Promise<TDownloads | null>
+  saveDownloadOptions: (gid: string, options: Record<string, string>) => Promise<boolean>
+  resetDownloadOption: (gid: string, optionKey: string) => Promise<boolean>
+  getDownloadOptionOverrides: (gid: string) => Promise<Record<string, string>>
+  changeDownloadUrl: (oldGid: string, newUrl: string) => Promise<{ newGid: string } | null>
+  openEditDownloadPopup: (id: string) => void
+  setSelectedDownloadForEdit: (row: TDownloads) => void
 }
 
 declare global {

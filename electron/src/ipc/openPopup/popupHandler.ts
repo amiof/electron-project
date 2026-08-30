@@ -7,7 +7,7 @@ const ipcPopupHandler = () => {
   ipcMain.on(POPUP_CHANNELS.ADD_LINK_POPUP, (event: IpcMainEvent, id) => {
     createPopupWindow({ windowTitle: "addLink", height: 470, width: 650, hashRoute: `popup/:${id}`, windowId: id })
   })
-
+  
   ipcMain.handle(POPUP_CHANNELS.POPUP_START_DOWNLOAD, (event: IpcMainInvokeEvent, id, windowTitle) => {
     createPopupWindow({
       windowTitle: windowTitle.trim() ? windowTitle : "download",
@@ -45,6 +45,15 @@ const ipcPopupHandler = () => {
       height: 500,
       width: 600,
       hashRoute: `share/:${id}`,
+      windowId: id
+    })
+  })
+  ipcMain.on(POPUP_CHANNELS.POPUP_OPEN_EDIT_DOWNLOAD, (event: IpcMainInvokeEvent, id) => {
+    createPopupWindow({
+      windowTitle: "edit-download",
+      height: 600,
+      width: 520,
+      hashRoute: `edit-download/:${id}`,
       windowId: id
     })
   })

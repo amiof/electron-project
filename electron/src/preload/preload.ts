@@ -12,14 +12,13 @@ import {
 interface Aria2cResponse {
   jsonrpc: "2.0"
   id: string
-  result?: any //  Consider making this more specific if you know the structure
+  result?: any
   error?: {
     code: number
     message: string
   }
 }
 
-// Define a type for the exposed API in the renderer
 interface ElectronAPI {
   addDownloadDir: (
     url: string,
@@ -77,22 +76,31 @@ interface ElectronAPI {
     keepAlive: boolean,
     powerOff: boolean
   ) => Promise<unknown>
-
   getSchedulerDownloadRows: () => Promise<unknown>
   addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
   removeRowsFromSchedulerQueue: (downloadRows: TtellRes[]) => Promise<unknown>
   getSchedulerConfig: () => Promise<{
-    startTime: string | undefined;
-    endTime: string | undefined;
-    keepAlive: boolean;
+    startTime: string | undefined
+    endTime: string | undefined
+    keepAlive: boolean
     powerOff: boolean
   }>
   onSchedulerConfigUpdated: (callback: (config: {
-    startTime: string | undefined;
-    endTime: string | undefined;
-    keepAlive: boolean;
+    startTime: string | undefined
+    endTime: string | undefined
+    keepAlive: boolean
     powerOff: boolean
   }) => void) => () => void
+  // Edit download options
+  openEditDownloadPopup: (id: string) => void
+  setSelectedDownloadForEdit: (download: unknown) => void
+  getSelectedDownloadForEdit: () => Promise<unknown>
+  getDownloadOptions: (gid: string) => Promise<Record<string, string> | null>
+  getDownloadInfo: (gid: string) => Promise<unknown>
+  saveDownloadOptions: (gid: string, options: Record<string, string>) => Promise<boolean>
+  resetDownloadOption: (gid: string, optionKey: string) => Promise<boolean>
+  getDownloadOptionOverrides: (gid: string) => Promise<Record<string, string>>
+  changeDownloadUrl: (oldGid: string, newUrl: string) => Promise<{ newGid: string } | null>
 }
 
 declare global {
@@ -101,7 +109,6 @@ declare global {
   }
 }
 
-// Expose only specific functions to the renderer process
 contextBridge.exposeInMainWorld("electronAPI", {
   addDownloadDir: async (
     url: string,
@@ -119,7 +126,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   tellActive: () => ipcRenderer.invoke("tell-active"),
   tellStopped: () => ipcRenderer.invoke("tell-stoped"),
   tellWaiting: () => ipcRenderer.invoke("tell-waiting"),
-
+  
   //popup
   openOptionsPopup: (id: string) => ipcRenderer.send("open-options-popup", id),
   
@@ -131,7 +138,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   //share - selected rows
   setSelectedRowsForShare: (rows: unknown[]) => ipcRenderer.send("set-selected-rows-for-share", rows),
   getSelectedRowsForShare: () => ipcRenderer.invoke("get-selected-rows-for-share"),
-
+  
   // update main window in start download
   setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),
   getActiveDownloadData: () => ipcRenderer.invoke("get-download-data-active"),
@@ -139,7 +146,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("data-change", (_event, data) => callback(data))
   },
   getDownloadedFilesDetails: () => ipcRenderer.invoke("get-downloaded-files-details"),
-
+  
   // use DataBase
   addLinkToDB: (downloadRow: TtellRes) => ipcRenderer.invoke("add-link-to-db", downloadRow),
   updateDownloadRowStatus: (gid: string, downloadRow: STATUS_TYPE) =>
@@ -193,18 +200,31 @@ contextBridge.exposeInMainWorld("electronAPI", {
   
   getSchedulerConfig: () => ipcRenderer.invoke("get-scheduler-config"),
   onSchedulerConfigUpdated: (callback: (config: {
-    startTime: string | undefined;
-    endTime: string | undefined;
-    keepAlive: boolean;
+    startTime: string | undefined
+    endTime: string | undefined
+    keepAlive: boolean
     powerOff: boolean
   }) => void) => {
     const listener = (_event: IpcRendererEvent, config: {
-      startTime: string | undefined;
-      endTime: string | undefined;
-      keepAlive: boolean;
+      startTime: string | undefined
+      endTime: string | undefined
+      keepAlive: boolean
       powerOff: boolean
     }) => callback(config)
     ipcRenderer.on("scheduler-config-updated", listener)
     return () => ipcRenderer.removeListener("scheduler-config-updated", listener)
-  }
+  },
+  
+  // Edit download options
+  openEditDownloadPopup: (id: string) => ipcRenderer.send("open-edit-download-popup", id),
+  setSelectedDownloadForEdit: (download: unknown) => ipcRenderer.send("set-selected-download-for-edit", download),
+  getSelectedDownloadForEdit: () => ipcRenderer.invoke("get-selected-download-for-edit"),
+  getDownloadOptions: (gid: string) => ipcRenderer.invoke("get-download-options", gid),
+  getDownloadInfo: (gid: string) => ipcRenderer.invoke("get-download-info", gid),
+  saveDownloadOptions: (gid: string, options: Record<string, string>) =>
+    ipcRenderer.invoke("save-option-overrides", gid, options),
+  resetDownloadOption: (gid: string, optionKey: string) =>
+    ipcRenderer.invoke("reset-download-option", gid, optionKey),
+  getDownloadOptionOverrides: (gid: string) => ipcRenderer.invoke("get-option-overrides", gid),
+  changeDownloadUrl: (oldGid: string, newUrl: string) => ipcRenderer.invoke("change-download-url", oldGid, newUrl)
 })

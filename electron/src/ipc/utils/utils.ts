@@ -1,5 +1,11 @@
 import { BrowserWindow, clipboard, ipcMain, Menu, Notification } from "electron"
-import { ACTIONS_CHANNELS, POPUP_CHANNELS, SCHEDULE_CHANNELS, UTILS_CHANNELS } from "../channels"
+import {
+  ACTIONS_CHANNELS,
+  EDIT_DOWNLOAD_CHANNELS,
+  POPUP_CHANNELS,
+  SCHEDULE_CHANNELS,
+  UTILS_CHANNELS
+} from "../channels"
 import { resMetadataUrls, STATUS_TYPE, TDownloads, TNotificationDetailes } from "../../types"
 import { directionFolder, extractFilenameFromDisposition, generateId } from "../../utils"
 import { createPopupWindow, iconPathContextMenu } from "../utils"
@@ -11,7 +17,7 @@ export const ipcUtilsHandler = () => {
     UTILS_CHANNELS.SHOW_NOTIFICATION,
     (_event: IpcMainInvokeEvent, notifDetailes: TNotificationDetailes) => {
       const { title, body } = notifDetailes
-
+      
       const notif = new Notification({
         title: title,
         body: body
@@ -26,7 +32,7 @@ export const ipcUtilsHandler = () => {
       // })
     }
   )
-
+  
   ipcMain.handle(UTILS_CHANNELS.GET_METADATA_URLS, async (_event: IpcMainInvokeEvent, url: string) => {
     const urlResponse: resMetadataUrls = {
       fileName: null,
@@ -35,11 +41,11 @@ export const ipcUtilsHandler = () => {
       savePath: directionFolder(url),
       resume: null
     }
-
+    
     if (url.startsWith("magnet:")) {
       urlResponse.typeUrl = "magnet"
     }
-
+    
     try {
       const response = await fetch(url, { method: "HEAD" })
       const contentType = response.headers.get("content-type") || ""
@@ -47,10 +53,10 @@ export const ipcUtilsHandler = () => {
       const fileName = extractFilenameFromDisposition(disposition)
       const contentLength = response.headers.get("Content-Length")
       const acceptRanges = response.headers.get("Accept-ranges")
-
+      
       urlResponse.size = contentLength
       urlResponse.fileName = fileName
-
+      
       if (
         fileName?.endsWith(".torrent") ||
         url.startsWith(".torrent") ||
@@ -59,7 +65,7 @@ export const ipcUtilsHandler = () => {
       ) {
         urlResponse.typeUrl = "torrent"
       }
-
+      
       //for check resume able link
       urlResponse.resume = !!(contentLength && acceptRanges === "bytes")
     }
@@ -74,7 +80,7 @@ export const ipcUtilsHandler = () => {
         const fileName = extractFilenameFromDisposition(disposition)
         const contentType = response.headers.get("content-type") || ""
         const acceptRanges = response.headers.get("Accept-ranges")
-
+        
         if (contentLength2) {
           urlResponse.size = contentLength2
         }
@@ -82,7 +88,7 @@ export const ipcUtilsHandler = () => {
           urlResponse.size = null
         }
         urlResponse.fileName = fileName
-
+        
         if (
           fileName?.endsWith(".torrent") ||
           url.startsWith(".torrent") ||
@@ -91,20 +97,20 @@ export const ipcUtilsHandler = () => {
         ) {
           urlResponse.typeUrl = "torrent"
         }
-
+        
         //for check resumeable link
         urlResponse.resume = !!(contentLength2 && acceptRanges === "bytes")
       }
       catch (error) {
         console.error("error in get url header2", error)
       }
-
+      
       console.error("error in get url header1", error)
     }
-
+    
     return urlResponse
   })
-
+  
   ipcMain.handle(
     UTILS_CHANNELS.SHOW_CONTEXT_MENU,
     async (event: IpcMainInvokeEvent, selectedDownloadRow: TDownloads[] | []) => {
@@ -114,7 +120,7 @@ export const ipcUtilsHandler = () => {
         (item) => item.Status !== STATUS_TYPE.ACTIVE && item.Status !== STATUS_TYPE.COMPLETE
       )
       const isScheduler = selectedDownloadRow.some((row) => row.schedulerQueue === true)
-
+      
       const menu = Menu.buildFromTemplate([
         {
           label: "Add new link",
@@ -218,6 +224,19 @@ export const ipcUtilsHandler = () => {
           }
         },
         {
+          label: "Edit",
+          visible: !!selectedDownloadRow.length,
+          enabled: selectedDownloadRow.length === 1,
+          icon: iconPathContextMenu("option-32i.png"),
+          click: () => {
+            const row = selectedDownloadRow[0]
+            ipcMain.emit(EDIT_DOWNLOAD_CHANNELS.SET_SELECTED_DOWNLOAD_FOR_EDIT, event, row)
+            const id = generateId()
+            ipcMain.emit(POPUP_CHANNELS.POPUP_OPEN_EDIT_DOWNLOAD, event, id)
+            mainWindow?.webContents.send(UTILS_CHANNELS.CONTEXT_MENU_ACTION, "edit-download")
+          }
+        },
+        {
           label: "Add to scheduler",
           visible: !!selectedDownloadRow.length,
           enabled: !isScheduler,
@@ -246,7 +265,7 @@ export const ipcUtilsHandler = () => {
       })
     }
   )
-
+  
   ipcMain.handle(UTILS_CHANNELS.READ_CLIPBOARD, () => {
     const text = clipboard.readText()
     

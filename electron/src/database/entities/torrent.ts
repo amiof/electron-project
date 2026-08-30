@@ -5,10 +5,10 @@ import { STATUS_TYPE, Tfile, TTorrentRes } from "../../types"
 export class Torrent implements TTorrentRes {
   @PrimaryColumn({ type: "text", nullable: false })
   gid!: string
-
+  
   @Column({ type: "text", nullable: false })
   infoHash!: string
-
+  
   @Column({
     type: "text",
     nullable: false,
@@ -40,7 +40,6 @@ export class Torrent implements TTorrentRes {
   @Column({ type: "text", nullable: false, default: "0" })
   pieceLength!: string
   
-  // Speeds & peers
   @Column({ type: "text", nullable: false, default: "0" })
   downloadSpeed!: string
   
@@ -81,4 +80,22 @@ export class Torrent implements TTorrentRes {
   
   @Column({ type: "boolean", nullable: false, default: false })
   schedulerQueue!: boolean
+  
+  @Column({
+    type: "text",
+    nullable: false,
+    default: "{}",
+    transformer: {
+      to: (value: Record<string, string>) => JSON.stringify(value),
+      from: (value: string) => {
+        try {
+          return JSON.parse(value)
+        }
+        catch {
+          return {}
+        }
+      }
+    }
+  })
+  optionOverrides!: Record<string, string>
 }

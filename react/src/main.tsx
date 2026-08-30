@@ -9,6 +9,7 @@ import DownloadStart from "@components/startDownload/startDownload.tsx"
 import OptionsPopup from "@components/toolbar/ToolbarPopups/OptionsPopup.tsx"
 import SchedulerPopup from "@components/toolbar/ToolbarPopups/SchedulerPopup.tsx"
 import SharePopup from "@components/toolbar/ToolbarPopups/SharePopup.tsx"
+import EditDownloadPopup from "@components/toolbar/ToolbarPopups/editPopup/EditDownloadPopup.tsx"
 
 const darkTheme = createTheme({
   palette: {
@@ -27,6 +28,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="options/:id" element={<OptionsPopup />} />
           <Route path="scheduler/:id" element={<SchedulerPopup />} />
           <Route path="share/:id" element={<SharePopup />} />
+          <Route path="edit-download/:id" element={<EditDownloadPopup />} />
         </Routes>
       </HashRouter>
     </ThemeProvider>

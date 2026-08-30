@@ -1,9 +1,9 @@
 import ButtonAction from "@components/buttonAction/ButtonAction.tsx"
 import AddLinkOutlinedIcon from "@mui/icons-material/AddLinkOutlined"
 import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined"
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined"
 import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined"
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined"
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
 import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlined"
 import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined"
 import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined"
@@ -53,24 +53,32 @@ const Toolbar = () => {
     
     return unsubscribe
   }, [])
-
+  
   const openOptionsHandler = () => {
     const id = generateId()
     openOptionsPopup(id)
   }
-
+  
   const openSchedulerHandler = () => {
     const id = generateId()
     openSchedulerPopup(id)
   }
-
+  
   const openShareHandler = () => {
     // Send selected rows to main process before opening popup
     window.electronAPI.setSelectedRowsForShare(getSelectedRows)
     const id = generateId()
     openSharePopup(id)
   }
-
+  
+  const openEditHandler = () => {
+    if (!getSelectedRows[0]?.Gid) return
+    // Send selected download to main process before opening popup
+    window.electronAPI.setSelectedDownloadForEdit(getSelectedRows[0])
+    const id = generateId()
+    openEditDownloadPopup(id)
+  }
+  
   const firstButtonActions: TButtonActions[] = [
     {
       IconElement: <PlayArrowOutlinedIcon fontSize={"medium"} />,
@@ -121,10 +129,14 @@ const Toolbar = () => {
       action: openOptionsHandler
     },
     {
-      IconElement: <ContentCopyOutlinedIcon fontSize={"medium"} />,
-      title: "Queues"
+      IconElement: <EditOutlinedIcon fontSize={"medium"} />,
+      title: "Edit",
+      action: openEditHandler,
+      tooltipText: getSelectedRows[0]?.Gid
+        ? `Edit options for ${getSelectedRows[0].FileName || getSelectedRows[0].Gid}`
+        : "Select a download to edit"
     },
-
+    
     {
       IconElement: <PendingActionsOutlinedIcon fontSize={"medium"} />,
       title: "Scheduler",
@@ -138,15 +150,16 @@ const Toolbar = () => {
       action: openShareHandler
     }
   ]
-
+  
   const addDownloadDir = window.electronAPI.addDownloadDir
   const addLinkPopup = window.electronAPI.addLinkPopup
   const openOptionsPopup = window.electronAPI.openOptionsPopup
   const openSchedulerPopup = window.electronAPI.openSchedulerPopup
   const openSharePopup = window.electronAPI.openSharePopup
-
+  const openEditDownloadPopup = window.electronAPI.openEditDownloadPopup
+  
   const getAllDownloadRow = useDownloaderStore((state) => state.getAllDownloadsRow)
-
+  
   const clickHandler = async () => {
     const result = await addDownloadDir(
       "https://www.pixelstalk.net/wp-content/uploads/2016/08/Best-Free-Desktop-Wallpaper-HD.jpg"
@@ -154,7 +167,6 @@ const Toolbar = () => {
     if (result) {
       getAllDownloadRow()
     }
-    console.log(result)
   }
   const createPopup = () => {
     const id = generateId()

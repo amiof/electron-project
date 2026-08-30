@@ -13,6 +13,7 @@ import { ipcSchedulerHandler } from "./ipc/scheduler/scheduler"
 import { ipcUtilsHandler } from "./ipc/utils/utils"
 import { SchedulerProcess } from "./schedulerProcess/schedulerProcess"
 import ipcShareHandler from "./ipc/sahre/shareHandler"
+import { ipcEditDownloadHandler } from "./ipc/editDownload/editDownloadHandler"
 
 export let mainWindow: BrowserWindow | null
 
@@ -48,7 +49,7 @@ function createWindow() {
       nodeIntegration: false // Disable node integration in renderer
     }
   })
-
+  
   mainWindow.setContentSize(1000, 500, true)
   if (process.env.NODE_ENV === "development") {
     // In development, load the React dev server.
@@ -62,14 +63,14 @@ function createWindow() {
       const iconPath = path.join(process.resourcesPath, "assets", "icons", "512x512.png")
       mainWindow.setIcon(iconPath)
     }
-
+    
     // In production, load the built index.html from extraResources.
     // Using process.resourcesPath ensures we reference the correct folder outside the asar.
     const indexPath = path.join(process.resourcesPath, "react", "dist", "index.html")
     // mainWindow.loadFile(indexPath);
     mainWindow.loadFile(indexPath).catch((err) => console.error("Failed to load index.html:", err))
   }
-
+  
   mainWindow.on("closed", () => {
     mainWindow = null
   })
@@ -98,11 +99,11 @@ app.whenReady().then(() => {
   aria2.start()
   
   schedulerInstance.initScheduler()
-
+  
   // setTimeout(connectToAria2c, 1000);
   setTimeout(() => aria2.connect(), 1000)
   // setInterval(()=>aria2.sendAria2cRequest('aria2.getVersion'), 3353);
-
+  
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -134,3 +135,4 @@ ipcConfigHandler()
 ipcUtilsHandler()
 ipcSchedulerHandler()
 ipcShareHandler()
+ipcEditDownloadHandler()
