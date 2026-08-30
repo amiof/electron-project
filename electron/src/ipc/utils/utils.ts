@@ -224,7 +224,7 @@ export const ipcUtilsHandler = () => {
           }
         },
         {
-          label: "Edit",
+          label: "Edit option",
           visible: !!selectedDownloadRow.length,
           enabled: selectedDownloadRow.length === 1,
           icon: iconPathContextMenu("option-32i.png"),
