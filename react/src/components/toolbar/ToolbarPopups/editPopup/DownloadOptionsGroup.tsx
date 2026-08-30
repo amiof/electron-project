@@ -8,13 +8,23 @@ type Props = {
   saved: Record<string, string>
   onChange: (key: string, value: string) => void
   onReset: (key: string) => void
+  statusDownload: string
 }
 
-export default function DownloadOptionsGroup({ options, values, defaults, saved, onChange, onReset }: Props) {
+export default function DownloadOptionsGroup({
+                                               options,
+                                               values,
+                                               defaults,
+                                               saved,
+                                               onChange,
+                                               onReset,
+                                               statusDownload
+                                             }: Props) {
   return (
     <div className="flex flex-col gap-3">
       {options.map((definition) => (
         <DownloadOptionRow
+          statusDownload={statusDownload}
           key={definition.key}
           definition={definition}
           value={values[definition.key] ?? ""}

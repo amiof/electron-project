@@ -19,6 +19,7 @@ export default function EditDownloadPopup() {
   const [globalDefaults, setGlobalDefaults] = useState<Record<string, string>>({})
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMsg, setSnackbarMsg] = useState("")
+  const [statusDownloadRow, setStatusDownloadRow] = useState<string>("")
   
   useEffect(() => {
     const load = async () => {
@@ -28,7 +29,10 @@ export default function EditDownloadPopup() {
           FileName?: string
           gid?: string
           name?: string
+          Status?: string
         } | null
+        
+        setStatusDownloadRow(stored?.Status ?? "")
         
         if (!stored) {
           setLoading(false)
@@ -36,20 +40,21 @@ export default function EditDownloadPopup() {
         }
         
         const downloadGid = stored.Gid || stored.gid || ""
-        const downloadFileName = stored.FileName || stored.name || downloadGid
-        setGid(downloadGid)
-        setDownloadName(downloadFileName)
-        
         if (!downloadGid) {
           setLoading(false)
           return
         }
+        setGid(downloadGid)
         
         const [aria2Options, savedOverrides, rawDownloadInfo] = await Promise.all([
           window.electronAPI.getDownloadOptions(downloadGid),
           window.electronAPI.getDownloadOptionOverrides(downloadGid),
           window.electronAPI.getDownloadInfo(downloadGid)
         ])
+        
+        const downloadFileName = stored.FileName || stored.name || aria2Options.out || downloadGid
+        setDownloadName(downloadFileName)
+        
         
         setGlobalDefaults(aria2Options || {})
         setDbOverrides(savedOverrides || {})
@@ -194,6 +199,7 @@ export default function EditDownloadPopup() {
       
       <div className="flex-1 overflow-auto px-3 py-4 border border-stone-700 rounded-md">
         <DownloadOptionsGroup
+          statusDownload={statusDownloadRow}
           options={OPTION_GROUPS[activeTab]?.options ?? []}
           values={formValues}
           defaults={globalDefaults}
