@@ -68,7 +68,11 @@ const AddLinkPopup = () => {
             <Tab label={"Options"} value={"Options"} iconPosition={"start"} icon={<Settings />} />
           </Tabs>
         </div>
-        <div className={"flex items-center justify-center h-full border border-neutral-700 m-5 rounded-2xl"}>
+        <div
+          className={
+            "flex items-center justify-center h-full border border-white/10 m-5 rounded-2xl backdrop-blur-2xl bg-white/5 shadow-2xl"
+          }
+        >
           {changeComponents()}
         </div>
         <div className={"flex items-center justify-between w-full px-10 h-[20%]"}>

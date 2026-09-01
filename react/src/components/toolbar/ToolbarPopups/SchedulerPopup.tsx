@@ -72,7 +72,11 @@ const SchedulerPopup = () => {
             />
           </div>
 
-          <div className={"border border-stone-700 rounded-md p-4 flex flex-col gap-3"}>
+          <div
+            className={
+              "border border-white/20 backdrop-blur-2xl bg-white/5 shadow-2xl rounded-md p-4 flex flex-col gap-3"
+            }
+          >
             <div className={"flex w-full items-center justify-start"}>
               <div className={"flex items-center"}>
                 <label id={"enableScheduler-label"} className="mr-2">

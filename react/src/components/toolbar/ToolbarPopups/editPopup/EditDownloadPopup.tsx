@@ -166,7 +166,7 @@ export default function EditDownloadPopup() {
           <p className="text-xs text-neutral-500 mt-0.5">GID: {gid}</p>
         </div>
 
-        <div className="flex items-center gap-2 mb-4 border border-stone-700 rounded-md p-3">
+        <div className="flex items-center gap-2 mb-4 border border-white/10 bg-white/5 drop-shadow-2xl rounded-md p-3">
           <LinkIcon sx={{ color: "text.secondary", fontSize: 18 }} />
           <TextField
             size="small"
@@ -195,7 +195,7 @@ export default function EditDownloadPopup() {
           </Tabs>
         </div>
 
-        <div className="flex-1 overflow-auto px-3 py-4 border border-stone-700 rounded-md">
+        <div className="flex-1 overflow-auto px-3 py-4 border border-white/10 backdrop-blur-2xl bg-white/5 shadow-2xl rounded-md">
           <DownloadOptionsGroup
             statusDownload={statusDownloadRow}
             options={OPTION_GROUPS[activeTab]?.options ?? []}
