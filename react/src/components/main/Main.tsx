@@ -7,6 +7,7 @@ import { TDownloads, TtellRes } from "@src/types.ts"
 import { ProgressBar } from "react-progressbar-fancy"
 import clsx from "clsx"
 import { searchInDownloadsRows } from "@src/utils.ts"
+import EmptyDownloads from "./EmptyDownloads"
 
 const Main = () => {
   const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
@@ -34,17 +35,13 @@ const Main = () => {
 
   if (sidebarSelectedLabel === "All Downloads" || sidebarSelectedLabel === "all" || sidebarSelectedLabel === "") {
     dataGridRow = downloadsRow
-  }
-  else if (sidebarSelectedLabel === "Finished") {
+  } else if (sidebarSelectedLabel === "Finished") {
     dataGridRow = downloadsRow.filter((item) => item.Status === "complete")
-  }
-  else if (sidebarSelectedLabel === "UnFinished") {
+  } else if (sidebarSelectedLabel === "UnFinished") {
     dataGridRow = downloadsRow.filter((item) => item.Status !== "complete")
-  }
-  else if (sidebarSelectedLabel === "Queue") {
+  } else if (sidebarSelectedLabel === "Queue") {
     dataGridRow = downloadsRow.filter((item) => item.schedulerQueue)
-  }
-  else {
+  } else {
     dataGridRow = downloadsGroupingByLabel[sidebarSelectedLabel.toLowerCase()]
     if (!dataGridRow) dataGridRow = []
   }
@@ -102,8 +99,7 @@ const Main = () => {
           default:
             return undefined
         }
-      }
-      else {
+      } else {
         // complex actions with data
         switch (payload.action) {
           case "delete-selected":
@@ -143,11 +139,10 @@ const Main = () => {
       interval = setInterval(async () => {
         await getAllDownloads()
       }, 900)
-    }
-    else {
+    } else {
       getAllDownloads()
     }
-    
+
     return () => {
       if (interval) {
         clearInterval(interval)
@@ -155,7 +150,7 @@ const Main = () => {
       }
     }
   }, [tellActive.length, activeDownloads])
-  
+
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: "Id", headerName: "id", width: 50, sortable: true },
     {
@@ -195,7 +190,7 @@ const Main = () => {
         return (
           <div className={clsx("flex flex-col items-center", styles.progress)}>
             <div className="h-[75%]">{params.row.Percentage!}%</div>
-            
+
             <ProgressBar
               label={""}
               hideText={true}
@@ -239,21 +234,21 @@ const Main = () => {
       editable: false
     }
   ]
-  
+
   const rows = searchInDownloadsRows(dataGridRow, searchValue)
-  
+
   const rowSelectedHandler = (selectionModel: GridRowSelectionModel) => {
     setRowSelectionModel(selectionModel)
     const selectedDetails = rows.filter((row) => selectionModel.includes(row.Id!))
     setSelectedRows(selectedDetails)
   }
-  
+
   const handleContextMenu = (event: MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
     window.electronAPI.showContextMenu(selectedRows)
   }
-  
+
   return (
     <div className={styles.container} onContextMenu={(e) => handleContextMenu(e)}>
       <DataGrid
@@ -264,6 +259,9 @@ const Main = () => {
         onRowSelectionModelChange={rowSelectedHandler}
         rows={rows}
         columns={columns}
+        slots={{
+          noRowsOverlay: EmptyDownloads
+        }}
         hideFooterPagination={true}
         sx={{
           border: "none",
@@ -290,9 +288,12 @@ const Main = () => {
           "& .MuiDataGrid-selectedRowCount": {
             color: "white"
           },
-          "& .css-1tdeh38": {
-            borderColor: "var(--color-neutral-800)"
+          "& .MuiDataGrid-filler": {
+            "--rowBorderColor": clsx(rows.length ? "var(--color-neutral-800) !important" : "none !important")
           },
+          // "& .css-1tdeh38": {
+          //   borderColor: "var(--color-neutral-800)"
+          // },
           "& .MuiDataGrid-withBorderColor": {
             borderColor: "var(--color-neutral-800)"
           },
