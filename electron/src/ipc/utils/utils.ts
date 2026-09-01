@@ -194,7 +194,7 @@ export const ipcUtilsHandler = () => {
               const fileName = item?.FileName
               createPopupWindow({
                 windowTitle: fileName?.trim() ? fileName : "download",
-                height: 400,
+                height: 450,
                 width: 900,
                 hashRoute: `downloadStart/:${gid}`,
                 windowId: gid

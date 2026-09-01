@@ -285,7 +285,7 @@ export class SchedulerProcess {
     
     createPopupWindow({
       windowTitle: "download",
-      height: 400,
+      height: 450,
       width: 900,
       hashRoute: `downloadStart/:${gid}`,
       windowId: gid
