@@ -142,7 +142,7 @@ export default function EditDownloadPopup() {
 
   if (loading) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
+      <div className="w-full h-full border-r border-l border-b border-[rgba(255,255,255,0.3)] flex items-center justify-center bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
         <p className="text-neutral-400">Loading download options…</p>
       </div>
     )
@@ -150,7 +150,7 @@ export default function EditDownloadPopup() {
 
   if (!gid) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
+      <div className="w-full h-full border-r border-l border-b border-[rgba(255,255,255,0.3)] flex items-center justify-center bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
         <p className="text-neutral-400">No download selected for editing.</p>
       </div>
     )
@@ -159,7 +159,7 @@ export default function EditDownloadPopup() {
   return (
     <div className="flex flex-col w-full h-full">
       <CustomTitlebar id={id} />
-      <div className="w-full h-full rounded-xl flex flex-col p-5 overflow-hidden bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
+      <div className="w-full h-full border-r border-l border-b border-[rgba(255,255,255,0.3)] rounded-xl flex flex-col p-5 overflow-hidden bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
         <div className="mb-4">
           <h2 className="text-lg font-semibold">Edit Download Options</h2>
           <p className="text-sm text-neutral-400 mt-1">{downloadName}</p>

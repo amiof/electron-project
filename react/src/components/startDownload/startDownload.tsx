@@ -156,7 +156,7 @@ const DownloadStart = () => {
       <CustomTitlebar id={gid} />
       <div
         className={clsx(
-          "w-full h-full flex justify-center items-center overflow-hidden rounded-xl",
+          "w-full h-full flex justify-center items-center overflow-hidden rounded-xl border-r border-l border-b border-[rgba(255,255,255,0.3)]",
           styles.backgroundStyle
         )}
       >
