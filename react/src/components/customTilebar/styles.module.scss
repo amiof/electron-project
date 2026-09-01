@@ -1,25 +1,24 @@
 
-.rightConrner{
-   position: absolute; 
-   right: -28px;
-   bottom: -1px;
-clip-path: path("M0,0H8A11,11 0,0,1 19,11V21A7.5,7.5 0,0,0 26.5,28.5H26.5A7.5,7.5 0,0,1 34,36V36A0,0 0,0,1 34,36H0A0,0 0,0,1 0,36V0A0,0 0,0,1 0,0Z");
-	width: 34px;
-	height: 30px;
-	z-index: 100;
-	background-color: #0d1420;
-	aspect-ratio: 17 / 18;
+.rightCorner {
+  position: absolute;
+  z-index: 100;
+  right: -28px;
+  bottom: -1px;
+  width: 34px;
+  height: 30px;
+  background-color: #0d1420;
+  clip-path: path("M0,0H8A11,11 0,0,1 19,11V21A7.5,7.5 0,0,0 26.5,28.5H26.5A7.5,7.5 0,0,1 34,36V36A0,0 0,0,1 34,36H0A0,0 0,0,1 0,36V0A0,0 0,0,1 0,0Z");
+  aspect-ratio: 17 / 18;
 }
 
 
-
-.tabTool{
-   position: absolute; 
-   left: -25px;
-   bottom: -1px;
-	background-color: #0d1420;
-	clip-path: path("M0,0H34A0,0 0,0,1 34,0V36A0,0 0,0,1 34,36H0A0,0 0,0,1 0,36V34.5A5.5,5.5 0,0,1 5.5,29H5.5A7,7 0,0,0 12.5,22V8A8,8 0,0,1 20.5,0");
-	width: 34px;
-	height: 30px;
-	aspect-ratio: 17 / 18;
+.leftCorner {
+  position: absolute;
+  bottom: -1px;
+  left: -25px;
+  width: 34px;
+  height: 30px;
+  background-color: #0d1420;
+  clip-path: path("M0,0H34A0,0 0,0,1 34,0V36A0,0 0,0,1 34,36H0A0,0 0,0,1 0,36V34.5A5.5,5.5 0,0,1 5.5,29H5.5A7,7 0,0,0 12.5,22V8A8,8 0,0,1 20.5,0");
+  aspect-ratio: 17 / 18;
 }

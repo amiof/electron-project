@@ -23,7 +23,7 @@ const CustomTitlebar = (props: Props) => {
         className="bg-[#0d1420] w-[100%] relative
 	rounded-tr-md rounded-tl-md  flex justify-between z-30 border-t border-[rgba(255,255,255,0.1)]"
       >
-        <div className={styles.tabTool} />
+        <div className={styles.leftCorner} />
         <IconButton>
           <ZoomOutMapIcon sx={{ fontSize: "15px" }} />
         </IconButton>
@@ -38,7 +38,7 @@ const CustomTitlebar = (props: Props) => {
             <Close sx={{ fontSize: "15px" }} />
           </IconButton>
         </div>
-        <div className={styles.rightConrner} />
+        <div className={styles.rightCorner} />
       </div>
     </div>
   )
