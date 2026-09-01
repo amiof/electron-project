@@ -25,6 +25,7 @@
   padding: 0;
   width: 100vw;
   height: 100vh;
+  background: transparent !important;
 }
 
 html,
@@ -34,8 +35,11 @@ body {
   padding: 0;
   width: 100vw;
   height: 100vh;
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent !important;
+  /* border:1px solid red; */
 }
-
 /*a {*/
 /*  font-weight: 500;*/
 /*  color: #646cff;*/

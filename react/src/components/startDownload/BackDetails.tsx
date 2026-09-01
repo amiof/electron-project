@@ -1,20 +1,20 @@
-import { TDetails } from "@components/startDownload/startDownload.tsx"
-import { SpeedDial, SpeedDialAction, SpeedDialIcon, Tooltip } from "@mui/material"
-import { TtellRes } from "@src/types.ts"
-import styles from "./style.module.scss"
-import { getIdFromLocation } from "@src/utils.ts"
-import { useLocation } from "react-router-dom"
-import StopIcon from "@mui/icons-material/Stop"
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"
-import DeleteIcon from "@mui/icons-material/Delete"
-import CancelIcon from "@mui/icons-material/Cancel"
-import FolderIcon from "@mui/icons-material/Folder"
-import { ReactElement, useState } from "react"
-import useDownloaderStore from "@src/store/downloaderStore.ts"
-import MagnetIcon from "@src/assets/MagnetIcon.tsx"
 import ChunkMap from "@components/startDownload/ChunkMap.tsx"
-import { ProgressBar } from "react-progressbar-fancy"
 import SpeedGraph from "@components/startDownload/SpeedGraph.tsx"
+import { TDetails } from "@components/startDownload/startDownload.tsx"
+import CancelIcon from "@mui/icons-material/Cancel"
+import DeleteIcon from "@mui/icons-material/Delete"
+import FolderIcon from "@mui/icons-material/Folder"
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"
+import StopIcon from "@mui/icons-material/Stop"
+import { SpeedDial, SpeedDialAction, SpeedDialIcon, Tooltip } from "@mui/material"
+import MagnetIcon from "@src/assets/MagnetIcon.tsx"
+import useDownloaderStore from "@src/store/downloaderStore.ts"
+import { TtellRes } from "@src/types.ts"
+import { getIdFromLocation } from "@src/utils.ts"
+import { ReactElement, useState } from "react"
+import { ProgressBar } from "react-progressbar-fancy"
+import { useLocation } from "react-router-dom"
+import styles from "./style.module.scss"
 
 type Props = {
   details: TDetails[]
@@ -36,7 +36,7 @@ const BackDetails = (props: Props) => {
   const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
 
   const [open, setOpen] = useState(false)
-  
+
   const percentage = !isMetaData
     ? downloadStatus
       ? +((+downloadStatus?.completedLength / +downloadStatus?.totalLength) * 100).toFixed(0)
@@ -81,7 +81,10 @@ const BackDetails = (props: Props) => {
       <div className={styles.backDetailsContainer}>
         <div className={"h-full w-[50%] flex flex-col justify-between items-center"}>
           <div
-            className={"h-[68%] border border-neutral-700 rounded-4xl w-full  flex flex-wrap gap-x-5 px-3 backdrop-blur-xl bg-white/2 shadow-xl"}>
+            className={
+              "h-[68%] border border-white/10 rounded-lg w-full  flex flex-wrap gap-x-5 px-3 backdrop-blur-3xl bg-white/5 shadow-xl"
+            }
+          >
             <div className={"pt-4 w-full"}>
               {isTorrent && (
                 <>
@@ -110,7 +113,7 @@ const BackDetails = (props: Props) => {
                           <span className="font-medium">{item.label}</span>
                         </div>
                       </Tooltip>
-                      
+
                       <span className="text-neutral-400 truncate">{item.value}</span>
                     </div>
                   )
@@ -120,13 +123,13 @@ const BackDetails = (props: Props) => {
 
           <div
             className={
-              "flex flex-col gap-x-5 flex-wrap w-full h-[30%] border border-neutral-700 rounded-4xl  items-center justify-evenly backdrop-blur-lg bg-white/2 shadow-xl"
+              "flex flex-col gap-x-5 flex-wrap w-full h-[30%] border border-white/10 rounded-lg  items-center justify-evenly backdrop-blur-lg bg-white/5 shadow-xl"
             }
           >
             <div className={"px-6 w-full"}>
               <ProgressBar progressColor={"green"} label={""} darkTheme score={percentage} />
             </div>
-            
+
             <SpeedDial
               ariaLabel="More actions"
               icon={<SpeedDialIcon />}
@@ -164,9 +167,12 @@ const BackDetails = (props: Props) => {
             </SpeedDial>
           </div>
         </div>
-        
+
         <div
-          className={"w-[50%] h-full flex justify-center border border-neutral-700 rounded-4xl backdrop-blur-2xl bg-white/2  shadow-xl "}>
+          className={
+            "w-[50%] h-full flex justify-center border border-white/10 rounded-lg backdrop-blur-3xl bg-white/4  shadow-xl "
+          }
+        >
           <div className={"h-full w-full px-8  flex flex-col items-center justify-evenly"}>
             {isTorrent && (
               <div className={"absolute top-2 left-3"}>

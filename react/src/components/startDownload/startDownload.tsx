@@ -1,19 +1,20 @@
-import { useLocation } from "react-router-dom"
+import CustomTitlebar from "@components/customTilebar/CustomTitlebar"
+import BackDetails from "@components/startDownload/BackDetails.tsx"
+import AccessTimeIcon from "@mui/icons-material/AccessTime"
+import HubIcon from "@mui/icons-material/Hub"
+import InsertLinkIcon from "@mui/icons-material/InsertLink"
+import SaveIcon from "@mui/icons-material/Save"
+import SaveAltIcon from "@mui/icons-material/SaveAlt"
+import SaveAsIcon from "@mui/icons-material/SaveAs"
+import SpeedIcon from "@mui/icons-material/Speed"
+import TaskAltIcon from "@mui/icons-material/TaskAlt"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
-import { useEffect, useState } from "react"
 import { TtellRes } from "@src/types.ts"
 import { formatBytes, formatTime, getIdFromLocation, isMetadataPhase, isTorrentMode } from "@src/utils.ts"
-import styles from "./style.module.scss"
-import BackDetails from "@components/startDownload/BackDetails.tsx"
 import clsx from "clsx"
-import SpeedIcon from "@mui/icons-material/Speed"
-import SaveIcon from "@mui/icons-material/Save"
-import HubIcon from "@mui/icons-material/Hub"
-import TaskAltIcon from "@mui/icons-material/TaskAlt"
-import SaveAsIcon from "@mui/icons-material/SaveAs"
-import SaveAltIcon from "@mui/icons-material/SaveAlt"
-import AccessTimeIcon from "@mui/icons-material/AccessTime"
-import InsertLinkIcon from "@mui/icons-material/InsertLink"
+import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
+import styles from "./style.module.scss"
 
 export type TDetails = {
   label: string
@@ -68,8 +69,7 @@ const DownloadStart = () => {
       }, 400)
 
       setDownloadDataToElectron(tellActive[0])
-    }
-    else {
+    } else {
       ;(async () => {
         const tellStatus = await window.electronAPI.getTellStatus(gid)
         setDownloadStatus(tellStatus)
@@ -89,15 +89,15 @@ const DownloadStart = () => {
       })()
     }
   }, [tellActive.length])
-  
+
   const isMetaData = downloadStatus ? isMetadataPhase(downloadStatus) : true
   const isTorrent = downloadStatus ? isTorrentMode(downloadStatus) : false
-  
+
   const isTorrentsDetails = isTorrent
     ? ([
-      { label: "Number Seeders", value: downloadStatus?.numSeeders ?? "0", showDetails: false },
-      { label: "Upload", value: downloadStatus?.uploadLength ?? "0", showDetails: false }
-    ] as TDetails[])
+        { label: "Number Seeders", value: downloadStatus?.numSeeders ?? "0", showDetails: false },
+        { label: "Upload", value: downloadStatus?.uploadLength ?? "0", showDetails: false }
+      ] as TDetails[])
     : ([] as TDetails[])
 
   const details: TDetails[] = [
@@ -152,16 +152,24 @@ const DownloadStart = () => {
     ...isTorrentsDetails
   ]
   return (
-    <div className={clsx("w-full h-full flex justify-center items-center overflow-hidden", styles.backgroundStyle)}>
-      <div className={styles.container}>
-        <div className={clsx(styles.card)}>
-          <div className={styles.back}>
-            <BackDetails
-              details={details}
-              downloadStatus={downloadStatus}
-              isMetaData={isMetaData}
-              isTorrent={isTorrent}
-            />
+    <div className="flex flex-col w-full h-full">
+      <CustomTitlebar id={gid} />
+      <div
+        className={clsx(
+          "w-full h-full flex justify-center items-center overflow-hidden rounded-xl",
+          styles.backgroundStyle
+        )}
+      >
+        <div className={styles.container}>
+          <div className={clsx(styles.card)}>
+            <div className={styles.back}>
+              <BackDetails
+                details={details}
+                downloadStatus={downloadStatus}
+                isMetaData={isMetaData}
+                isTorrent={isTorrent}
+              />
+            </div>
           </div>
         </div>
       </div>

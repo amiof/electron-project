@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, IpcMainEvent } from "electron"
+import { BrowserWindow, IpcMainEvent, ipcMain } from "electron"
 import path from "path"
 import { POPUP_CHANNELS } from "./channels"
 
@@ -18,9 +18,11 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
     height: height,
     title: windowTitle,
     resizable: false,
+    frame: false,
+    roundedCorners: true,
+    transparent: true,
     movable: true,
     alwaysOnTop: false,
-    frame: true,
     webPreferences: {
       preload: path.join(__dirname, "../", "preload", "preload.js"),
       contextIsolation: true, // Crucial for security
@@ -35,6 +37,22 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
       popupWindow = null // Reset the reference
     }
   })
+  ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MAXIMIZE, (event: IpcMainEvent, id?: string) => {
+    if (id && id !== windowId) return
+
+    if (popupWindow?.isMaximized()) {
+      popupWindow.unmaximize()
+    } else {
+      popupWindow?.maximize()
+    }
+  })
+
+  ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MINIMIZE, (event: IpcMainEvent, id?: string) => {
+    if (id && id !== windowId) return
+    if (popupWindow) {
+      popupWindow?.minimize()
+    }
+  })
   popupWindow.setMenuBarVisibility(false)
   const isDev = process.env.NODE_ENV === "development"
 
@@ -42,7 +60,7 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
     ? `http://localhost:3353/#/${hashRoute}`
     : `file://${path.join(process.resourcesPath, "react", "dist", "index.html")}#/${hashRoute}`
   popupWindow.loadURL(popupURL)
-  
+
   popupWindow.on("closed", () => {
     popupWindow = null
   })
@@ -51,9 +69,7 @@ export const createPopupWindow = (arg: TCreatePopupWindow) => {
 export const iconPathContextMenu = (iconName: string) => {
   if (process.env.NODE_ENV === "development") {
     return path.join(__dirname, "..", "..", "..", "assets", `${iconName}`)
-  }
-  else {
+  } else {
     return path.join(process.resourcesPath, "assets", `${iconName}`)
   }
 }
-

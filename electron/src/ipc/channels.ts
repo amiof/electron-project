@@ -17,6 +17,9 @@ export const GET_DATA_CHANNELS = {
 export const POPUP_CHANNELS = {
   ADD_LINK_POPUP: "add-link-popup",
   CLOSE_POPUP_WINDOW: "close-popup",
+  WINDOW_POPUP_MAXIMIZE: "window-maximize",
+  WINDOW_POPUP_MINIMIZE: "window-minimize",
+  CLOSE_MAIN_POPUP: "window-close",
   POPUP_START_DOWNLOAD: "popup-start-download",
   POPUP_OPEN_OPTIONS: "open-options-popup",
   POPUP_OPEN_SCHEDULER: "open-scheduler-popup",

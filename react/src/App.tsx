@@ -1,12 +1,13 @@
+import Header from "@components/header/Header.tsx"
+import Main from "@components/main/Main.tsx"
+import Sidebar from "@components/sidebar/Sidebar.tsx"
+import Toolbar from "@components/toolbar/Toolbar.tsx"
 import styles from "@src/app.module.scss"
 import clsx from "clsx"
-import Sidebar from "@components/sidebar/Sidebar.tsx"
-import Header from "@components/header/Header.tsx"
-import Toolbar from "@components/toolbar/Toolbar.tsx"
-import Main from "@components/main/Main.tsx"
 import "./renderer.ts"
-import { useEffect } from "react"
+import CustomTitlebar from "@components/customTilebar/CustomTitlebar.tsx"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
+import { useEffect } from "react"
 
 function App() {
   const getDownloadedFilesDetails = useDownloaderStore((state) => state.getDownloadedFilesDetails)
@@ -18,9 +19,10 @@ function App() {
     getDownloadedFilesDetails()
     getSchedulerGidRow()
   }, [])
-  
+
   return (
-    <>
+    <div className="flex flex-col w-full h-full">
+      <CustomTitlebar />
       <div className={clsx(styles.mainContainer)}>
         <div className={styles.aside}>
           <Sidebar />
@@ -35,7 +37,7 @@ function App() {
           <Main />
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

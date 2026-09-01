@@ -1,13 +1,13 @@
-import styles from "./style.module.scss"
-import { IconButton, InputAdornment, TextField } from "@mui/material"
 import { SearchOutlined } from "@mui/icons-material"
-import SpeedIcon from "@src/assets/SpeedIcon.tsx"
 import StraightOutlinedIcon from "@mui/icons-material/StraightOutlined"
+import { IconButton, InputAdornment, TextField } from "@mui/material"
+import SpeedIcon from "@src/assets/SpeedIcon.tsx"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
-import { useEffect, useState } from "react"
 import { formatBytes } from "@src/utils.ts"
-import * as _ from "lodash"
 import clsx from "clsx"
+import * as _ from "lodash"
+import { useEffect, useState } from "react"
+import styles from "./style.module.scss"
 
 const Header = () => {
   const tellActive = useDownloaderStore((state) => state.tellActive)
@@ -32,7 +32,7 @@ const Header = () => {
 
   useEffect(() => {
     let interval: ReturnType<typeof setTimeout> | null
-    
+
     if (tellActive.length) {
       ;(async () => {
         const globalState = window.electronAPI.getGlobalStates
@@ -50,7 +50,7 @@ const Header = () => {
       }
     }
   }, [tellActive.length])
-  
+
   return (
     <div className={styles.container}>
       <div className={styles.speedTest}>
@@ -69,7 +69,7 @@ const Header = () => {
           </span>
         </div>
       </div>
-      
+
       <TextField
         size={"small"}
         placeholder={"search in the list"}

@@ -85,12 +85,14 @@ interface ElectronAPI {
     keepAlive: boolean
     powerOff: boolean
   }>
-  onSchedulerConfigUpdated: (callback: (config: {
-    startTime: string | undefined
-    endTime: string | undefined
-    keepAlive: boolean
-    powerOff: boolean
-  }) => void) => () => void
+  onSchedulerConfigUpdated: (
+    callback: (config: {
+      startTime: string | undefined
+      endTime: string | undefined
+      keepAlive: boolean
+      powerOff: boolean
+    }) => void
+  ) => () => void
   // Edit download options
   openEditDownloadPopup: (id: string) => void
   setSelectedDownloadForEdit: (download: unknown) => void
@@ -101,6 +103,9 @@ interface ElectronAPI {
   resetDownloadOption: (gid: string, optionKey: string) => Promise<boolean>
   getDownloadOptionOverrides: (gid: string) => Promise<Record<string, string>>
   changeDownloadUrl: (oldGid: string, newUrl: string) => Promise<{ newGid: string } | null>
+  windowMinimize: (id?: string) => void
+  windowMaximize: (id?: string) => void
+  windowClose: (id?: string) => void
 }
 
 declare global {
@@ -126,19 +131,19 @@ contextBridge.exposeInMainWorld("electronAPI", {
   tellActive: () => ipcRenderer.invoke("tell-active"),
   tellStopped: () => ipcRenderer.invoke("tell-stoped"),
   tellWaiting: () => ipcRenderer.invoke("tell-waiting"),
-  
+
   //popup
   openOptionsPopup: (id: string) => ipcRenderer.send("open-options-popup", id),
-  
+
   //popup open scheduler
   openSchedulerPopup: (id: string) => ipcRenderer.send("open-scheduler-popup", id),
-  
+
   //popup open share
   openSharePopup: (id: string) => ipcRenderer.send("open-share-popup", id),
   //share - selected rows
   setSelectedRowsForShare: (rows: unknown[]) => ipcRenderer.send("set-selected-rows-for-share", rows),
   getSelectedRowsForShare: () => ipcRenderer.invoke("get-selected-rows-for-share"),
-  
+
   // update main window in start download
   setActiveDownloadData: (data: unknown) => ipcRenderer.send("set-download-data-active", data),
   getActiveDownloadData: () => ipcRenderer.invoke("get-download-data-active"),
@@ -146,13 +151,13 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("data-change", (_event, data) => callback(data))
   },
   getDownloadedFilesDetails: () => ipcRenderer.invoke("get-downloaded-files-details"),
-  
+
   // use DataBase
   addLinkToDB: (downloadRow: TtellRes) => ipcRenderer.invoke("add-link-to-db", downloadRow),
   updateDownloadRowStatus: (gid: string, downloadRow: STATUS_TYPE) =>
     ipcRenderer.invoke("update-downloadRow-status", gid, downloadRow),
   getCompletedRowFromDB: () => ipcRenderer.invoke("get-completed-row-from-db"),
-  
+
   //action handler
   stopDownloadByGid: (gid: string) => ipcRenderer.send("stop-download-by-gid", gid),
   unPauseAll: () => ipcRenderer.invoke("unpause-all"),
@@ -161,7 +166,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   removeDownloadByGid: (gid: string) => ipcRenderer.send("remove-download-by-gid", gid),
   removeSelectedDownloads: (gidList: string[]) => ipcRenderer.send("remove-selected-downloads", gidList),
   openFolder: (path: string) => ipcRenderer.send("open-folder", path),
-  
+
   //config
   setProxyConfig: (config: TProxyConfig) => ipcRenderer.invoke("set-proxy-config", config),
   getProxyConfig: () => ipcRenderer.invoke("get-proxy-config"),
@@ -172,7 +177,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   setSelectedStorageDirectory: (basePath: string) => ipcRenderer.invoke("set-selected-storage-directory", basePath),
   getTorrentConfig: () => ipcRenderer.invoke("get-torrents-config"),
   setTorrentConfig: (config: TTorrentConfig) => ipcRenderer.invoke("set-torrents-config", config),
-  
+
   //utils
   showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes),
   getMetadataUrls: (url: string) => ipcRenderer.invoke("get-metadata-urls", url),
@@ -181,7 +186,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("context-menu-action", (_event, payload) => callback(payload))
   },
   readClipboard: () => ipcRenderer.invoke("read-clipboard"),
-  
+
   //scheduler
   addSchedulerTime: (
     startTime: string | undefined,
@@ -189,32 +194,37 @@ contextBridge.exposeInMainWorld("electronAPI", {
     keepAlive: boolean,
     powerOff: boolean
   ) => ipcRenderer.invoke("add-scheduler-time", startTime, endTime, keepAlive, powerOff),
-  
+
   getSchedulerDownloadRows: () => ipcRenderer.invoke("get-scheduler-download-rows"),
-  
+
   addDownloadRowsToSchedulerQueue: (downloadRows: TtellRes[]) =>
     ipcRenderer.send("add-rows-to-scheduler-queue", downloadRows),
-  
+
   removeRowsFromSchedulerQueue: (downloadRows: TtellRes[]) =>
     ipcRenderer.invoke("remove-rows-from-scheduler-queue", downloadRows),
-  
+
   getSchedulerConfig: () => ipcRenderer.invoke("get-scheduler-config"),
-  onSchedulerConfigUpdated: (callback: (config: {
-    startTime: string | undefined
-    endTime: string | undefined
-    keepAlive: boolean
-    powerOff: boolean
-  }) => void) => {
-    const listener = (_event: IpcRendererEvent, config: {
+  onSchedulerConfigUpdated: (
+    callback: (config: {
       startTime: string | undefined
       endTime: string | undefined
       keepAlive: boolean
       powerOff: boolean
-    }) => callback(config)
+    }) => void
+  ) => {
+    const listener = (
+      _event: IpcRendererEvent,
+      config: {
+        startTime: string | undefined
+        endTime: string | undefined
+        keepAlive: boolean
+        powerOff: boolean
+      }
+    ) => callback(config)
     ipcRenderer.on("scheduler-config-updated", listener)
     return () => ipcRenderer.removeListener("scheduler-config-updated", listener)
   },
-  
+
   // Edit download options
   openEditDownloadPopup: (id: string) => ipcRenderer.send("open-edit-download-popup", id),
   setSelectedDownloadForEdit: (download: unknown) => ipcRenderer.send("set-selected-download-for-edit", download),
@@ -223,8 +233,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getDownloadInfo: (gid: string) => ipcRenderer.invoke("get-download-info", gid),
   saveDownloadOptions: (gid: string, options: Record<string, string>) =>
     ipcRenderer.invoke("save-option-overrides", gid, options),
-  resetDownloadOption: (gid: string, optionKey: string) =>
-    ipcRenderer.invoke("reset-download-option", gid, optionKey),
+  resetDownloadOption: (gid: string, optionKey: string) => ipcRenderer.invoke("reset-download-option", gid, optionKey),
   getDownloadOptionOverrides: (gid: string) => ipcRenderer.invoke("get-option-overrides", gid),
-  changeDownloadUrl: (oldGid: string, newUrl: string) => ipcRenderer.invoke("change-download-url", oldGid, newUrl)
+  changeDownloadUrl: (oldGid: string, newUrl: string) => ipcRenderer.invoke("change-download-url", oldGid, newUrl),
+
+  // Window controls
+  windowMinimize: (id?: string) => ipcRenderer.send("window-minimize", id),
+  windowMaximize: (id?: string) => ipcRenderer.send("window-maximize", id),
+  windowClose: (id?: string) => ipcRenderer.send("window-close", id)
 })

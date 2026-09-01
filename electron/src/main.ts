@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron"
+import { app, BrowserWindow, ipcMain } from "electron"
 import path from "path"
 import aria2c from "./aria2c"
 import { DataSourceRepo } from "./database/database"
@@ -14,6 +14,7 @@ import { ipcUtilsHandler } from "./ipc/utils/utils"
 import { SchedulerProcess } from "./schedulerProcess/schedulerProcess"
 import ipcShareHandler from "./ipc/sahre/shareHandler"
 import { ipcEditDownloadHandler } from "./ipc/editDownload/editDownloadHandler"
+import { POPUP_CHANNELS } from "./ipc/channels"
 
 export let mainWindow: BrowserWindow | null
 
@@ -24,11 +25,9 @@ checkSessionExists()
 const iconPath = () => {
   if (process.platform === "win32") {
     return path.join(process.resourcesPath, "assets", "icons", "icon.ico")
-  }
-  else if (process.platform === "darwin") {
+  } else if (process.platform === "darwin") {
     return path.join(process.resourcesPath, "assets", "icons", "icon.icns")
-  }
-  else if (process.platform === "linux") {
+  } else if (process.platform === "linux") {
     return path.join(process.resourcesPath, "assets", "icons", "512x512.png")
   }
 }
@@ -37,10 +36,13 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1000,
     title: "shabdiz",
-    height: 500,
+    height: 600,
     autoHideMenuBar: true,
+    frame: false,
+    roundedCorners: true,
+    transparent: true,
     minWidth: 980,
-    minHeight: 500,
+    minHeight: 600,
     resizable: true,
     icon: iconPath(),
     webPreferences: {
@@ -49,7 +51,7 @@ function createWindow() {
       nodeIntegration: false // Disable node integration in renderer
     }
   })
-  
+
   mainWindow.setContentSize(1000, 500, true)
   if (process.env.NODE_ENV === "development") {
     // In development, load the React dev server.
@@ -57,20 +59,19 @@ function createWindow() {
     // mainWindow.webContents.openDevTools();
     const iconPath = path.join(__dirname, "..", "..", "assets", "icons", "512x512.png")
     mainWindow.setIcon(iconPath)
-  }
-  else {
+  } else {
     if (process.platform === "linux") {
       const iconPath = path.join(process.resourcesPath, "assets", "icons", "512x512.png")
       mainWindow.setIcon(iconPath)
     }
-    
+
     // In production, load the built index.html from extraResources.
     // Using process.resourcesPath ensures we reference the correct folder outside the asar.
     const indexPath = path.join(process.resourcesPath, "react", "dist", "index.html")
     // mainWindow.loadFile(indexPath);
     mainWindow.loadFile(indexPath).catch((err) => console.error("Failed to load index.html:", err))
   }
-  
+
   mainWindow.on("closed", () => {
     mainWindow = null
   })
@@ -97,13 +98,13 @@ app.whenReady().then(() => {
   createWindow()
   // startAria2c();
   aria2.start()
-  
+
   schedulerInstance.initScheduler()
-  
+
   // setTimeout(connectToAria2c, 1000);
   setTimeout(() => aria2.connect(), 1000)
   // setInterval(()=>aria2.sendAria2cRequest('aria2.getVersion'), 3353);
-  
+
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -124,6 +125,26 @@ app.on("activate", () => {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+// Window control IPC handlers
+ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MINIMIZE, (_, id) => {
+  if (id) return
+  mainWindow?.minimize()
+})
+
+ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MAXIMIZE, (_, id) => {
+  if (id) return
+  if (mainWindow?.isMaximized()) {
+    mainWindow.unmaximize()
+  } else {
+    mainWindow?.maximize()
+  }
+})
+
+ipcMain.on(POPUP_CHANNELS.CLOSE_MAIN_POPUP, (_, id) => {
+  if (id) return
+  mainWindow?.close()
 })
 
 // IPC handlers

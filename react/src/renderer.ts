@@ -37,9 +37,9 @@ export interface IElectronAPI {
       action:
         | string
         | {
-        action: string
-        [key: string]: unknown
-      }
+            action: string
+            [key: string]: unknown
+          }
     ) => void
   ) => Promise<unknown>
   getDownloadedFilesDetails: () => Promise<TFileDetails[]>
@@ -91,6 +91,9 @@ export interface IElectronAPI {
   changeDownloadUrl: (oldGid: string, newUrl: string) => Promise<{ newGid: string } | null>
   openEditDownloadPopup: (id: string) => void
   setSelectedDownloadForEdit: (row: TDownloads) => void
+  windowMinimize: (id?: string) => void
+  windowMaximize: (id?: string) => void
+  windowClose: (id?: string) => void
 }
 
 declare global {
