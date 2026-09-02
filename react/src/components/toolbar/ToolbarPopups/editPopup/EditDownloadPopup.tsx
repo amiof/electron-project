@@ -161,7 +161,12 @@ export default function EditDownloadPopup() {
   return (
     <div className="flex flex-col w-full h-full">
       <CustomTitlebar id={id} widthTilteBar="43%">
-        <div className={clsx("w-30 bg-[#0d1420] mb-1 text-center rounded-xl font-bold", styles.slideUp)}>
+        <div
+          className={clsx(
+            "w-30 bg-[#0d1420] mb-1 text-center rounded-xl font-bold border border-[rgba(255,255,255,0.3)] ",
+            styles.slideUp
+          )}
+        >
           edit options
         </div>
       </CustomTitlebar>

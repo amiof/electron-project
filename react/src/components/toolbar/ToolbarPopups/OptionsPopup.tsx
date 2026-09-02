@@ -39,7 +39,14 @@ const OptionsPopup = () => {
   return (
     <div className="w-full h-full flex flex-col">
       <CustomTitlebar id={id} widthTilteBar="40%">
-        <div className={clsx("w-25 bg-[#0d1420] mb-1 text-center rounded-xl font-bold", styles.slideUp)}>options</div>
+        <div
+          className={clsx(
+            "w-25 bg-[#0d1420] mb-1 text-center border border-[rgba(255,255,255,0.3)] rounded-xl font-bold",
+            styles.slideUp
+          )}
+        >
+          options
+        </div>
       </CustomTitlebar>
       <div
         className={

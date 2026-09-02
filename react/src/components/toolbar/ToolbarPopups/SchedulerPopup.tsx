@@ -37,7 +37,14 @@ const SchedulerPopup = () => {
   return (
     <div className="flex flex-col w-full h-full">
       <CustomTitlebar id={id} widthTilteBar="40%">
-        <div className={clsx("w-25 bg-[#0d1420] mb-1 text-center rounded-xl font-bold", styles.slideUp)}>scheduler</div>
+        <div
+          className={clsx(
+            "w-25 bg-[#0d1420] mb-1 text-center rounded-xl font-bold border border-[rgba(255,255,255,0.3)] ",
+            styles.slideUp
+          )}
+        >
+          scheduler
+        </div>
       </CustomTitlebar>
       <div
         className={

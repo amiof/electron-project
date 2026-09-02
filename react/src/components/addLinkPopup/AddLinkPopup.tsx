@@ -58,7 +58,14 @@ const AddLinkPopup = () => {
   return (
     <div className="flex flex-col w-full h-full">
       <CustomTitlebar id={id}>
-        <div className={clsx("w-25 bg-[#0d1420] mb-1 text-center rounded-xl font-bold", styles.slideUp)}>add link</div>
+        <div
+          className={clsx(
+            "w-25 bg-[#0d1420] mb-1 text-center rounded-xl font-bold border border-[rgba(255,255,255,0.3)] ",
+            styles.slideUp
+          )}
+        >
+          add link
+        </div>
       </CustomTitlebar>
       <div
         className={
