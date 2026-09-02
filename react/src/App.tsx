@@ -22,7 +22,7 @@ function App() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <CustomTitlebar />
+      <CustomTitlebar widthTilteBar="100%" title="shabdiz download manager" />
       <div className={clsx(styles.mainContainer)}>
         <div className={styles.aside}>
           <Sidebar />

@@ -1,11 +1,13 @@
 import CustomTitlebar from "@components/customTilebar/CustomTitlebar.tsx"
 import LinkIcon from "@mui/icons-material/Link"
-import { Button, Snackbar, Tab, Tabs, TextField } from "@mui/material"
+import { Alert, Button, Snackbar, Tab, Tabs, TextField } from "@mui/material"
 import { useEffect, useState } from "react"
 import DownloadOptionsGroup from "./DownloadOptionsGroup.tsx"
 import { ALL_OPTIONS, getOverrides, OPTION_GROUPS } from "./editDownloadTypes.ts"
 import { useLocation } from "react-router-dom"
 import { getIdFromLocation } from "@src/utils.ts"
+import clsx from "clsx"
+import styles from "../../style.module.scss"
 
 export default function EditDownloadPopup() {
   const [loading, setLoading] = useState(true)
@@ -158,7 +160,11 @@ export default function EditDownloadPopup() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <CustomTitlebar id={id} />
+      <CustomTitlebar id={id} widthTilteBar="43%">
+        <div className={clsx("w-30 bg-[#0d1420] mb-1 text-center rounded-xl font-bold", styles.slideUp)}>
+          edit options
+        </div>
+      </CustomTitlebar>
       <div className="w-full h-full border-r border-l border-b border-[rgba(255,255,255,0.3)] rounded-xl flex flex-col p-5 overflow-hidden bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
         <div className="mb-4">
           <h2 className="text-lg font-semibold">Edit Download Options</h2>
@@ -225,10 +231,15 @@ export default function EditDownloadPopup() {
 
         <Snackbar
           open={snackbarOpen}
-          autoHideDuration={3000}
+          autoHideDuration={2000}
           onClose={() => setSnackbarOpen(false)}
-          message={snackbarMsg}
-        />
+          // message={snackbarMsg}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert sx={{ width: "50%", background: "rgba(255,255,255,0.2)", backdropFilter: "blur(5px)" }}>
+            {snackbarMsg}
+          </Alert>
+        </Snackbar>
       </div>
     </div>
   )

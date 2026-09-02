@@ -3,6 +3,8 @@ import { Button, Checkbox, FormControl, TextField } from "@mui/material"
 import { getIdFromLocation } from "@src/utils.ts"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
+import styles from "../style.module.scss"
+import clsx from "clsx"
 
 const SchedulerPopup = () => {
   const addSchedulerTime = window.electronAPI.addSchedulerTime
@@ -34,7 +36,9 @@ const SchedulerPopup = () => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <CustomTitlebar id={id} />
+      <CustomTitlebar id={id} widthTilteBar="40%">
+        <div className={clsx("w-25 bg-[#0d1420] mb-1 text-center rounded-xl font-bold", styles.slideUp)}>scheduler</div>
+      </CustomTitlebar>
       <div
         className={
           "w-full h-full border-r border-l border-b border-[rgba(255,255,255,0.3)] rounded-xl flex flex-col p-5 bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]"

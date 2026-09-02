@@ -11,7 +11,7 @@ import MagnetIcon from "@src/assets/MagnetIcon.tsx"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TtellRes } from "@src/types.ts"
 import { getIdFromLocation } from "@src/utils.ts"
-import { ReactElement, useState } from "react"
+import { ReactElement, useState, useEffect } from "react"
 import { ProgressBar } from "react-progressbar-fancy"
 import { useLocation } from "react-router-dom"
 import styles from "./style.module.scss"
@@ -36,6 +36,12 @@ const BackDetails = (props: Props) => {
   const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
 
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setOpen(true)
+    }, 1000)
+  }, [])
 
   const percentage = !isMetaData
     ? downloadStatus

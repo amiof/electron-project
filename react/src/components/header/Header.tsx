@@ -1,5 +1,6 @@
 import { SearchOutlined } from "@mui/icons-material"
 import StraightOutlinedIcon from "@mui/icons-material/StraightOutlined"
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown"
 import { IconButton, InputAdornment, TextField } from "@mui/material"
 import SpeedIcon from "@src/assets/SpeedIcon.tsx"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
@@ -8,6 +9,7 @@ import clsx from "clsx"
 import * as _ from "lodash"
 import { useEffect, useState } from "react"
 import styles from "./style.module.scss"
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp"
 
 const Header = () => {
   const tellActive = useDownloaderStore((state) => state.tellActive)
@@ -57,14 +59,17 @@ const Header = () => {
         <SpeedIcon fontSize={"large"} />
         <div className={styles.textSpeed}>
           <span>
-            <StraightOutlinedIcon
+            <KeyboardDoubleArrowUpIcon
               fontSize={"small"}
               className={clsx("mb-1 rotate-180", tellActive.length && "text-green-500")}
             />
             {tellActive.length ? formatBytes(+downloadSpeed) : `0 KB`}
           </span>
           <span>
-            <StraightOutlinedIcon fontSize={"small"} className={clsx("mb-1", tellActive.length && "text-red-500")} />
+            <KeyboardDoubleArrowUpIcon
+              fontSize={"small"}
+              className={clsx("mb-1", tellActive.length && "text-red-500")}
+            />
             {tellActive.length ? formatBytes(+uploadSpeed) : `0 KB`}
           </span>
         </div>
