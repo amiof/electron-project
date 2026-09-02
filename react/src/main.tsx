@@ -24,7 +24,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/popup/:id" element={<AddLinkPopup />} />
-          <Route path="/downloadStart/:id" element={<DownloadStart />} />
+          <Route path="/downloadStart/:id/:fileName" element={<DownloadStart />} />
           <Route path="options/:id" element={<OptionsPopup />} />
           <Route path="scheduler/:id" element={<SchedulerPopup />} />
           <Route path="share/:id" element={<SharePopup />} />

@@ -10,10 +10,10 @@ import SpeedIcon from "@mui/icons-material/Speed"
 import TaskAltIcon from "@mui/icons-material/TaskAlt"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TtellRes } from "@src/types.ts"
-import { formatBytes, formatTime, getIdFromLocation, isMetadataPhase, isTorrentMode } from "@src/utils.ts"
+import { formatBytes, formatTime, isMetadataPhase, isTorrentMode } from "@src/utils.ts"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
-import { useLocation } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import styles from "./style.module.scss"
 
 export type TDetails = {
@@ -24,8 +24,30 @@ export type TDetails = {
 }
 
 const DownloadStart = () => {
-  const location = useLocation()
-  const gid = getIdFromLocation(location, ":")
+  const { id, fileName } = useParams()
+
+  const gid = id?.replace(/^:/, "") ?? ""
+  const name = fileName?.replace(/^:/, "") ?? ""
+
+  const [filename, setFilename] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    const getFileName = async () => {
+      if (!gid) return
+
+      // First prefer filename from URL
+      if (name && !filename) {
+        setFilename(name)
+        return
+      }
+      // Otherwise get it from aria2/download options
+      const file = await window.electronAPI.getDownloadOptions(gid)
+
+      setFilename(file?.out ?? "")
+    }
+    getFileName()
+  }, [gid, fileName])
+
   const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
   const tellActive = useDownloaderStore((state) => state.tellActive)
   const getTellActive = useDownloaderStore((state) => state.getTellActive)
@@ -156,11 +178,11 @@ const DownloadStart = () => {
       <CustomTitlebar id={gid} widthTilteBar="30%">
         <div
           className={clsx(
-            "w-40 bg-[#0d1420] mb-1 text-center rounded-xl font-bold px-1 border border-[rgba(255,255,255,0.2)] ",
+            "w-fit bg-[#0d1420] max-w-[65%]  mb-1 text-center  rounded-xl font-bold px-3  border border-[rgba(255,255,255,0.2)] ",
             styles.slideUp
           )}
         >
-          downloading ...
+          {filename}
         </div>
       </CustomTitlebar>
       <div
@@ -173,6 +195,7 @@ const DownloadStart = () => {
           <div className={clsx(styles.card)}>
             <div className={styles.back}>
               <BackDetails
+                gid={gid}
                 details={details}
                 downloadStatus={downloadStatus}
                 isMetaData={isMetaData}

@@ -6,14 +6,12 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import FolderIcon from "@mui/icons-material/Folder"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import StopIcon from "@mui/icons-material/Stop"
+import { ReactElement, useState, useEffect } from "react"
 import { SpeedDial, SpeedDialAction, SpeedDialIcon, Tooltip } from "@mui/material"
 import MagnetIcon from "@src/assets/MagnetIcon.tsx"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TtellRes } from "@src/types.ts"
-import { getIdFromLocation } from "@src/utils.ts"
-import { ReactElement, useState, useEffect } from "react"
 import { ProgressBar } from "react-progressbar-fancy"
-import { useLocation } from "react-router-dom"
 import styles from "./style.module.scss"
 
 type Props = {
@@ -21,6 +19,7 @@ type Props = {
   downloadStatus: TtellRes | null
   isMetaData: boolean
   isTorrent: boolean
+  gid: string
 }
 type actionButton = {
   Icon: ReactElement
@@ -28,10 +27,8 @@ type actionButton = {
   action?: () => void
 }
 const BackDetails = (props: Props) => {
-  const { details, downloadStatus, isTorrent, isMetaData } = props
+  const { details, downloadStatus, isTorrent, isMetaData, gid } = props
 
-  const location = useLocation()
-  const gid = getIdFromLocation(location, ":")
   const closePopup = window.electronAPI.closePopupWindow
   const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
 

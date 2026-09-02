@@ -1,5 +1,5 @@
-import { Location } from "react-router-dom"
 import { TDownloads, TtellRes } from "@src/types.ts"
+import { Location } from "react-router-dom"
 
 export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -16,8 +16,7 @@ export const getFileName = (name: string) => {
   try {
     const splitedName = name.split("/")
     return splitedName[splitedName.length - 1]
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error)
     return ""
   }

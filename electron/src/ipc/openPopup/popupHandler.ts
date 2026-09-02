@@ -14,7 +14,7 @@ const ipcPopupHandler = () => {
       windowTitle: windowTitle.trim() ? windowTitle : "download",
       height: 450,
       width: 900,
-      hashRoute: `downloadStart/:${id}`,
+      hashRoute: `downloadStart/:${id}/:${windowTitle}`,
       windowId: id
     })
     return id
