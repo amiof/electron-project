@@ -196,7 +196,7 @@ export const ipcUtilsHandler = () => {
                 windowTitle: fileName?.trim() ? fileName : "download",
                 height: 450,
                 width: 900,
-                hashRoute: `downloadStart/:${gid}`,
+                hashRoute: `downloadStart/:${gid}/:`,
                 windowId: gid
               })
               ipcMain.emit(ACTIONS_CHANNELS.UNPAUSE_BY_GID, event, gid)
