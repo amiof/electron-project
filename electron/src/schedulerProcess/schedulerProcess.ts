@@ -287,7 +287,7 @@ export class SchedulerProcess {
       windowTitle: "download",
       height: 450,
       width: 900,
-      hashRoute: `downloadStart/:${gid}`,
+      hashRoute: `downloadStart/:${gid}/:`,
       windowId: gid
     })
     

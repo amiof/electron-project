@@ -1,12 +1,11 @@
-import { IpcMainEvent, ipcMain } from "electron"
+import { ipcMain, IpcMainEvent } from "electron"
 import { POPUP_CHANNELS } from "../channels"
 import { createPopupWindow } from "../utils"
-
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 const ipcPopupHandler = () => {
   ipcMain.on(POPUP_CHANNELS.ADD_LINK_POPUP, (event: IpcMainEvent, id) => {
-    createPopupWindow({ windowTitle: "addLink", height: 510, width: 650, hashRoute: `popup/:${id}`, windowId: id })
+    createPopupWindow({ windowTitle: "addLink", height: 550, width: 650, hashRoute: `popup/:${id}`, windowId: id })
   })
 
   ipcMain.handle(POPUP_CHANNELS.POPUP_START_DOWNLOAD, (event: IpcMainInvokeEvent, id, windowTitle) => {
