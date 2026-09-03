@@ -1,6 +1,6 @@
 {
   "name": "shabdiz-download-manager",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "description": "Electron App",
   "main": "./dist/main.js",
   "scripts": {
