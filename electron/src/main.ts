@@ -8,15 +8,17 @@ import ipcPopupHandler from "./ipc/openPopup/popupHandler"
 import { checkAndCreateFolder, checkSessionExists } from "./utils"
 import "./store/electronStore"
 import { ipcActionsHandler } from "./ipc/actions/actionsHandler"
+import { POPUP_CHANNELS } from "./ipc/channels"
 import { ipcConfigHandler } from "./ipc/config/configHandler"
+import { ipcEditDownloadHandler } from "./ipc/editDownload/editDownloadHandler"
+import ipcShareHandler from "./ipc/sahre/shareHandler"
 import { ipcSchedulerHandler } from "./ipc/scheduler/scheduler"
 import { ipcUtilsHandler } from "./ipc/utils/utils"
 import { SchedulerProcess } from "./schedulerProcess/schedulerProcess"
-import ipcShareHandler from "./ipc/sahre/shareHandler"
-import { ipcEditDownloadHandler } from "./ipc/editDownload/editDownloadHandler"
-import { POPUP_CHANNELS } from "./ipc/channels"
 
 export let mainWindow: BrowserWindow | null
+
+let isQuitting = false
 
 export const schedulers: Record<string, ReturnType<typeof setTimeout> | undefined> = {}
 
@@ -144,7 +146,29 @@ ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MAXIMIZE, (_, id) => {
 
 ipcMain.on(POPUP_CHANNELS.CLOSE_MAIN_POPUP, (_, id) => {
   if (id) return
-  mainWindow?.close()
+  // mainWindow?.close()
+  app.quit()
+})
+
+
+app.on("before-quit", async (event) => {
+  if (isQuitting) {
+    return
+  }
+  
+  event.preventDefault()
+  
+  isQuitting = true
+  
+  try {
+    await aria2.shutdown()
+  }
+  catch (error) {
+    console.error("Failed to shutdown aria2:", error)
+  }
+  finally {
+    app.quit()
+  }
 })
 
 // IPC handlers

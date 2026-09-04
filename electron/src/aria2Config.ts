@@ -38,14 +38,14 @@ const addedTrackers = tracker ? [`--bt-tracker= ${tracker}`] : []
 
 export const config = [
   "--enable-rpc",
-  `${dnsServer && `{--async-dns-server=${dnsServer}`}`,
+  `${dnsServer && `--async-dns-server=${dnsServer}`}`,
   "--rpc-listen-all=true",
   "--rpc-allow-origin-all",
   `--save-session=${getSessionPath()}`,
   `--input-file=${getSessionPath()}`,
   "--log-level=error",
   `--console-log-level=notice`,
-  "--save-session-interval=0",
+  "--save-session-interval=10",
   "--auto-file-renaming=true",
   "--force-sequential=true",
   "--check-integrity=true",
