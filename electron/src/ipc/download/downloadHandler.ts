@@ -17,7 +17,7 @@ const ipcDownloadHandler = () => {
       options?: TOptionsConfig | null
     ) => {
       const dir = directionFolder(url)
-      
+
       const proxyArgs = {} as any
       if (proxyConfig) {
         const { ip, port, proxyPassword, proxyType, proxyStatus, proxyUserName } = proxyConfig
@@ -27,16 +27,16 @@ const ipcDownloadHandler = () => {
           if (proxyPassword) proxyArgs["all-proxy-passwd"] = proxyPassword
         }
       }
-      
+
       const optionsConfig = {} as any
       if (options) {
         const { referrer, header, cookie, userAgent } = options
-        if (referrer) optionsConfig["referrer"] = referrer
+        if (referrer) optionsConfig["referer"] = referrer
         if (header) optionsConfig["header"] = header
         if (cookie) optionsConfig["load-cookies"] = cookie
         if (userAgent) optionsConfig["user-agent"] = userAgent
       }
-      
+
       return await aria2.sendAria2cRequest("addUri", [
         [url],
         {
@@ -53,11 +53,11 @@ const ipcDownloadHandler = () => {
   ipcMain.handle("tell-active", async (_: IpcMainInvokeEvent) => {
     return await aria2.sendAria2cRequest("tellActive")
   })
-  
+
   ipcMain.handle("tell-stoped", async (_: IpcMainInvokeEvent) => {
     return await aria2.sendAria2cRequest("tellStopped", [-1, 100])
   })
-  
+
   ipcMain.handle("tell-waiting", async (_: IpcMainInvokeEvent) => {
     return await aria2.sendAria2cRequest("tellWaiting", [-1, 100])
   })
