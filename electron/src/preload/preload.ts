@@ -175,6 +175,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   selectStorageDirectory: () => ipcRenderer.invoke("select-storage-dir"),
   getSelectedStorageDirectory: () => ipcRenderer.invoke("get-selected=storage-config-dir"),
   setSelectedStorageDirectory: (basePath: string) => ipcRenderer.invoke("set-selected-storage-directory", basePath),
+  selectCookieFile: () => ipcRenderer.invoke("select-cookie-file"),
   getTorrentConfig: () => ipcRenderer.invoke("get-torrents-config"),
   setTorrentConfig: (config: TTorrentConfig) => ipcRenderer.invoke("set-torrents-config", config),
 

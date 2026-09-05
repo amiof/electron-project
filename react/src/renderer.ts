@@ -71,6 +71,7 @@ export interface IElectronAPI {
   selectStorageDirectory: () => Promise<unknown>
   getSelectedStorageDirectory: () => Promise<string>
   setSelectedStorageDirectory: (basePath: string | null) => Promise<void>
+  selectCookieFile: () => Promise<string | null>
   showNotification: (notif: TNotificationDetailes) => Promise<void>
   getTorrentConfig: () => Promise<TTorrentConfig>
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>
