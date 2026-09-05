@@ -13,12 +13,11 @@ export const ipcActionsHandler = () => {
   ipcMain.handle(ACTIONS_CHANNELS.UNPAUSE_ALL, async (_: IpcMainInvokeEvent) => {
     return await aria2.sendAria2cRequest("unpauseAll")
   })
-  
+
   ipcMain.on(ACTIONS_CHANNELS.UNPAUSE_BY_GID, async (_: any, gid: string) => {
     try {
       await aria2.sendAria2cRequest("unpause", [gid])
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error)
     }
   })
@@ -26,8 +25,7 @@ export const ipcActionsHandler = () => {
   ipcMain.on(ACTIONS_CHANNELS.STOP_ALL_DOWNLOADS, async (_: IpcMainInvokeEvent) => {
     try {
       await aria2.sendAria2cRequest("pauseAll")
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error)
     }
   })
@@ -37,25 +35,27 @@ export const ipcActionsHandler = () => {
       await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
       await aria2.sendAria2cRequest("remove", [gid])
       await aria2.sendAria2cRequest("removeDownloadResult", [gid])
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error)
     }
   })
   ipcMain.on(ACTIONS_CHANNELS.OPEN_FOLDER, (_: IpcMainEvent, path: string) => {
     openFileExplorer(path)
   })
-  
+
   ipcMain.on(ACTIONS_CHANNELS.REMOVE_SELECTED_DOWNLOADS, async (event, gidList: string[]) => {
     try {
       for (const gid of gidList) {
-        await DataSourceRepo.getRepository("downloads").delete({ gid: gid })
-        await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
-        await aria2.sendAria2cRequest("remove", [gid])
-        await aria2.sendAria2cRequest("removeDownloadResult", [gid])
+        try {
+          await DataSourceRepo.getRepository("downloads").delete({ gid: gid })
+          await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
+          await aria2.sendAria2cRequest("remove", [gid])
+          await aria2.sendAria2cRequest("removeDownloadResult", [gid])
+        } catch (e) {
+          console.error(e)
+        }
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error)
     }
   })

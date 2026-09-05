@@ -29,48 +29,47 @@ const Toolbar = () => {
   const getCompletedRowsDB = useDownloaderStore((state) => state.getCompletedRowFromDB)
   const setSelectedRows = useDownloaderStore((state) => state.setSelectedRow)
   const refreshMainTableId = useDownloaderStore((state) => state.refreshMainTableId)
-  
+
   const [schedulerConfig, setSchedulerConfig] = useState<{
     startTime: string | undefined
     endTime: string | undefined
   } | null>(null)
-  
+
   useEffect(() => {
     const unsubscribe = window.electronAPI.onSchedulerConfigUpdated((config) => {
       if (config.startTime && config.endTime) {
         setSchedulerConfig({ startTime: config.startTime, endTime: config.endTime })
-      }
-      else {
+      } else {
         setSchedulerConfig(null)
       }
     })
-    
+
     window.electronAPI.getSchedulerConfig().then((config) => {
       if (config.startTime && config.endTime) {
         setSchedulerConfig({ startTime: config.startTime, endTime: config.endTime })
       }
     })
-    
+
     return unsubscribe
   }, [])
-  
+
   const openOptionsHandler = () => {
     const id = generateId()
     openOptionsPopup(id)
   }
-  
+
   const openSchedulerHandler = () => {
     const id = generateId()
     openSchedulerPopup(id)
   }
-  
+
   const openShareHandler = () => {
     // Send selected rows to main process before opening popup
     window.electronAPI.setSelectedRowsForShare(getSelectedRows)
     const id = generateId()
     openSharePopup(id)
   }
-  
+
   const openEditHandler = () => {
     if (!getSelectedRows[0]?.Gid) return
     // Send selected download to main process before opening popup
@@ -78,7 +77,7 @@ const Toolbar = () => {
     const id = generateId()
     openEditDownloadPopup(id)
   }
-  
+
   const firstButtonActions: TButtonActions[] = [
     {
       IconElement: <PlayArrowOutlinedIcon fontSize={"medium"} />,
@@ -136,7 +135,7 @@ const Toolbar = () => {
         ? `Edit options for ${getSelectedRows[0].FileName || getSelectedRows[0].Gid}`
         : "Select a download to edit"
     },
-    
+
     {
       IconElement: <PendingActionsOutlinedIcon fontSize={"medium"} />,
       title: "Scheduler",
@@ -150,16 +149,16 @@ const Toolbar = () => {
       action: openShareHandler
     }
   ]
-  
+
   const addDownloadDir = window.electronAPI.addDownloadDir
   const addLinkPopup = window.electronAPI.addLinkPopup
   const openOptionsPopup = window.electronAPI.openOptionsPopup
   const openSchedulerPopup = window.electronAPI.openSchedulerPopup
   const openSharePopup = window.electronAPI.openSharePopup
   const openEditDownloadPopup = window.electronAPI.openEditDownloadPopup
-  
+
   const getAllDownloadRow = useDownloaderStore((state) => state.getAllDownloadsRow)
-  
+
   const clickHandler = async () => {
     const result = await addDownloadDir(
       "https://www.pixelstalk.net/wp-content/uploads/2016/08/Best-Free-Desktop-Wallpaper-HD.jpg"
@@ -172,7 +171,7 @@ const Toolbar = () => {
     const id = generateId()
     addLinkPopup(id)
   }
-  
+
   return (
     <div className={styles.container}>
       <div className={"px-5"}>
@@ -225,9 +224,9 @@ const Toolbar = () => {
           }}
         />
       </div>
-      
+
       <Divider orientation={"vertical"} variant={"middle"} flexItem className={"bg-neutral-700"} />
-      
+
       <div className={styles.secondLineAction}>
         {firstButtonActions.map((item, index) => (
           <ButtonAction
@@ -238,9 +237,9 @@ const Toolbar = () => {
           />
         ))}
       </div>
-      
+
       <Divider orientation={"vertical"} variant={"middle"} flexItem className={"bg-neutral-700"} />
-      
+
       <div className={styles.secondLineAction}>
         {secondButtonActions.map((item, index) => (
           <ButtonAction
