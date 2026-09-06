@@ -49,7 +49,6 @@ const AddLinkTab = () => {
     if (linkAddress) {
       ;(async () => {
         const resMetadata = await window.electronAPI.getMetadataUrls(linkAddress)
-        console.log("%c 1 --> Line: 55||AddLinkTab.tsx\n resMetadata: ", "color:#f0f;", resMetadata)
         if (selectedDownloadPath) {
           setMetadataUrl({ ...resMetadata, savePath: selectedDownloadPath })
         }
