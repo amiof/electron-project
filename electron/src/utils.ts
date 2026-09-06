@@ -69,8 +69,9 @@ export const checkAndCreateFolder = async () => {
 }
 
 export const getFolderFromUrl = (url: string) => {
-  const extension = url.split(".").pop()?.toLowerCase() || ""
-  console.log("extention", extension)
+  // const extension = url.split(".").pop()?.toLowerCase() || ""
+  const fileName = getFilenameFromUrl(url)
+  const extension = fileName!=="Download"? fileName.split(".").pop()?.toLowerCase() : url.split(".").pop()?.toLowerCase()
 
   const fileTypes: Record<string, string[]> = {
     videos: ["mp4", "mkv", "avi", "mov", "wmv", "flv", "webm"],
@@ -306,11 +307,11 @@ export const getFilenameFromUrl = (url: string): string => {
     const parsedUrl = new URL(url)
 
     return decodeURIComponent(
-      parsedUrl.pathname.split("/").pop() || "download"
+      parsedUrl.pathname.split("/").pop() || "Download"
     )
   }
   catch {
-    return "download"
+    return "Download"
   }
 }
 
