@@ -7,7 +7,7 @@ import {
   UTILS_CHANNELS
 } from "../channels"
 import { resMetadataUrls, STATUS_TYPE, TDownloads, TNotificationDetailes } from "../../types"
-import { directionFolder, extractFilenameFromDisposition, generateId } from "../../utils"
+import { directionFolder, extractFilenameFromDisposition, generateId, getFilenameFromUrl } from "../../utils"
 import { createPopupWindow, iconPathContextMenu } from "../utils"
 import { mainWindow } from "../../main"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
@@ -45,12 +45,12 @@ export const ipcUtilsHandler = () => {
     if (url.startsWith("magnet:")) {
       urlResponse.typeUrl = "magnet"
     }
-    
+
     try {
       const response = await fetch(url, { method: "HEAD" })
       const contentType = response.headers.get("content-type") || ""
       const disposition = response.headers.get("Content-Disposition")
-      const fileName = extractFilenameFromDisposition(disposition)
+      const fileName = extractFilenameFromDisposition(disposition)?? getFilenameFromUrl(url)
       const contentLength = response.headers.get("Content-Length")
       const acceptRanges = response.headers.get("Accept-ranges")
       

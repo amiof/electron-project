@@ -1,11 +1,11 @@
-import path from "path"
-import os from "os"
-import * as fs from "fs/promises"
-import * as fsnp from "fs"
-import { TFileDetails } from "./types"
-import { app } from "electron"
 import { exec } from "node:child_process"
+import { app } from "electron"
+import * as fsnp from "fs"
+import * as fs from "fs/promises"
+import os from "os"
+import path from "path"
 import { electronStore } from "./store/electronStore"
+import { TFileDetails } from "./types"
 
 const basePathSelected = electronStore.get("selectedStorageDirectory")
 
@@ -269,7 +269,7 @@ export const aria2BinPath = () => {
 
 export const openFileExplorer = (directoryPath: string) => {
   const platform = os.platform() // Get the current operating system
-  
+
   let command
   switch (platform) {
     case "win32": // Windows
@@ -285,7 +285,7 @@ export const openFileExplorer = (directoryPath: string) => {
       console.error("Unsupported platform:", platform)
       return
   }
-  
+
   exec(command, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error opening file explorer: ${error.message}`)
@@ -299,33 +299,56 @@ export const openFileExplorer = (directoryPath: string) => {
   })
 }
 
-// get name from header of a link
-export const extractFilenameFromDisposition = (headerValue: string | null) => {
-  if (!headerValue) return null
-  
-  // First, try the modern filename* (RFC 5987 encoded)
-  // filename*=UTF-8''encoded%20name.ext  or  filename*=utf-8''encoded-name
-  const encodedMatch = headerValue.match(/filename\*=(UTF-8''|[^']*'')[^;]*/i)
-  if (encodedMatch) {
-    const encoded = encodedMatch[0].split(/''/, 2)[1] // get part after ''
-    try {
-      return decodeURIComponent(encoded)
-    }
-    catch (e) {
-      // fallback if decode fails
-      console.log("errro", e)
-    }
+
+// get file name from link
+export const getFilenameFromUrl = (url: string): string => {
+  try {
+    const parsedUrl = new URL(url)
+
+    return decodeURIComponent(
+      parsedUrl.pathname.split("/").pop() || "download"
+    )
   }
-  
-  // Then try regular filename="..." or filename=...
-  const filenameMatch = headerValue.match(/filename="?([^";]+)"?/i)
-  if (filenameMatch && filenameMatch[1]) {
-    return filenameMatch[1].trim()
+  catch {
+    return "download"
   }
-  
-  return null
 }
 
+
+// get name from header of a link
+export const extractFilenameFromDisposition = (headerValue: string | null): string | null => {
+  if (!headerValue) return null
+
+  // filename*
+  const encodedMatch = headerValue.match(/filename\*=(?:UTF-8'')?([^;]+)/i)
+
+  if (encodedMatch?.[1]) {
+    try {
+      const filename = decodeURIComponent(encodedMatch[1].trim().replace(/^"(.*)"$/, "$1"))
+
+      if (filename) {
+        return filename
+      }
+    }
+    catch {
+      // برو سراغ filename معمولی
+    }
+  }
+
+  // filename
+  const filenameMatch = headerValue.match(/filename="?([^";]+)"?/i)
+
+  if (filenameMatch?.[1]) {
+    const filename = filenameMatch[1].trim()
+
+    if (filename) {
+      return filename
+    }
+  }
+
+  // هیچ filename قابل استفاده‌ای پیدا نشد
+  return null
+}
 export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
