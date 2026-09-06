@@ -38,7 +38,7 @@ export const formatTime = (seconds: number) => {
 
 export const searchInDownloadsRows = (data: TDownloads[], searchValue: string) => {
   if (searchValue === "") return data
-  return data.filter((item) => item.FileName.toLowerCase().includes(searchValue.toLowerCase()))
+  return data.filter((item) => item.FileName?.toLowerCase().includes(searchValue.toLowerCase()))
 }
 
 export const isMetadataPhase = (tellStatus: TtellRes): boolean => {
