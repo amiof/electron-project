@@ -175,7 +175,7 @@ const DownloadStart = () => {
   ]
   return (
     <div className="flex flex-col w-full h-full">
-      <CustomTitlebar id={gid} widthTilteBar="30%">
+      <CustomTitlebar id={gid} widthTitleBar="30%">
           <div
             className={clsx(
               "w-fit bg-[#0d1420] max-w-[68%]  mb-1 text-center  rounded-xl font-medium px-3  border border-[rgba(255,255,255,0.2)] truncate",

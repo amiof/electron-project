@@ -10,11 +10,10 @@ type Props = {
   id?: string
   children?: ReactNode
   title?: string
-  widthTilteBar?: string
+  widthTitleBar?: string
 }
-
 const CustomTitlebar = (props: Props) => {
-  const { id, title, widthTilteBar = "30%", children } = props
+  const { id, title, widthTitleBar = "30%", children } = props
 
   const windowMinimize = window.electronAPI.windowMinimize
   const windowMaximize = window.electronAPI.windowMaximize
@@ -24,7 +23,7 @@ const CustomTitlebar = (props: Props) => {
   return (
     <div className=" flex justify-right   h-14 max-h-[30px] px-8 [-webkit-app-region:drag] gap-6 ">
       <div
-        style={{ width: widthTilteBar }}
+        style={{ width: widthTitleBar }}
         className="bg-[#0d1420] relative
 	rounded-tr-md rounded-tl-md  flex justify-between z-30 border-t border-[rgba(255,255,255,0.1)]"
       >
