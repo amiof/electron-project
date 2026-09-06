@@ -22,6 +22,7 @@ export type TDownloaderActions = {
   getFiles: (files: string) => void
   getDownloads: () => Promise<void>
   getAllDownloadsRow: () => Promise<void>
+  getFilenameFromOption: (gid: string | undefined)=> Promise<string | null>
   getTellActive: () => Promise<void>
   getTellStopped: () => Promise<void>
   getTellWaiting: () => Promise<void>

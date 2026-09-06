@@ -1,6 +1,6 @@
 export type TDownloads = {
   Id?: number
-  FileName: string
+  FileName: string | null
   Url: string
   SavePath: string
   Size: string
