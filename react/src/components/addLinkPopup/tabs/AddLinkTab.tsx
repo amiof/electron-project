@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react"
-import { IconButton, InputAdornment, TextField } from "@mui/material"
-import FolderOpenIcon from "@mui/icons-material/FolderOpen"
-import { formatBytes, getFileName } from "@src/utils.ts"
-import { resMetadataUrls } from "@src/types.ts"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"
-import CancelIcon from "@mui/icons-material/Cancel"
 import useAddLinkStore from "@components/addLinkPopup/store/addLinkStore.ts"
+import CancelIcon from "@mui/icons-material/Cancel"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import FolderOpenIcon from "@mui/icons-material/FolderOpen"
+import { IconButton, InputAdornment, TextField } from "@mui/material"
+import { resMetadataUrls } from "@src/types.ts"
+import { formatBytes, getFileName } from "@src/utils.ts"
+import { useCallback, useEffect, useState } from "react"
 
 const AddLinkTab = () => {
   const linkAddressStore = useAddLinkStore((state) => state.linkAddressStore)
@@ -14,6 +14,7 @@ const AddLinkTab = () => {
   const setLinkAddressStore = useAddLinkStore((state) => state.setLinkAddressStore)
   const setFileNameStore = useAddLinkStore((state) => state.setFileNameStore)
   const setSavePathStore = useAddLinkStore((state) => state.setSavePathStore)
+
 
   const [linkAddress, setLinkAddress] = useState<string>(linkAddressStore)
   const [selectedDownloadPath, setSelectedDownloadPath] = useState<string>(savePathStore)
@@ -51,17 +52,14 @@ const AddLinkTab = () => {
         const resMetadata = await window.electronAPI.getMetadataUrls(linkAddress)
         if (selectedDownloadPath) {
           setMetadataUrl({ ...resMetadata, savePath: selectedDownloadPath })
-        }
-        else {
+        } else {
           setMetadataUrl(resMetadata)
         }
       })()
-    }
-    else {
+    } else {
       if (selectedDownloadPath) {
         setMetadataUrl({ size: "0", typeUrl: "direct", fileName: "", savePath: selectedDownloadPath, resume: null })
-      }
-      else {
+      } else {
         setMetadataUrl({ size: "0", typeUrl: "direct", fileName: "", savePath: "", resume: null })
       }
     }
@@ -75,20 +73,18 @@ const AddLinkTab = () => {
     if (linkAddress) {
       if (metadataUrl.fileName) {
         return metadataUrl.fileName
-      }
-      else {
+      } else {
         return getFileName(linkAddress)
       }
-    }
-    else {
+    } else {
       return ""
     }
   }, [fileName, metadataUrl.fileName, linkAddress])
-  
+
   useEffect(() => {
     setFileNameStore(defaultFileName())
   }, [fileName, metadataUrl.fileName, linkAddress])
-  
+
   const handleSelectDirectory = async () => {
     const selectedPath = (await window.electronAPI.selectStorageDirectory()) as string | null
     if (selectedPath) {
@@ -96,7 +92,7 @@ const AddLinkTab = () => {
       setMetadataUrl({ ...metadataUrl, savePath: selectedPath })
     }
   }
-  
+
   return (
     <div className={"flex gap-9 p-10 w-full flex-col"}>
       <TextField
@@ -109,7 +105,7 @@ const AddLinkTab = () => {
         label={"Link"}
         onChange={(e) => setLinkAddress(e.target.value)}
       />
-      
+
       <TextField
         color={"success"}
         size={"small"}
@@ -138,22 +134,20 @@ const AddLinkTab = () => {
             )
           }}
         />
-        {metadataUrl.size && +metadataUrl?.size !== 0 && (
-          <span >{formatBytes(+metadataUrl.size)}</span>
-        )}
+        {metadataUrl.size && +metadataUrl?.size !== 0 && <span>{formatBytes(+metadataUrl.size)}</span>}
       </div>
       <div>
         {linkAddress && metadataUrl.resume !== null ? (
           metadataUrl.resume ? (
             <div className={"flex"}>
               <CheckCircleIcon color={"success"} />
-              
+
               <p className={"text-green-500"}>resume available</p>
             </div>
           ) : (
             <div className={"flex"}>
               <CancelIcon color={"error"} />
-              
+
               <p className={"text-red-500"}>resume unavailable</p>
             </div>
           )
@@ -161,7 +155,7 @@ const AddLinkTab = () => {
           <span className={"block"}> </span>
         )}
       </div>
-      
+
       {/*<TextField color={"success"} size={"small"} variant={"outlined"} value={64} sx={{ width: "30%" }}*/}
       {/*           placeholder={"64"} label={"connections"} />*/}
     </div>

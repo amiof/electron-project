@@ -8,7 +8,8 @@ import { AddLink, Settings, VpnLock } from "@mui/icons-material"
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined"
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined"
 import { Button, Tab, Tabs } from "@mui/material"
-import { getIdFromLocation } from "@src/utils.ts"
+import useDownloaderStore from "@src/store/downloaderStore.ts"
+import {getIdFromLocation } from "@src/utils.ts"
 import clsx from "clsx"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
@@ -27,6 +28,7 @@ const AddLinkPopup = () => {
   const fileNameStore = useAddLinkStore((state) => state.fileNameStore)
   const proxyConfigs = useAddLinkStore((state) => state.proxyConfig)
   const options = useAddLinkStore((state) => state.options)
+  const setDownloadDataToElectron = useDownloaderStore((state) => state.setActiveDataToElectron)
 
   const downloadHandler = async () => {
     if (linkAddressStore) {
@@ -34,6 +36,15 @@ const AddLinkPopup = () => {
       addDownloadPopup(gid, fileNameStore)
       closePopupWindow(id)
     }
+  }
+  const addDownloadLink = async () => {
+    const gid = await addDownloadDir(linkAddressStore, savePathStore, fileNameStore, proxyConfigs, options)
+    const tellStatus = await window.electronAPI.getTellStatus(gid)
+    setDownloadDataToElectron(tellStatus)
+    window.electronAPI.stopDownloadByGid(gid)
+    setTimeout(async() => {
+      closePopupWindow(id)
+    }, 1000)
   }
 
   const [value, setValue] = useState<TAddLinkTabs>("Link")
@@ -103,6 +114,7 @@ const AddLinkPopup = () => {
               size={"small"}
               disabled={!linkAddressStore || !savePathStore}
               endIcon={<AddCircleOutlineOutlinedIcon />}
+              onClick={addDownloadLink}
             >
               add
             </Button>
