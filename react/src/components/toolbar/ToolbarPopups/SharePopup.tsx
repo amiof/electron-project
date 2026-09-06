@@ -1,4 +1,4 @@
-import CustomTitlebar from "@components/customTilebar/CustomTitlebar"
+import CustomTitleBar from "@components/customTilebar/CustomTitleBar.tsx"
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined"
 import { Alert, Button, CircularProgress, IconButton, Snackbar, Tooltip } from "@mui/material"
@@ -102,7 +102,7 @@ const SharePopup = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <CustomTitlebar id={id}>
+      <CustomTitleBar id={id}>
         <div
           className={clsx(
             "w-25 bg-[#0d1420] mb-1 text-center rounded-xl font-bold border border-[rgba(255,255,255,0.3)] ",
@@ -111,7 +111,7 @@ const SharePopup = () => {
         >
           share
         </div>
-      </CustomTitlebar>
+      </CustomTitleBar>
       <div className="w-full h-full border-r border-l border-b border-[rgba(255,255,255,0.3)] rounded-xl flex flex-col p-4 bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)]">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Share Downloads Info</h2>

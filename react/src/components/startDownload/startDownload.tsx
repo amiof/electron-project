@@ -1,4 +1,4 @@
-import CustomTitlebar from "@components/customTilebar/CustomTitlebar"
+import CustomTitleBar from "@components/customTilebar/CustomTitleBar.tsx"
 import BackDetails from "@components/startDownload/BackDetails.tsx"
 import AccessTimeIcon from "@mui/icons-material/AccessTime"
 import HubIcon from "@mui/icons-material/Hub"
@@ -175,7 +175,7 @@ const DownloadStart = () => {
   ]
   return (
     <div className="flex flex-col w-full h-full">
-      <CustomTitlebar id={gid} widthTitleBar="30%">
+      <CustomTitleBar id={gid} widthTitleBar="30%">
           <div
             className={clsx(
               "w-fit bg-[#0d1420] max-w-[68%]  mb-1 text-center  rounded-xl font-medium px-3  border border-[rgba(255,255,255,0.2)] truncate",
@@ -184,7 +184,7 @@ const DownloadStart = () => {
           >
             {filename}
           </div>
-      </CustomTitlebar>
+      </CustomTitleBar>
       <div
         className={clsx(
           "w-full h-full flex justify-center items-center overflow-hidden rounded-xl border-r border-l border-b border-[rgba(255,255,255,0.3)]",

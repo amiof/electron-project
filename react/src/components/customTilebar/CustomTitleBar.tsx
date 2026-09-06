@@ -3,8 +3,8 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen"
 import RemoveIcon from "@mui/icons-material/Remove"
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap"
 import { IconButton } from "@mui/material"
-import styles from "./styles.module.scss"
 import { ReactNode } from "react"
+import styles from "./styles.module.scss"
 
 type Props = {
   id?: string
@@ -12,7 +12,7 @@ type Props = {
   title?: string
   widthTitleBar?: string
 }
-const CustomTitlebar = (props: Props) => {
+const CustomTitleBar = (props: Props) => {
   const { id, title, widthTitleBar = "30%", children } = props
 
   const windowMinimize = window.electronAPI.windowMinimize
@@ -50,4 +50,4 @@ const CustomTitlebar = (props: Props) => {
   )
 }
 
-export default CustomTitlebar
+export default CustomTitleBar

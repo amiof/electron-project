@@ -37,7 +37,7 @@ const BackDetails = (props: Props) => {
   useEffect(() => {
     setTimeout(() => {
       setOpen(true)
-    }, 1000)
+    }, 300)
   }, [])
 
   const percentage = !isMetaData

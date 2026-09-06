@@ -3,7 +3,7 @@ import AddLinkOptions from "@components/addLinkPopup/tabs/AddLinkOptions.tsx"
 import AddLinkProxy from "@components/addLinkPopup/tabs/AddLinkProxy.tsx"
 import AddLinkTab from "@components/addLinkPopup/tabs/AddLinkTab.tsx"
 import { TAddLinkTabs } from "@components/addLinkPopup/types.ts"
-import CustomTitlebar from "@components/customTilebar/CustomTitlebar"
+import CustomTitleBar from "@components/customTilebar/CustomTitleBar.tsx"
 import { AddLink, Settings, VpnLock } from "@mui/icons-material"
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined"
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined"
@@ -57,7 +57,7 @@ const AddLinkPopup = () => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <CustomTitlebar id={id}>
+      <CustomTitleBar id={id}>
         <div
           className={clsx(
             "w-25 bg-[#0d1420] mb-1 text-center rounded-xl font-bold border border-[rgba(255,255,255,0.3)] ",
@@ -66,7 +66,7 @@ const AddLinkPopup = () => {
         >
           add link
         </div>
-      </CustomTitlebar>
+      </CustomTitleBar>
       <div
         className={
           "h-full w-full border-r border-l border-b rounded-xl border-[rgba(255,255,255,0.3)] flex flex-col bg-[radial-gradient(circle_at_15%_10%,rgba(59,130,246,0.18),transparent_30%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_32%),linear-gradient(145deg,#05080d_0%,#0a1019_45%,#0d1420_100%)] rounded-lg "

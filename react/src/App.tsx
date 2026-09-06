@@ -5,7 +5,7 @@ import Toolbar from "@components/toolbar/Toolbar.tsx"
 import styles from "@src/app.module.scss"
 import clsx from "clsx"
 import "./renderer.ts"
-import CustomTitlebar from "@components/customTilebar/CustomTitlebar.tsx"
+import CustomTitleBar from "@components/customTilebar/CustomTitleBar.tsx"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { useEffect } from "react"
 
@@ -22,7 +22,7 @@ function App() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <CustomTitlebar widthTitleBar="100%" title="shabdiz download manager" />
+      <CustomTitleBar widthTitleBar="100%" title="shabdiz download manager" />
       <div className={clsx(styles.mainContainer)}>
         <div className={styles.aside}>
           <Sidebar />
