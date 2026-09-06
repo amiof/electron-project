@@ -140,7 +140,7 @@ const AddLinkTab = () => {
           }}
         />
         {metadataUrl.size && +metadataUrl?.size !== 0 && (
-          <span className={"px-5"}>{formatBytes(+metadataUrl.size)}</span>
+          <span >{formatBytes(+metadataUrl.size)}</span>
         )}
       </div>
       <div>
