@@ -12,17 +12,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/ws": "^8.5.14",
     "dotenv": "^16.4.7",
     "electron-store": "8.2.0",
-    "electronmon": "^2.0.3",
-    "reflect-metadata": "^0.2.2",
     "sqlite3": "^6.0.1",
     "typeorm": "^0.3.28",
-    "wait-on": "^8.0.3",
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "electronmon": "^2.0.3",
+    "wait-on": "^8.0.3",
+    "reflect-metadata": "^0.2.2",
+    "@types/ws": "^8.5.14",
     "@electron/rebuild": "^3.7.1",
     "@types/node": "^18.15.11",
     "@types/sqlite3": "^3.1.11",

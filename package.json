@@ -27,8 +27,27 @@
       "output": "release",
       "buildResources": "assets"
     },
+    "electronLanguages": [
+      "en-US",
+      "fa"
+    ],
     "files": [
-      "**/*"
+      "dist/**/*",
+      "package.json",
+      "!**/*.md",
+      "!**/test/**",
+      "!**/tests/**",
+      "!**/__tests__/**",
+      "!**/example/**",
+      "!**/examples/**",
+      "!**/.github/**",
+      "!**/.vscode/**",
+      "!**/.idea/**",
+      "!**/*.map",
+      "!**/tsconfig.json",
+      "!**/tslint.json",
+      "!**/.eslintrc*",
+      "!**/.prettierrc*"
     ],
     "extraResources": [
       {
