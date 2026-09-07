@@ -4,18 +4,21 @@
   flex-direction: column;
   justify-content: center;
   width: 70px;
-  height: 70px;
+  height: 60px;
   cursor: pointer;
   text-transform: lowercase;
   gap: 5px;
+  transition: all ease 0.5s;
+  border-radius: 8px;
 
   &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
     .iconElement {
-      color: green;
+      color: #70C73A;
     }
 
     .title {
-      color: green;
+      color:  #70C73A;
     }
   }
 }
@@ -29,13 +32,13 @@
 
 .iconElement {
   transition: all ease 0.5s;
-  color: white;
+  color: rgba(255,255,255,0.8);
 }
 
 .title {
   font-size: 12px;
   transition: all ease 0.5s;
-  color: white;
+  color: rgba(255,255,255,0.8);
 }
 
 .badge {
