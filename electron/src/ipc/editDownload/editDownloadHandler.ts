@@ -1,7 +1,5 @@
 import { ipcMain } from "electron"
-import { DataSourceRepo } from "../../database/database"
-import { Download } from "../../database/entities/download"
-import { Torrent } from "../../database/entities/torrent"
+import { DownloadRepo, TorrentRepo } from "../../database/database"
 import { aria2 } from "../../main"
 import { STATUS_TYPE, TDownloads } from "../../types"
 import { EDIT_DOWNLOAD_CHANNELS } from "../channels"
@@ -22,22 +20,20 @@ function parseOverrides(value: OptionOverrides | string | null | undefined): Opt
   }
 }
 
-function getRepositoryForDownload(download: TDownloads | null) {
+function getRepoForDownload(download: TDownloads | null) {
   if (download?.isTorrent || "infoHash" in (download || {})) {
-    return DataSourceRepo.getRepository(Torrent)
+    return TorrentRepo
   }
-  return DataSourceRepo.getRepository(Download)
+  return DownloadRepo
 }
 
 export async function reApplyOptionOverrides(gid: string): Promise<void> {
   try {
-    const downloadRepo = DataSourceRepo.getRepository(Download)
-    const download = await downloadRepo.findOneBy({ gid })
+    const download = DownloadRepo.findOneBy({ gid }) as any
     let overrides = download?.optionOverrides
     
     if (!overrides || Object.keys(overrides).length === 0) {
-      const torrentRepo = DataSourceRepo.getRepository(Torrent)
-      const torrent = await torrentRepo.findOneBy({ gid })
+      const torrent = TorrentRepo.findOneBy({ gid }) as any
       overrides = torrent?.optionOverrides
     }
     
@@ -109,8 +105,7 @@ export const ipcEditDownloadHandler = () => {
   ipcMain.handle(EDIT_DOWNLOAD_CHANNELS.GET_OPTION_OVERRIDES, async (_event: IpcMainInvokeEvent, gid: string) => {
     try {
       /** Use raw query to avoid TypeORM transformer issues with old data */
-      const downloadRepo = DataSourceRepo.getRepository(Download)
-      const rawDownload = await downloadRepo.findOne({ where: { gid }, select: ["optionOverrides"] })
+      const rawDownload = DownloadRepo.findOne({ where: { gid }, select: ["optionOverrides"] }) as any
       let overrides: OptionOverrides = {}
       if (rawDownload?.optionOverrides) {
         try {
@@ -122,8 +117,7 @@ export const ipcEditDownloadHandler = () => {
       }
       
       if (Object.keys(overrides).length === 0) {
-        const torrentRepo = DataSourceRepo.getRepository(Torrent)
-        const rawTorrent = await torrentRepo.findOne({ where: { gid }, select: ["optionOverrides"] })
+        const rawTorrent = TorrentRepo.findOne({ where: { gid }, select: ["optionOverrides"] }) as any
         if (rawTorrent?.optionOverrides) {
           try {
             overrides = parseOverrides(rawTorrent.optionOverrides)
@@ -147,7 +141,7 @@ export const ipcEditDownloadHandler = () => {
     async (_event: IpcMainInvokeEvent, gid: string, overrides: Record<string, string>) => {
       try {
         const stored = selectedDownloadForEdit
-        const repo = getRepositoryForDownload(stored)
+        const repo = getRepoForDownload(stored)
         
         const status = (await aria2.sendAria2cRequest("tellStatus", [gid])) as { status?: string }
         const wasActive = status?.status === "active"
@@ -183,7 +177,7 @@ export const ipcEditDownloadHandler = () => {
         }
         
         /** Merge with existing then stringify for DB */
-        const rawExisting = await repo.findOne({ where: { gid }, select: ["optionOverrides"] })
+        const rawExisting = repo.findOne({ where: { gid }, select: ["optionOverrides"] }) as any
         let existingOverrides: OptionOverrides = {}
         if (rawExisting?.optionOverrides) {
           try {
@@ -199,7 +193,7 @@ export const ipcEditDownloadHandler = () => {
             delete merged[key]
           }
         }
-        await repo.update({ gid }, { optionOverrides: merged })
+        repo.update({ gid }, { optionOverrides: merged })
         
         if (wasActive) {
           await aria2.sendAria2cRequest("unpause", [gid])
@@ -220,8 +214,8 @@ export const ipcEditDownloadHandler = () => {
     async (_event: IpcMainInvokeEvent, gid: string, optionKey: string) => {
       try {
         const stored = selectedDownloadForEdit
-        const repo = getRepositoryForDownload(stored)
-        const rawEntity = await repo.findOne({ where: { gid }, select: ["optionOverrides"] })
+        const repo = getRepoForDownload(stored)
+        const rawEntity = repo.findOne({ where: { gid }, select: ["optionOverrides"] }) as any
         let currentOverrides: OptionOverrides = {}
         if (rawEntity?.optionOverrides) {
           try {
@@ -235,7 +229,7 @@ export const ipcEditDownloadHandler = () => {
         
         const updated = { ...currentOverrides }
         delete updated[optionKey]
-        await repo.update({ gid }, { optionOverrides: updated })
+        repo.update({ gid }, { optionOverrides: updated })
         
         const globalOptions = (await aria2.sendAria2cRequest("getOption", [gid])) as Record<string, string>
         const globalValue = globalOptions[optionKey]
@@ -270,17 +264,13 @@ export const ipcEditDownloadHandler = () => {
       try {
         const options = ((await aria2.sendAria2cRequest("getOption", [oldGid])) as Record<string, string>) || {}
         
-        const downloadRepo = DataSourceRepo.getRepository(Download)
-        const torrentRepo = DataSourceRepo.getRepository(Torrent)
         let dbOverrides: Record<string, string> = {}
-        let dbRow: Download | Torrent | null = null
-        
-        dbRow = await downloadRepo.findOneBy({ gid: oldGid })
+        let dbRow: any = DownloadRepo.findOneBy({ gid: oldGid })
         if (dbRow?.optionOverrides) {
           dbOverrides = dbRow.optionOverrides
         }
         else {
-          const torrentRow = await torrentRepo.findOneBy({ gid: oldGid })
+          const torrentRow = TorrentRepo.findOneBy({ gid: oldGid }) as any
           if (torrentRow?.optionOverrides) {
             dbOverrides = torrentRow.optionOverrides
             dbRow = torrentRow
@@ -295,8 +285,8 @@ export const ipcEditDownloadHandler = () => {
           console.error("[EditDownload] Failed to pause4:", error)
         }
         
-        await downloadRepo.delete({ gid: oldGid })
-        await torrentRepo.delete({ gid: oldGid })
+        DownloadRepo.delete({ gid: oldGid })
+        TorrentRepo.delete({ gid: oldGid })
         
         const addOptions = { ...options, continue: true }
         const newGid = (await aria2.sendAria2cRequest("addUri", [[newUrl], addOptions])) as string
@@ -306,7 +296,7 @@ export const ipcEditDownloadHandler = () => {
           await aria2.sendAria2cRequest("changeOption", [newGid, dbOverrides])
         }
         
-        const newRow: Partial<Download> = {
+        const newRow: Record<string, unknown> = {
           gid: newGid,
           dir: options.dir || "",
           totalLength: "0",
@@ -324,7 +314,7 @@ export const ipcEditDownloadHandler = () => {
           schedulerQueue: false,
           optionOverrides: dbOverrides
         }
-        await downloadRepo.insert(newRow)
+        DownloadRepo.insert(newRow as Record<string, unknown>)
         
         selectedDownloadForEdit = {
           Gid: newGid,

@@ -17,7 +17,7 @@
     "package:linux:rpm": "npm run build && electron-builder --linux rpm --x64",
     "package:win": "npm run build && electron-builder --win",
     "package:mac:zip": "npm run build && electron-builder --mac=zip",
-    "postinstall": "electron-builder install-app-deps",
+    "postinstall": "CXXFLAGS=-Wno-implicit-fallthrough electron-builder install-app-deps",
     "icon-flatten": "electron-icon-builder --input=assets/source.png --output=./assets --flatten"
   },
   "build": {
@@ -27,8 +27,27 @@
       "output": "release",
       "buildResources": "assets"
     },
+    "electronLanguages": [
+      "en-US",
+      "fa"
+    ],
     "files": [
-      "**/*"
+      "dist/**/*",
+      "package.json",
+      "!**/*.md",
+      "!**/test/**",
+      "!**/tests/**",
+      "!**/__tests__/**",
+      "!**/example/**",
+      "!**/examples/**",
+      "!**/.github/**",
+      "!**/.vscode/**",
+      "!**/.idea/**",
+      "!**/*.map",
+      "!**/tsconfig.json",
+      "!**/tslint.json",
+      "!**/.eslintrc*",
+      "!**/.prettierrc*"
     ],
     "extraResources": [
       {
@@ -45,7 +64,16 @@
           "**/*"
         ]
       },
-      "./assets/**"
+      {
+        "from": "assets",
+        "to": "assets",
+        "filter": [
+          "icons/icon.ico",
+          "icons/icon.icns",
+          "icons/512x512.png",
+          "*.png"
+        ]
+      }
     ],
     "mac": {
       "target": [

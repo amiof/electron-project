@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron"
 import path from "path"
 import aria2c from "./aria2c"
-import { DataSourceRepo } from "./database/database"
+import { initDatabase } from "./database/database"
 import ipcDownloadHandler from "./ipc/download/downloadHandler"
 import ipcGetDataHandler from "./ipc/getData/getDataHandler"
 import ipcPopupHandler from "./ipc/openPopup/popupHandler"
@@ -49,28 +49,23 @@ function createWindow() {
     icon: iconPath(),
     webPreferences: {
       preload: path.join(__dirname, "preload", "preload.js"),
-      contextIsolation: true, // Crucial for security
-      nodeIntegration: false // Disable node integration in renderer
+      contextIsolation: true,
+      nodeIntegration: false
     }
   })
 
   mainWindow.setContentSize(1000, 500, true)
   if (process.env.NODE_ENV === "development") {
-    // In development, load the React dev server.
     mainWindow.loadURL("http://localhost:3353")
-    // mainWindow.webContents.openDevTools();
-    const iconPath = path.join(__dirname, "..", "..", "assets", "icons", "512x512.png")
-    mainWindow.setIcon(iconPath)
+    const devIconPath = path.join(__dirname, "..", "..", "assets", "icons", "512x512.png")
+    mainWindow.setIcon(devIconPath)
   } else {
     if (process.platform === "linux") {
-      const iconPath = path.join(process.resourcesPath, "assets", "icons", "512x512.png")
-      mainWindow.setIcon(iconPath)
+      const linuxIconPath = path.join(process.resourcesPath, "assets", "icons", "512x512.png")
+      mainWindow.setIcon(linuxIconPath)
     }
 
-    // In production, load the built index.html from extraResources.
-    // Using process.resourcesPath ensures we reference the correct folder outside the asar.
     const indexPath = path.join(process.resourcesPath, "react", "dist", "index.html")
-    // mainWindow.loadFile(indexPath);
     mainWindow.loadFile(indexPath).catch((err) => console.error("Failed to load index.html:", err))
   }
 
@@ -78,13 +73,9 @@ function createWindow() {
     mainWindow = null
   })
 }
-//  create folders for download files
-;(async () => {
-  await checkAndCreateFolder()
-  await DataSourceRepo.initialize()
-})()
 
-// app.on("ready", createWindow);
+// Ensure folders exist before anything else
+checkAndCreateFolder()
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -96,16 +87,47 @@ export const aria2 = new aria2c()
 
 export const schedulerInstance = new SchedulerProcess()
 
-app.whenReady().then(() => {
+// Single entry point: init database → create window → start services → register IPC
+app.whenReady().then(async () => {
+  // 1. Initialize database BEFORE anything else
+  initDatabase()
+
+  // 2. Register window control IPC handlers (no DB dependency)
+  ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MINIMIZE, (_, id) => {
+    if (id) return
+    mainWindow?.minimize()
+  })
+
+  ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MAXIMIZE, (_, id) => {
+    if (id) return
+    if (mainWindow?.isMaximized()) {
+      mainWindow.unmaximize()
+    } else {
+      mainWindow?.maximize()
+    }
+  })
+
+  ipcMain.on(POPUP_CHANNELS.CLOSE_MAIN_POPUP, (_, id) => {
+    if (id) return
+    app.quit()
+  })
+
+  // 3. Register all IPC handlers (DB is ready now)
+  ipcDownloadHandler()
+  ipcGetDataHandler()
+  ipcPopupHandler()
+  ipcActionsHandler()
+  ipcConfigHandler()
+  ipcUtilsHandler()
+  ipcSchedulerHandler()
+  ipcShareHandler()
+  ipcEditDownloadHandler()
+
+  // 4. Create window and start services
   createWindow()
-  // startAria2c();
   aria2.start()
-
   schedulerInstance.initScheduler()
-
-  // setTimeout(connectToAria2c, 1000);
   setTimeout(() => aria2.connect(), 1000)
-  // setInterval(()=>aria2.sendAria2cRequest('aria2.getVersion'), 3353);
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -114,42 +136,11 @@ app.whenReady().then(() => {
   })
 })
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    if (aria2.aria2cProcess) {
-      aria2.aria2cProcess.kill()
-    }
-    app.quit()
-  }
-})
-
 app.on("activate", () => {
   if (mainWindow === null) {
     createWindow()
   }
 })
-
-// Window control IPC handlers
-ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MINIMIZE, (_, id) => {
-  if (id) return
-  mainWindow?.minimize()
-})
-
-ipcMain.on(POPUP_CHANNELS.WINDOW_POPUP_MAXIMIZE, (_, id) => {
-  if (id) return
-  if (mainWindow?.isMaximized()) {
-    mainWindow.unmaximize()
-  } else {
-    mainWindow?.maximize()
-  }
-})
-
-ipcMain.on(POPUP_CHANNELS.CLOSE_MAIN_POPUP, (_, id) => {
-  if (id) return
-  // mainWindow?.close()
-  app.quit()
-})
-
 
 app.on("before-quit", async (event) => {
   if (isQuitting) {
@@ -170,14 +161,3 @@ app.on("before-quit", async (event) => {
     app.quit()
   }
 })
-
-// IPC handlers
-ipcDownloadHandler()
-ipcGetDataHandler()
-ipcPopupHandler()
-ipcActionsHandler()
-ipcConfigHandler()
-ipcUtilsHandler()
-ipcSchedulerHandler()
-ipcShareHandler()
-ipcEditDownloadHandler()

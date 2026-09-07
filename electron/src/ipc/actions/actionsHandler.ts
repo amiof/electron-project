@@ -1,7 +1,7 @@
 import { ipcMain, IpcMainEvent } from "electron"
 import { ACTIONS_CHANNELS } from "../channels"
 import { aria2 } from "../../main"
-import { DataSourceRepo } from "../../database/database"
+import { DownloadRepo, TorrentRepo } from "../../database/database"
 import { openFileExplorer } from "../../utils"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
@@ -31,8 +31,8 @@ export const ipcActionsHandler = () => {
   })
   ipcMain.on(ACTIONS_CHANNELS.REMOVE_DOWNLOAD_BY_GID, async (event: IpcMainEvent, gid: string) => {
     try {
-      await DataSourceRepo.getRepository("downloads").delete({ gid: gid })
-      await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
+      await DownloadRepo.delete({ gid })
+      await TorrentRepo.delete({ gid })
       await aria2.sendAria2cRequest("remove", [gid])
       await aria2.sendAria2cRequest("removeDownloadResult", [gid])
     } catch (error) {
@@ -47,8 +47,8 @@ export const ipcActionsHandler = () => {
     try {
       for (const gid of gidList) {
         try {
-          await DataSourceRepo.getRepository("downloads").delete({ gid: gid })
-          await DataSourceRepo.getRepository("torrents").delete({ gid: gid })
+          await DownloadRepo.delete({ gid })
+          await TorrentRepo.delete({ gid })
           await aria2.sendAria2cRequest("remove", [gid])
           await aria2.sendAria2cRequest("removeDownloadResult", [gid])
         } catch (e) {

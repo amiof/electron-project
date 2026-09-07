@@ -2,8 +2,7 @@ import { exec } from "node:child_process"
 import { clearTimeout } from "node:timers"
 import { ipcMain, powerSaveBlocker, webContents } from "electron"
 import os from "os"
-import { In } from "typeorm"
-import { DataSourceRepo } from "../database/database"
+import { SchedulerRepo, In } from "../database/database"
 import { ACTIONS_CHANNELS, POPUP_CHANNELS, SCHEDULE_CHANNELS } from "../ipc/channels"
 import { createPopupWindow } from "../ipc/utils"
 import { aria2, schedulers } from "../main"
@@ -261,7 +260,7 @@ export class SchedulerProcess {
    */
   private refreshDownloadQueue = async (): Promise<void> => {
     try {
-      this.downloadQueue = (await DataSourceRepo.getRepository("scheduler").find()) as TSchedulerDatabase[]
+      this.downloadQueue = SchedulerRepo.find() as unknown as TSchedulerDatabase[]
     }
     catch (error) {
       console.error("[Scheduler] Failed to fetch download queue:", error)
@@ -317,9 +316,9 @@ export class SchedulerProcess {
    */
   private deletedDownloadedGidFromDb = async (gids: string[]): Promise<void> => {
     try {
-      const repo = DataSourceRepo.getRepository("scheduler")
-      const rows = await repo.findBy({ gid: In(gids) })
-      await repo.delete({ gid: In(rows.map((r) => r.gid)) })
+      // Using SchedulerRepo directly
+      const rows = SchedulerRepo.findBy({ gid: In(gids) })
+      SchedulerRepo.delete({ gid: In(rows.map((r) => r.gid)) })
     }
     catch (error) {
       console.error("[Scheduler] Failed to delete from database:", error)

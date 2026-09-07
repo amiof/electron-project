@@ -27,6 +27,7 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
     await get().getTellStopped()
     await get().getTellActive()
     await get().getTellWaiting()
+    await get().getCompletedRowFromDB()
     await get().getDownloadedFilesDetails()
     await get().getSchedulerGidRow()
 
