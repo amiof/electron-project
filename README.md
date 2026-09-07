@@ -12,7 +12,7 @@ A modern, cross-platform download manager built with Electron, React, and aria2c
 ## 🎬 Demo
 
 
-![demo](https://raw.githubusercontent.com/amiof/images/main/download-manager.gif)
+![demo](https://raw.githubusercontent.com/amiof/images/main/download-manager-1.3.3.gif)
 
 
 ---
