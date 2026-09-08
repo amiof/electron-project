@@ -151,7 +151,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.4",
-    "electron": "^43.5.1",
+    "electron": "^43.6.0",
     "electron-builder": "^26.15.3",
     "electron-icon-builder": "^2.0.1"
   }
