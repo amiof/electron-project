@@ -6,11 +6,11 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import FolderIcon from "@mui/icons-material/Folder"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import StopIcon from "@mui/icons-material/Stop"
-import { ReactElement, useState, useEffect } from "react"
 import { SpeedDial, SpeedDialAction, SpeedDialIcon, Tooltip } from "@mui/material"
 import MagnetIcon from "@src/assets/MagnetIcon.tsx"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TtellRes } from "@src/types.ts"
+import { ReactElement, useEffect, useState } from "react"
 import { ProgressBar } from "react-progressbar-fancy"
 import styles from "./style.module.scss"
 
@@ -31,8 +31,16 @@ const BackDetails = (props: Props) => {
 
   const closePopup = window.electronAPI.closePopupWindow
   const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
+  const setDownloadDataToElectron = useDownloaderStore((state) => state.setActiveDataToElectron)
 
   const [open, setOpen] = useState(false)
+
+  const delecteAction = async () => {
+    window.electronAPI.removeSelectedDownloads([gid])
+    const tellStatus = await window.electronAPI.getTellStatus(gid)
+    setDownloadDataToElectron(tellStatus)
+    closePopup(gid)
+  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -63,7 +71,7 @@ const BackDetails = (props: Props) => {
       title: "Resume"
     },
     {
-      action: () => console.log("delete"),
+      action: () => delecteAction(),
       Icon: <DeleteIcon sx={{ color: "darkgray", width: "24px", height: "32px" }} />,
       title: "delete"
     },

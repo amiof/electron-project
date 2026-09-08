@@ -52,6 +52,8 @@ const Main = () => {
   window.electronAPI.onDataChange(async (data) => {
     const result = await data
     setActiveDownloads(result)
+    setRowSelectionModel([])
+    setSelectedRows([])
   })
 
   useEffect(() => {
