@@ -5,6 +5,7 @@ import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap"
 import { IconButton } from "@mui/material"
 import { ReactNode } from "react"
 import styles from "./styles.module.scss"
+import useDownloaderStore from "@src/store/downloaderStore.ts"
 
 type Props = {
   id?: string
@@ -19,6 +20,16 @@ const CustomTitleBar = (props: Props) => {
   const windowMaximize = window.electronAPI.windowMaximize
   const windowClose = window.electronAPI.windowClose
   const windowCloseById = window.electronAPI.closePopupWindow
+  const toggleCloseBackDrop = useDownloaderStore((state) => state.toggleCloseBackDrop)
+
+  const closeHandler = () => {
+   if(id) {
+     windowCloseById(id)
+   }else{
+     windowClose()
+     toggleCloseBackDrop()
+   }
+  }
 
   return (
     <div className=" flex justify-right   h-14 max-h-[30px] px-8 [-webkit-app-region:drag] gap-6 ">
@@ -39,7 +50,7 @@ const CustomTitleBar = (props: Props) => {
           <IconButton onClick={() => (id ? windowMaximize(id) : windowMaximize())}>
             <FullscreenIcon sx={{ fontSize: "15px" }} />
           </IconButton>
-          <IconButton onClick={() => (id ? windowCloseById(id) : windowClose())}>
+          <IconButton onClick={closeHandler}>
             <Close sx={{ fontSize: "15px" }} />
           </IconButton>
         </div>

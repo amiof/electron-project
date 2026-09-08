@@ -140,12 +140,12 @@ export default class aria2c extends EventEmitter {
 
     try {
       // Give WebSocket a chance to connect
-      await this.waitForWebSocket(3000)
+      await this.waitForWebSocket(4000)
 
       if (this.ws?.readyState === WebSocket.OPEN) {
         await this.sendAria2cRequest("shutdown")
 
-        await this.waitForProcessExit(5000)
+        await this.waitForProcessExit(6000)
 
         console.log("aria2 shutdown successfully")
       } else {
@@ -153,7 +153,7 @@ export default class aria2c extends EventEmitter {
 
         this.aria2cProcess?.kill()
 
-        await this.waitForProcessExit(3000)
+        await this.waitForProcessExit(4000)
       }
     } finally {
       this.ws?.close()

@@ -6,6 +6,8 @@ import styles from "@src/app.module.scss"
 import clsx from "clsx"
 import "./renderer.ts"
 import CustomTitleBar from "@components/customTilebar/CustomTitleBar.tsx"
+import { CoreSpinLoader } from "@components/loading/CoreSpinLoader.tsx"
+import { Backdrop } from "@mui/material"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { useEffect } from "react"
 
@@ -13,6 +15,8 @@ function App() {
   const getDownloadedFilesDetails = useDownloaderStore((state) => state.getDownloadedFilesDetails)
   const getCompletedRowsFromDB = useDownloaderStore((state) => state.getCompletedRowFromDB)
   const getSchedulerGidRow = useDownloaderStore((state) => state.getSchedulerGidRow)
+  const toggleCloseBackDrop = useDownloaderStore((state) => state.toggleCloseBackDrop)
+  const showCloseBackDrop = useDownloaderStore((state) => state.showCloseBackDrop)
 
   useEffect(() => {
     getCompletedRowsFromDB()
@@ -22,6 +26,22 @@ function App() {
 
   return (
     <div className="flex flex-col w-full h-full">
+      <Backdrop
+        sx={{
+          height: "calc(100% - 30px)",
+          width: "100%",
+          marginTop: "30px",
+          backgroundColor: "rgba(0,0,0,0.02)",
+          zIndex: 9999,
+          backdropFilter: "blur(8px)",
+          borderRadius: "14px",
+          boxShadow: "none"
+        }}
+        open={showCloseBackDrop}
+        onClick={toggleCloseBackDrop}
+      >
+        <CoreSpinLoader />
+      </Backdrop>
       <CustomTitleBar widthTitleBar="100%" title="shabdiz download manager" />
       <div className={clsx(styles.mainContainer)}>
         <div className={styles.aside}>

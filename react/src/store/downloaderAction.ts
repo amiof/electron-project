@@ -160,6 +160,10 @@ export const downloaderAction = (set: SetState, get: GetState): TDownloaderActio
   getSchedulerGidRow: async () => {
     const gidRows = await window.electronAPI.getSchedulerDownloadRows()
     set({ schedulerGidRows: gidRows })
+  },
+  toggleCloseBackDrop:()=>{
+    const backdropStatus=get().showCloseBackDrop
+    set({showCloseBackDrop: !backdropStatus})
   }
 
   // removeFile: (file: string) => {

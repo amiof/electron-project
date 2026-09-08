@@ -1,13 +1,14 @@
 // import useDownloaderStore from "@src/store/downloaderStore"
-import styles from "./style.module.scss"
+
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid"
-import { MouseEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TDownloads, TtellRes } from "@src/types.ts"
-import { ProgressBar } from "react-progressbar-fancy"
-import clsx from "clsx"
 import { searchInDownloadsRows } from "@src/utils.ts"
+import clsx from "clsx"
+import { MouseEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { ProgressBar } from "react-progressbar-fancy"
 import EmptyDownloads from "./EmptyDownloads"
+import styles from "./style.module.scss"
 
 const Main = () => {
   const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)

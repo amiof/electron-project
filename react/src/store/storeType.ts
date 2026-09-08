@@ -16,6 +16,7 @@ export type TDownloaderState = {
   downloadsGroupByLabel: Record<string, TDownloads[]>
   mainTableId: string
   schedulerGidRows: TSchedulerGid[]
+  showCloseBackDrop: boolean
 }
 
 export type TDownloaderActions = {
@@ -35,6 +36,7 @@ export type TDownloaderActions = {
   setSearchValue: (text: string) => void
   setSidebarSelectedLabel: (label: string) => void
   refreshMainTableId: (id: string) => void
+  toggleCloseBackDrop: () => void
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions
 
