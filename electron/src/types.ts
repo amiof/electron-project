@@ -82,6 +82,36 @@ export type resMetadataUrls = {
   typeUrl: "direct" | "torrent" | "magnet"
   savePath: string
   resume: boolean | null
+  torrentInfoHash?: string
+  gidTorrent?: string
+  torrentFiles?: TTorrentFileInfo[]
+}
+
+export type TTorrentFileInfo = {
+  path: string
+  name: string
+  length: number
+  offset: number
+}
+type infoTorrent = {
+  files: object[]
+  name: any
+  "piece length": number
+  pieces: any
+}
+export type TtorrentFileParsed = {
+  info: infoTorrent
+  infoBuffer: any
+  name: string
+  announce: string[]
+  infoHash: string
+  infoHashBuffer: any
+  urlList: string[]
+  files: TTorrentFileInfo[]
+  length: number
+  pieceLength: number
+  lastPieceLength: number
+  pieces: string[]
 }
 
 // downloads create in ui  -- some times need use in back
@@ -173,7 +203,6 @@ export type TSchedulerDatabase = {
   gid: string
   CreatedAt?: Date
 }
-
 
 // export type TTorrentRowDatabase = {
 //   bittorrent: {

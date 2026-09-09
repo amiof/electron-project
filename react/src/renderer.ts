@@ -76,6 +76,7 @@ export interface IElectronAPI {
   getTorrentConfig: () => Promise<TTorrentConfig>
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>
   getMetadataUrls: (url: string) => Promise<resMetadataUrls>
+  getMagnetMetadataUrls: (magnetUrl: string) => Promise<resMetadataUrls>
   showContextMenu: (selectedItems: [] | TDownloads[]) => Promise<unknown>
   readClipboard: () => Promise<string>
   getSchedulerDownloadRows: () => Promise<TSchedulerGid[]>

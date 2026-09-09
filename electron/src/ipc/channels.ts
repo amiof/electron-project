@@ -68,6 +68,7 @@ export const CONFIG_CHANNELS = {
 export const UTILS_CHANNELS = {
   SHOW_NOTIFICATION: "show-notification",
   GET_METADATA_URLS: "get-metadata-urls",
+  GET_MAGNET_METADATA_URLS: "get-magnet-metadata-urls",
   SHOW_CONTEXT_MENU: "show-context-menu",
   CONTEXT_MENU_ACTION: "context-menu-action",
   READ_CLIPBOARD: "read-clipboard"

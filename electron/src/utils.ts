@@ -5,7 +5,8 @@ import * as fs from "fs/promises"
 import os from "os"
 import path from "path"
 import { electronStore } from "./store/electronStore"
-import { TFileDetails } from "./types"
+import { TFileDetails, TtellRes } from "./types"
+import { aria2 } from "./main"
 
 const basePathSelected = electronStore.get("selectedStorageDirectory")
 
@@ -23,7 +24,8 @@ export const checkAndCreateFolder = async () => {
           path.join(basePath, "Shabdiz-DM", "videos"),
           path.join(basePath, "Shabdiz-DM", "images"),
           path.join(basePath, "Shabdiz-DM", "documents"),
-          path.join(basePath, "Shabdiz-DM", "other")
+          path.join(basePath, "Shabdiz-DM", "other"),
+          path.join(basePath, "Shabdiz-DM", "torrents")
         ]
         break
       case "linux":
@@ -34,7 +36,8 @@ export const checkAndCreateFolder = async () => {
           path.join(basePath, "Shabdiz-DM", "videos"),
           path.join(basePath, "Shabdiz-DM", "images"),
           path.join(basePath, "Shabdiz-DM", "documents"),
-          path.join(basePath, "Shabdiz-DM", "other")
+          path.join(basePath, "Shabdiz-DM", "other"),
+          path.join(basePath, "Shabdiz-DM", "torrents")
         ]
         break
       case "darwin":
@@ -45,7 +48,8 @@ export const checkAndCreateFolder = async () => {
           path.join(basePath, "Shabdiz-DM", "videos"),
           path.join(basePath, "Shabdiz-DM", "images"),
           path.join(basePath, "Shabdiz-DM", "documents"),
-          path.join(basePath, "Shabdiz-DM", "other")
+          path.join(basePath, "Shabdiz-DM", "other"),
+          path.join(basePath, "Shabdiz-DM", "torrents")
         ]
         break
       default:
@@ -78,7 +82,8 @@ export const getFolderFromUrl = (url: string) => {
     musics: ["mp3", "wav", "aac", "flac", "ogg", "m4a"],
     compressed: ["zip", "rar", "7z", "tar", "gz"],
     images: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"],
-    documents: ["pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx"]
+    documents: ["pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx"],
+    torrents: ["torrent"]
   }
 
   let folderExtention: string | null = null
@@ -176,7 +181,7 @@ export const savedPath = () => {
     const target: string[] = []
     const platform = process.platform
     let basePath: string
-    const folders = ["compressed", "musics", "videos", "images", "documents", "other"]
+    const folders = ["compressed", "musics", "videos", "images", "documents", "other", "torrents"]
     switch (platform) {
       case "win32":
         basePath = basePathSelected ?? app.getPath("downloads")
@@ -300,6 +305,45 @@ export const openFileExplorer = (directoryPath: string) => {
   })
 }
 
+// for get metaData
+export async function waitForTorrentMetadata(
+  gid: string,
+  timeout = 60_000
+) {
+  const startedAt = Date.now()
+  
+  while (Date.now() - startedAt < timeout) {
+    const status = await aria2.sendAria2cRequest(
+      "tellStatus",
+      [gid]
+    ) as TtellRes
+    
+    if (status.errorCode) {
+      throw new Error(
+        `${status.errorCode}: ${status.errorMessage}`
+      )
+    }
+    
+    if (status.files?.length > 0) {
+      return status
+    }
+    
+    if (
+      status.status === "error" ||
+      status.status === "removed"
+    ) {
+      throw new Error(
+        `aria2 metadata failed: ${status.status}`
+      )
+    }
+    
+    await new Promise(resolve =>
+      setTimeout(resolve, 500)
+    )
+  }
+  
+  throw new Error("Timed out waiting for torrent metadata")
+}
 
 // get file name from link
 export const getFilenameFromUrl = (url: string): string => {

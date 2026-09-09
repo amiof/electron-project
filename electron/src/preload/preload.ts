@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
 import {
+  resMetadataUrls,
   STATUS_TYPE,
   TAria2Config,
   TNotificationDetailes,
@@ -67,6 +68,7 @@ interface ElectronAPI {
   getTorrentConfig: () => Promise<TTorrentConfig>
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>
   getMetadataUrls: (url: string) => Promise<unknown>
+  getMagnetMetadataUrls: (magnetUrl: string) => Promise<resMetadataUrls>
   showContextMenu: (id: string) => Promise<unknown>
   onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => Promise<any>
   readClipboard: () => Promise<string>
@@ -182,6 +184,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   //utils
   showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes),
   getMetadataUrls: (url: string) => ipcRenderer.invoke("get-metadata-urls", url),
+  getMagnetMetadataUrls: (magnetUrl: string) => ipcRenderer.invoke("get-magnet-metadata-urls", magnetUrl),
+
   showContextMenu: (id: string) => ipcRenderer.invoke("show-context-menu", id),
   onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => {
     ipcRenderer.on("context-menu-action", (_event, payload) => callback(payload))

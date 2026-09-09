@@ -106,12 +106,21 @@ export type TFileDetails = {
   isDirectory: boolean
 }
 
+export type TTorrentFileInfo = {
+  path: string
+  name: string
+  length: number
+  offset: number
+}
 export type resMetadataUrls = {
   fileName: string | null
   size: string | null
   typeUrl: "direct" | "torrent" | "magnet"
   savePath: string
   resume: boolean | null
+  torrentInfoHash?: string
+  gidTorrent?: string
+  torrentFiles?: TTorrentFileInfo[]
 }
 
 export type TSchedulerConfig = {
