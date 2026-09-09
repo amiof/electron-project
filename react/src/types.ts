@@ -1,6 +1,6 @@
 export type TDownloads = {
   Id?: number
-  FileName: string
+  FileName: string | null
   Url: string
   SavePath: string
   Size: string
@@ -10,6 +10,8 @@ export type TDownloads = {
   CompletedSize?: string
   Gid: string
   NumberConnections: string
+  isTorrent: boolean
+  schedulerQueue: boolean
 }
 
 export type TUri = {
@@ -17,13 +19,12 @@ export type TUri = {
   uri: string
 }
 export type Tfile = {
-  completedLength: string,
-  index: string,
-  length: string,
-  path: string,
-  selected: string,
+  completedLength: string
+  index: string
+  length: string
+  path: string
+  selected: string
   uris: TUri[]
-  
 }
 
 export enum STATUS_TYPE {
@@ -32,13 +33,13 @@ export enum STATUS_TYPE {
   REMOVED = "removed",
   COMPLETE = "complete",
   PAUSED = "paused",
-  ACTIVE = "active",
+  ACTIVE = "active"
 }
 
 export type TtellRes = {
   bittorrent?: {
     announceList: string[][]
-  },
+  }
   bitfield?: string
   completedLength: string
   connections: string
@@ -57,6 +58,12 @@ export type TtellRes = {
   totalLength: string
   uploadSpeed?: string
   uploadLength: string
+  schedulerQueue?: boolean
+}
+export type TSchedulerGid = {
+  id: number
+  gid: string
+  CreatedAt?: Date
 }
 
 // export type TTorrentRes = {
@@ -90,20 +97,27 @@ export type TGetGlobalStateResponse = {
   uploadSpeed: string
 }
 
-
 export type TFileDetails = {
-  name: string;
-  path: string;
-  size: number; // in bytes
-  createdAt: Date;
-  modifiedAt: Date;
-  isDirectory: boolean;
+  name: string
+  path: string
+  size: number // in bytes
+  createdAt: Date
+  modifiedAt: Date
+  isDirectory: boolean
 }
 
 export type resMetadataUrls = {
-  fileName: string | null,
-  size: string | null,
-  typeUrl: "direct" | "torrent" | "magnet",
+  fileName: string | null
+  size: string | null
+  typeUrl: "direct" | "torrent" | "magnet"
   savePath: string
   resume: boolean | null
 }
+
+export type TSchedulerConfig = {
+  startTime: string | undefined
+  endTime: string | undefined
+  keepAlive: boolean
+  powerOff: boolean
+}
+

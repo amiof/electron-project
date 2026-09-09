@@ -1,7 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
 import { STATUS_TYPE, Tfile, TtellRes } from "../../types"
 
-
 @Entity("downloads")
 export class Download implements TtellRes {
   @PrimaryGeneratedColumn()
@@ -29,7 +28,9 @@ export class Download implements TtellRes {
   errorMessage!: string
   
   @Column({
-    type: "text", nullable: false, default: "[]",
+    type: "text",
+    nullable: false,
+    default: "[]",
     transformer: {
       to: (value: Tfile[]) => JSON.stringify(value),
       from: (value: string) => JSON.parse(value)
@@ -54,6 +55,27 @@ export class Download implements TtellRes {
   
   @Column({ type: "text", nullable: false })
   uploadLength!: string
+  
+  @Column({ type: "boolean", nullable: false, default: false })
+  schedulerQueue!: boolean
+  
+  @Column({
+    type: "text",
+    nullable: false,
+    default: "{}",
+    transformer: {
+      to: (value: Record<string, string>) => JSON.stringify(value),
+      from: (value: string) => {
+        try {
+          return JSON.parse(value)
+        }
+        catch {
+          return {}
+        }
+      }
+    }
+  })
+  optionOverrides!: Record<string, string>
   
   @CreateDateColumn({ type: "datetime", nullable: false })
   createdAt!: Date

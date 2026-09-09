@@ -1,4 +1,4 @@
-import { TDownloads, TFileDetails, TtellRes } from "@src/types.ts"
+import { TDownloads, TFileDetails, TSchedulerGid, TtellRes } from "@src/types.ts"
 
 export type TDownloaderState = {
   files: string[] | null
@@ -14,12 +14,16 @@ export type TDownloaderState = {
   searchValue: string
   sidebarSelectedLabel: string
   downloadsGroupByLabel: Record<string, TDownloads[]>
+  mainTableId: string
+  schedulerGidRows: TSchedulerGid[]
+  showCloseBackDrop: boolean
 }
 
 export type TDownloaderActions = {
   getFiles: (files: string) => void
   getDownloads: () => Promise<void>
   getAllDownloadsRow: () => Promise<void>
+  getFilenameFromOption: (gid: string | undefined)=> Promise<string | null>
   getTellActive: () => Promise<void>
   getTellStopped: () => Promise<void>
   getTellWaiting: () => Promise<void>
@@ -27,9 +31,12 @@ export type TDownloaderActions = {
   getActiveDataFromElectron: () => Promise<void>
   getDownloadedFilesDetails: () => Promise<void>
   getCompletedRowFromDB: () => Promise<void>
+  getSchedulerGidRow: () => Promise<void>
   setSelectedRow: (Rows: TDownloads[]) => void
   setSearchValue: (text: string) => void
   setSidebarSelectedLabel: (label: string) => void
+  refreshMainTableId: (id: string) => void
+  toggleCloseBackDrop: () => void
 }
 export type TDownloaderStore = TDownloaderState & TDownloaderActions
 
@@ -49,7 +56,6 @@ export type TAria2Config = {
   dnsServer: string
   minSplitSize: string
   connectTimeout: string
-  
 }
 
 export type TNotificationDetailes = {
@@ -58,7 +64,7 @@ export type TNotificationDetailes = {
 }
 
 export type TTorrentConfig = {
-  enableDht: boolean,
+  enableDht: boolean
   enableDht6: boolean
   enableLpd: boolean
   enablePeerExchange: boolean

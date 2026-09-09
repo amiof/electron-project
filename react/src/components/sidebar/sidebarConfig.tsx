@@ -2,11 +2,11 @@ import { TreeViewBaseItem } from "@mui/x-tree-view/models"
 import { FileType } from "@components/sidebar/utils.ts"
 
 export type ExtendedTreeItemProps = {
-  fileType?: FileType;
-  id: string;
-  label: string;
+  fileType?: FileType
+  id: string
+  label: string
   parent: string
-};
+}
 
 const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
   {
@@ -38,8 +38,7 @@ const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
     parent: "none"
   },
   { id: "3", label: "Finished", fileType: "finish", parent: "none" },
-  { id: "4", label: "Trash", fileType: "trash", parent: "none" }
+  { id: "4", label: "Queue", fileType: "queue", parent: "none" }
 ]
-
 
 export default ITEMS

@@ -5,23 +5,9 @@ const proxyConfig = electronStore.get("proxyConfig") || {}
 const aria2Config = electronStore.get("aria2Config") || {}
 const torrentConfig = electronStore.get("torrentConfig") || {}
 
-const {
-  maxConnectionSplit,
-  maxConnection,
-  connectTimeout,
-  minSplitSize,
-  maxDownloadLimit,
-  dnsServer
-} = aria2Config
+const { maxConnectionSplit, maxConnection, connectTimeout, minSplitSize, maxDownloadLimit, dnsServer } = aria2Config
 
-const {
-  ip,
-  port,
-  proxyPassword,
-  proxyType,
-  proxyStatus,
-  proxyUserName
-} = proxyConfig
+const { ip, port, proxyPassword, proxyType, proxyStatus, proxyUserName } = proxyConfig
 
 // Build proxy-related args only if proxy is enabled
 const proxyArgs = []
@@ -52,14 +38,14 @@ const addedTrackers = tracker ? [`--bt-tracker= ${tracker}`] : []
 
 export const config = [
   "--enable-rpc",
-  `${dnsServer && `{--async-dns-server=${dnsServer}`}`,
+  `${dnsServer && `--async-dns-server=${dnsServer}`}`,
   "--rpc-listen-all=true",
   "--rpc-allow-origin-all",
   `--save-session=${getSessionPath()}`,
   `--input-file=${getSessionPath()}`,
   "--log-level=error",
   `--console-log-level=notice`,
-  "--save-session-interval=0",
+  "--save-session-interval=10",
   "--auto-file-renaming=true",
   "--force-sequential=true",
   "--check-integrity=true",

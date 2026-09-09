@@ -1,42 +1,41 @@
-import styles from "./style.module.scss"
-import { IconButton, InputAdornment, TextField } from "@mui/material"
 import { SearchOutlined } from "@mui/icons-material"
+import { IconButton, InputAdornment, TextField } from "@mui/material"
 import SpeedIcon from "@src/assets/SpeedIcon.tsx"
-import StraightOutlinedIcon from "@mui/icons-material/StraightOutlined"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
-import { useEffect, useState } from "react"
 import { formatBytes } from "@src/utils.ts"
-import * as _ from "lodash"
 import clsx from "clsx"
+import * as _ from "lodash"
+import { useEffect, useState } from "react"
+import styles from "./style.module.scss"
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp"
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown"
 
 const Header = () => {
-  const tellActive = useDownloaderStore(state => state.tellActive)
-  
+  const tellActive = useDownloaderStore((state) => state.tellActive)
+
   const [downloadSpeed, setDownloadSpeed] = useState<string>("0")
   const [uploadSpeed, setUploadSpeed] = useState<string>("0")
   const [inputText, setInputText] = useState<string>("")
-  const setSearchValue = useDownloaderStore(state => state.setSearchValue)
-  
+  const setSearchValue = useDownloaderStore((state) => state.setSearchValue)
+
   // update search value after 1s
   const debouncedSetSearchValue = _.debounce((value: string) => {
     setSearchValue(value)
   }, 500)
-  
+
   useEffect(() => {
     debouncedSetSearchValue(inputText)
-    
+
     return () => {
       debouncedSetSearchValue.cancel()
     }
-    
   }, [inputText])
-  
-  
+
   useEffect(() => {
-    let interval: NodeJS.Timeout | null
-    
+    let interval: ReturnType<typeof setTimeout> | null
+
     if (tellActive.length) {
-      (async () => {
+      ;(async () => {
         const globalState = window.electronAPI.getGlobalStates
         interval = setInterval(async () => {
           const result = await globalState()
@@ -52,63 +51,68 @@ const Header = () => {
       }
     }
   }, [tellActive.length])
-  
+
   return (
     <div className={styles.container}>
-      
       <div className={styles.speedTest}>
         <SpeedIcon fontSize={"large"} />
         <div className={styles.textSpeed}>
           <span>
-            <StraightOutlinedIcon fontSize={"small"}
-                                  className={clsx("mb-1 rotate-180", tellActive.length && "text-green-500")} />
+            <KeyboardDoubleArrowDownIcon
+              fontSize={"small"}
+              className={clsx("mb-1", tellActive.length && "text-green-500")}
+            />
             {tellActive.length ? formatBytes(+downloadSpeed) : `0 KB`}
           </span>
           <span>
-            <StraightOutlinedIcon fontSize={"small"} className={clsx("mb-1", tellActive.length && "text-red-500")} />
+            <KeyboardDoubleArrowUpIcon
+              fontSize={"small"}
+              className={clsx("mb-1", tellActive.length && "text-red-500")}
+            />
             {tellActive.length ? formatBytes(+uploadSpeed) : `0 KB`}
           </span>
         </div>
       </div>
-      
-      <TextField size={"small"} placeholder={"search in the list"}
-                 onChange={(e) => setInputText(e.target.value)}
-                 sx={{
-                   backgroundColor: "rgba(255, 255, 255, 0.08)",
-                   borderRadius: "15px", color: "white", width: "230px",
-                   "& input": {
-                     // marginLeft: "10px"
-                   },
-                   "& .MuiOutlinedInput-root": {
-                     borderRadius: "15px",
-                     "&.Mui-focused fieldset": { // Remove the focus outline
-                       border: "0.5px solid green", // Remove the border
-                       borderRadius: "15px",
-                       outline: "none" // Remove the outline
-                     },
-                     "&:hover fieldset": {
-                       borderColor: "green", // Make the border transparent on hover
-                       borderRadius: "15px",
-                       outline: "none" // Remove the outline
-                     }
-                   }
-                 }}
-                 slotProps={
-                   {
-                     input: {
-                       style: { color: "white" }, // Change text color to green
-                       startAdornment: (
-                         <InputAdornment position="start">
-                           <IconButton>
-                             <SearchOutlined style={{ color: "white" }} />
-                           </IconButton>
-                         </InputAdornment>
-                       )
-                     }
-                     
-                   }
-                 }
-      
+
+      <TextField
+        size={"small"}
+        placeholder={"search in the list"}
+        onChange={(e) => setInputText(e.target.value)}
+        sx={{
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          borderRadius: "15px",
+          color: "white",
+          width: "230px",
+          "& input": {
+            // marginLeft: "10px"
+          },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "15px",
+            "&.Mui-focused fieldset": {
+              // Remove the focus outline
+              border: "0.5px solid green", // Remove the border
+              borderRadius: "15px",
+              outline: "none" // Remove the outline
+            },
+            "&:hover fieldset": {
+              borderColor: "green", // Make the border transparent on hover
+              borderRadius: "15px",
+              outline: "none" // Remove the outline
+            }
+          }
+        }}
+        slotProps={{
+          input: {
+            style: { color: "white" }, // Change text color to green
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton>
+                  <SearchOutlined style={{ color: "white" }} />
+                </IconButton>
+              </InputAdornment>
+            )
+          }
+        }}
       />
     </div>
   )

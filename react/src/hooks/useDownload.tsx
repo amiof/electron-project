@@ -31,7 +31,7 @@
 //
 //   useEffect(() => {
 //     if (start) {
-//       let interval: NodeJS.Timeout | null
+//       let interval:  ReturnType<typeof setInterval>  | null
 //       console.log("im hereeeee1")
 //       if (tellActive.length) {
 //         interval = setInterval(async () => {

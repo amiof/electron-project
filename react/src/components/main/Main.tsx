@@ -1,57 +1,61 @@
 // import useDownloaderStore from "@src/store/downloaderStore"
-import styles from "./style.module.scss"
+
 import { DataGrid, GridColDef, GridRowSelectionModel } from "@mui/x-data-grid"
-import { MouseEvent, useEffect, useState } from "react"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 import { TDownloads, TtellRes } from "@src/types.ts"
-import { ProgressBar } from "react-progressbar-fancy"
-import clsx from "clsx"
 import { searchInDownloadsRows } from "@src/utils.ts"
-
+import clsx from "clsx"
+import { MouseEvent, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { ProgressBar } from "react-progressbar-fancy"
+import EmptyDownloads from "./EmptyDownloads"
+import styles from "./style.module.scss"
 
 const Main = () => {
-  
-  const getAllDownloads = useDownloaderStore(state => state.getAllDownloadsRow)
-  const downloadsRow = useDownloaderStore(state => state.allDownloadsRow)
-  const tellActive = useDownloaderStore(state => state.tellActive)
-  const setSelectedRows = useDownloaderStore(state => state.setSelectedRow)
-  const selectedRows = useDownloaderStore(state => state.selectedRows)
-  const searchValue = useDownloaderStore(state => state.searchValue)
-  const sidebarSelectedLabel = useDownloaderStore(state => state.sidebarSelectedLabel)
-  const downloadsGroupingByLabel = useDownloaderStore(state => state.downloadsGroupByLabel)
-  
+  const getAllDownloads = useDownloaderStore((state) => state.getAllDownloadsRow)
+  const downloadsRow = useDownloaderStore((state) => state.allDownloadsRow)
+  const tellActive = useDownloaderStore((state) => state.tellActive)
+  const setSelectedRows = useDownloaderStore((state) => state.setSelectedRow)
+  const selectedRows = useDownloaderStore((state) => state.selectedRows)
+  const searchValue = useDownloaderStore((state) => state.searchValue)
+  const sidebarSelectedLabel = useDownloaderStore((state) => state.sidebarSelectedLabel)
+  const downloadsGroupingByLabel = useDownloaderStore((state) => state.downloadsGroupByLabel)
+  const mainTableId = useDownloaderStore((state) => state.mainTableId)
+
   const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([])
-  
+  const prevMainTableId = useRef(mainTableId)
+
+  // for do not loop when switch between sidebar item when select item remove all item
+  useLayoutEffect(() => {
+    if (rowSelectionModel) {
+      setRowSelectionModel([])
+      setSelectedRows([])
+    }
+  }, [sidebarSelectedLabel])
+
   let dataGridRow: TDownloads[]
-  
+
   if (sidebarSelectedLabel === "All Downloads" || sidebarSelectedLabel === "all" || sidebarSelectedLabel === "") {
     dataGridRow = downloadsRow
-  }
-  else if (sidebarSelectedLabel === "Finished") {
+  } else if (sidebarSelectedLabel === "Finished") {
     dataGridRow = downloadsRow.filter((item) => item.Status === "complete")
-  }
-  else if (sidebarSelectedLabel === "UnFinished") {
+  } else if (sidebarSelectedLabel === "UnFinished") {
     dataGridRow = downloadsRow.filter((item) => item.Status !== "complete")
-  }
-  else {
+  } else if (sidebarSelectedLabel === "Queue") {
+    dataGridRow = downloadsRow.filter((item) => item.schedulerQueue)
+  } else {
     dataGridRow = downloadsGroupingByLabel[sidebarSelectedLabel.toLowerCase()]
     if (!dataGridRow) dataGridRow = []
   }
-  
+
   const [activeDownloads, setActiveDownloads] = useState<TtellRes | null>(null)
-  
+
   window.electronAPI.onDataChange(async (data) => {
     const result = await data
     setActiveDownloads(result)
-  })
-  
-  // remove selected item context menu and update main download list
-  const clickedContextMenuItem = () => {
-    getAllDownloads()
     setRowSelectionModel([])
     setSelectedRows([])
-  }
-  
+  })
+
   useEffect(() => {
     window.electronAPI.onContextMenuAction((payload) => {
       if (typeof payload === "string") {
@@ -59,41 +63,46 @@ const Main = () => {
         switch (payload) {
           case "add-link":
             console.log(payload)
-            clickedContextMenuItem()
+            setRowSelectionModel([])
+            setSelectedRows([])
             break
           case "reload-app":
             window.location.reload()
-            clickedContextMenuItem()
             break
           case "delete-rows":
             console.log(payload)
-            clickedContextMenuItem()
+            window.location.reload()
             break
           case "resume":
             console.log(payload)
-            clickedContextMenuItem()
+            getAllDownloads()
+            setRowSelectionModel([])
+            setSelectedRows([])
             break
           case "stop-downloads":
             console.log(payload)
-            clickedContextMenuItem()
+            window.location.reload()
             break
           case "open-folders":
             console.log(payload)
-            clickedContextMenuItem()
+            setRowSelectionModel([])
+            setSelectedRows([])
             break
           case "open-options":
             console.log("open options")
-            clickedContextMenuItem()
             break
           case "add-scheduler":
             console.log(payload)
-            clickedContextMenuItem()
+            window.location.reload()
+            break
+          case "remove-scheduler":
+            console.log(payload)
+            window.location.reload()
             break
           default:
             return undefined
         }
-      }
-      else {
+      } else {
         // complex actions with data
         switch (payload.action) {
           case "delete-selected":
@@ -111,27 +120,32 @@ const Main = () => {
         }
       }
     })
-    
   }, [])
-  
+
+  //for refresh mainTable when i other component need refresh main table
+  useLayoutEffect(() => {
+    if (prevMainTableId.current !== mainTableId) {
+      window.location.reload()
+    }
+  }, [mainTableId])
+
   useEffect(() => {
     //for get session data in start app
     setTimeout(async () => {
       await getAllDownloads()
     }, 1000)
   }, [])
-  
+
   useEffect(() => {
-    let interval: NodeJS.Timeout | null
+    let interval: ReturnType<typeof setTimeout> | null
     if (tellActive.length) {
       interval = setInterval(async () => {
         await getAllDownloads()
       }, 900)
-    }
-    else {
+    } else {
       getAllDownloads()
     }
-    
+
     return () => {
       if (interval) {
         clearInterval(interval)
@@ -139,7 +153,7 @@ const Main = () => {
       }
     }
   }, [tellActive.length, activeDownloads])
-  
+
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: "Id", headerName: "id", width: 50, sortable: true },
     {
@@ -177,17 +191,18 @@ const Main = () => {
       width: 200,
       renderCell: (params) => {
         return (
-          <div className={clsx("flex justify-between items-center  h-full", styles.progress)}>
+          <div className={clsx("flex flex-col items-center", styles.progress)}>
+            <div className="h-[75%]">{params.row.Percentage!}%</div>
+
             <ProgressBar
               label={""}
               hideText={true}
+              className={styles.fixProgress}
+              disableGlow={false}
               progressColor={"green"}
-              darkTheme
-              score={
-                +params.row.Percentage!
-              }
+              darkTheme={true}
+              score={+params.row.Percentage!}
             />
-            <div>{params.row.Percentage!}%</div>
           </div>
         )
       },
@@ -222,25 +237,23 @@ const Main = () => {
       editable: false
     }
   ]
-  
+
   const rows = searchInDownloadsRows(dataGridRow, searchValue)
-  
-  
+
   const rowSelectedHandler = (selectionModel: GridRowSelectionModel) => {
     setRowSelectionModel(selectionModel)
     const selectedDetails = rows.filter((row) => selectionModel.includes(row.Id!))
     setSelectedRows(selectedDetails)
   }
-  
+
   const handleContextMenu = (event: MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
     window.electronAPI.showContextMenu(selectedRows)
   }
-  
+
   return (
-    <div className={styles.container}
-         onContextMenu={(e) => handleContextMenu(e)}>
+    <div className={styles.container} onContextMenu={(e) => handleContextMenu(e)}>
       <DataGrid
         getRowId={(row) => row.Id!}
         scrollbarSize={1}
@@ -249,11 +262,17 @@ const Main = () => {
         onRowSelectionModelChange={rowSelectedHandler}
         rows={rows}
         columns={columns}
+        slots={{
+          noRowsOverlay: EmptyDownloads
+        }}
         hideFooterPagination={true}
         sx={{
           border: "none",
           "& .MuiDataGrid-container--top [role=row]": {
-            backgroundColor: "var(--color-neutral-900)",
+            //use this when dont want be transparent
+            // backgroundColor: "var(--color-neutral-900)",
+            backgroundColor: "transparent",
+            backdropFilter: "blur(10px)",
             color: "white"
           },
           "& .MuiDataGrid-cell": {
@@ -272,9 +291,12 @@ const Main = () => {
           "& .MuiDataGrid-selectedRowCount": {
             color: "white"
           },
-          "& .css-1tdeh38": {
-            borderColor: "var(--color-neutral-800)"
+          "& .MuiDataGrid-filler": {
+            "--rowBorderColor": clsx(rows.length ? "var(--color-neutral-800) !important" : "none !important")
           },
+          // "& .css-1tdeh38": {
+          //   borderColor: "var(--color-neutral-800)"
+          // },
           "& .MuiDataGrid-withBorderColor": {
             borderColor: "var(--color-neutral-800)"
           },
@@ -287,10 +309,6 @@ const Main = () => {
             "& .MuiDataGrid-filler ": {
               borderColor: "var(--color-neutral-800)"
             }
-            
-          },
-          "& .MuiCheckbox-root ": {
-            color: "white"
           },
           // scrollbar
           "& .MuiDataGrid-scrollbar": {
@@ -299,6 +317,18 @@ const Main = () => {
             "&:hover": {
               height: "30% !important"
             }
+          },
+          ".MuiDataGrid-row.Mui-selected": {
+            backgroundColor: "rgb(208 213 217 / 10% )"
+          },
+          "& .MuiCheckbox-root ": {
+            color: "#ececec4a"
+          },
+          "& .MuiCheckbox-root.Mui-checked": {
+            color: "#7ac279"
+          },
+          "& .MuiDataGrid-cell:focus-within": {
+            outline: "none"
           }
         }}
       />

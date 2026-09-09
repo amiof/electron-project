@@ -15,7 +15,6 @@ import { TransitionProps } from "@mui/material/transitions"
 import { getIconFromFileType } from "@components/sidebar/utils.ts"
 import useDownloaderStore from "@src/store/downloaderStore.ts"
 
-
 interface CustomTreeItemProps
   extends Omit<UseTreeItem2Parameters, "rootRef">,
     Omit<React.HTMLAttributes<HTMLLIElement>, "onFocus"> {
@@ -32,21 +31,18 @@ const StyledTreeItemRoot = styled(TreeItem2Root)(({ theme }) => ({
   })
 })) as unknown as typeof TreeItem2Root
 
-
 const AnimatedCollapse = animated(Collapse)
 
 function TransitionComponent(props: TransitionProps) {
-  
   const style = useSpring({
     to: {
       opacity: props.in ? 1 : 0,
       transform: `translate3d(0,${props.in ? 0 : 20}px,0)`
     }
   })
-  
+
   return <AnimatedCollapse style={style} {...props} />
 }
-
 
 const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   flexDirection: "row-reverse",
@@ -97,15 +93,14 @@ const CustomTreeItemContent = styled(TreeItem2Content)(({ theme }) => ({
   }
 }))
 
-
 const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   props: CustomTreeItemProps,
   ref: React.Ref<HTMLLIElement>
 ) {
   const { id, itemId, label, disabled, children, ...other } = props
   
-  const setSidebarSelectedLabel = useDownloaderStore(state => state.setSidebarSelectedLabel)
-  
+  const setSidebarSelectedLabel = useDownloaderStore((state) => state.setSidebarSelectedLabel)
+
   const {
     getRootProps,
     getContentProps,
@@ -117,15 +112,14 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
     status,
     publicAPI
   } = useTreeItem2({ id, itemId, children, label, disabled, rootRef: ref })
-  
+
   const isExpandable = (reactChildren: React.ReactNode) => {
     if (Array.isArray(reactChildren)) {
       return reactChildren.length > 0 && reactChildren.some(isExpandable)
     }
     return Boolean(reactChildren)
   }
-  
-  
+
   const item = publicAPI.getItem(itemId)
   const expandable = isExpandable(children)
   let icon
@@ -136,10 +130,9 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
     icon = getIconFromFileType(item.fileType)
   }
   
-  
   return (
     <TreeItem2Provider itemId={itemId}>
-      <StyledTreeItemRoot {...getRootProps(other)} >
+      <StyledTreeItemRoot {...getRootProps(other)}>
         <div onClick={() => setSidebarSelectedLabel(item.label)}>
           <CustomTreeItemContent
             {...getContentProps({
@@ -150,15 +143,12 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
                 "Mui-disabled": status.disabled
               })
             })}
-          
           >
             <TreeItem2IconContainer {...getIconContainerProps()}>
               <TreeItem2Icon status={status} />
             </TreeItem2IconContainer>
             <TreeItem2Checkbox {...getCheckboxProps()} />
-            <CustomLabel
-              {...getLabelProps({ icon, expandable: expandable && status.expanded })}
-            />
+            <CustomLabel {...getLabelProps({ icon, expandable: expandable && status.expanded })} />
             <TreeItem2DragAndDropOverlay {...getDragAndDropOverlayProps()} />
           </CustomTreeItemContent>
         </div>

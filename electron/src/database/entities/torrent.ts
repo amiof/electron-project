@@ -40,7 +40,6 @@ export class Torrent implements TTorrentRes {
   @Column({ type: "text", nullable: false, default: "0" })
   pieceLength!: string
   
-  // Speeds & peers
   @Column({ type: "text", nullable: false, default: "0" })
   downloadSpeed!: string
   
@@ -78,4 +77,25 @@ export class Torrent implements TTorrentRes {
   
   @UpdateDateColumn({ type: "datetime", nullable: false })
   updatedAt!: Date
+  
+  @Column({ type: "boolean", nullable: false, default: false })
+  schedulerQueue!: boolean
+  
+  @Column({
+    type: "text",
+    nullable: false,
+    default: "{}",
+    transformer: {
+      to: (value: Record<string, string>) => JSON.stringify(value),
+      from: (value: string) => {
+        try {
+          return JSON.parse(value)
+        }
+        catch {
+          return {}
+        }
+      }
+    }
+  })
+  optionOverrides!: Record<string, string>
 }
