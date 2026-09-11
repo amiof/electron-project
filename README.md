@@ -1,4 +1,4 @@
-<div  align="center">
+<div align="center">
   <img src="./assets/icons/shabdiz.png" alt="icon" style="width:400px;"/>
 </div>
 
@@ -22,6 +22,9 @@ A modern, cross-platform download manager built with Electron, React, and aria2c
 ## 🚀 Features
 
 - **High-Speed Downloads**: Leverages aria2c for fast, multi-threaded downloading
+- **BitTorrent & Magnet Support**: Download via Magnet links, `.torrent` files, and HTTP/HTTPS torrent links
+- **Selective Torrent Downloading**: Interactive directory and file tree view to preview and select specific files
+  before downloading
 - **Real-time Progress Tracking**: WebSocket integration with aria2c for live download statistics
 - **Modern UI**: Built with React and Material-UI for a clean, responsive interface
 - **Cross-Platform**: Works on Windows, macOS, and Linux
@@ -33,7 +36,7 @@ A modern, cross-platform download manager built with Electron, React, and aria2c
 - **Scheduler**: Schedule downloads to start and stop at specific times
 - **Share**: Copy download info to clipboard for easy sharing
 - **Proxy Support**: Configure HTTP/HTTPS proxy settings
-- **Torrent Configuration**: Fine-tune DHT, peer exchange, seed ratio and more
+- **Torrent Configuration**: Fine-tune DHT, peer exchange, seed ratio, and live seeder indicators
 - **Storage Management**: Select and manage download storage directories
 
 ## 🏗️ Tech Stack
@@ -53,6 +56,7 @@ A modern, cross-platform download manager built with Electron, React, and aria2c
 ### Backend (Electron)
 - **Electron** - Cross-platform desktop framework
 - **aria2c** - High-performance download engine
+- **parse-torrent** - Parsing and inspecting torrent files and magnet URIs
 - **WebSocket (ws)** - Real-time communication with aria2c
 - **TypeORM** - Database ORM
 - **SQLite3** - Local database
@@ -173,8 +177,7 @@ electron-project/
 ├── assets/                    # Application icons and images
 ├── electron/                  # Electron main process
 │   ├── src/
-│   │   ├── main.ts            # Electron main e
-ntry point
+│   │   ├── main.ts            # Electron main entry point
 │   │   ├── aria2c.ts          # aria2c process management
 │   │   ├── aria2Config.ts     # aria2c configuration
 │   │   ├── types.ts           # Shared TypeScript types
@@ -207,6 +210,7 @@ ntry point
 ├── react/                     # React frontend
 │   ├── src/
 │   │   ├── components/        # React components
+│   │   │   ├── loading/       # Loading & shutdown spinners
 │   │   │   ├── addLinkPopup/  # Add download link popup
 │   │   │   ├── buttonAction/  # Toolbar button action component
 │   │   │   ├── header/        # App header with speed display & search
