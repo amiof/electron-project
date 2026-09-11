@@ -71,12 +71,15 @@ export interface IElectronAPI {
   selectStorageDirectory: () => Promise<unknown>
   getSelectedStorageDirectory: () => Promise<string>
   setSelectedStorageDirectory: (basePath: string | null) => Promise<void>
-  selectCookieFile: () => Promise<string | null>
+  selectCookieFile: (fileType?: "cookie" | "torrent") => Promise<string | null>
   showNotification: (notif: TNotificationDetailes) => Promise<void>
   getTorrentConfig: () => Promise<TTorrentConfig>
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>
   getMetadataUrls: (url: string) => Promise<resMetadataUrls>
   getMagnetMetadataUrls: (magnetUrl: string) => Promise<resMetadataUrls>
+  getTorrentMetadataUrls: (torrentUrl: string) => Promise<resMetadataUrls>,
+  getTorrentMetadataFile: (torrentPath: string) => Promise<resMetadataUrls>,
+  addTorrentUrl: (selectedFile: string, filePath: string) => Promise<string>
   showContextMenu: (selectedItems: [] | TDownloads[]) => Promise<unknown>
   readClipboard: () => Promise<string>
   getSchedulerDownloadRows: () => Promise<TSchedulerGid[]>

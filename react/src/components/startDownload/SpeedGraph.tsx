@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import uPlot, { AlignedData, Options } from "uplot"
 import "uplot/dist/uPlot.min.css"
+import { formatBytes } from "@src/utils.ts"
 
 type Props = {
   speed: number
@@ -48,10 +49,15 @@ const SpeedGraph = (props: Props) => {
           label: "Download",
           stroke: "#4f46e5",
           width: 2,
-          fill: "rgba(79,70,229,0.3)"
+          fill: "rgba(79,70,229,0.3)",
 
           // ? disable fancy path optimizations
           // paths: uPlot.paths!.spline()
+          value: (_, v) => {
+            if (v == null) return "—"
+            const rounded = Math.round(v) * 1000
+            return formatBytes(rounded)
+          }
         }
       ]
     }

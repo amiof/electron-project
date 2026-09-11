@@ -1,12 +1,15 @@
-import { app, BrowserWindow, clipboard, ipcMain, Menu, Notification } from "electron"
+import { BrowserWindow, clipboard, ipcMain, Menu, Notification } from "electron"
+import * as fsp from "fs/promises"
+import path from "path"
 import { aria2, mainWindow } from "../../main"
-import { resMetadataUrls, STATUS_TYPE, TDownloads, TNotificationDetailes, TtorrentFileParsed } from "../../types"
+import { resMetadataUrls, STATUS_TYPE, TDownloads, TNotificationDetailes, TtellRes } from "../../types"
 import {
   directionFolder,
   extractFilenameFromDisposition,
   generateId,
   getFilenameFromUrl,
-  waitForTorrentMetadata
+  parseTorrentFile,
+  torrentSavePath
 } from "../../utils"
 import {
   ACTIONS_CHANNELS,
@@ -16,14 +19,9 @@ import {
   UTILS_CHANNELS
 } from "../channels"
 import { createPopupWindow, iconPathContextMenu } from "../utils"
-
-import fs from "fs"
-import os from "os"
-import path from "path"
-import { electronStore } from "../../store/electronStore"
 import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
-const parseTorrent = require("parse-torrent")
+// const parseTorrent = require("parse-torrent")
 // import parseTorrent from "parse-torrent/index.js"
 
 export const ipcUtilsHandler = () => {
@@ -46,7 +44,7 @@ export const ipcUtilsHandler = () => {
       // })
     }
   )
-  
+
   ipcMain.handle(UTILS_CHANNELS.GET_MAGNET_METADATA_URLS, async (_event: IpcMainInvokeEvent, magnetUrl: string) => {
     try {
       const urlResponse: resMetadataUrls = {
@@ -58,50 +56,59 @@ export const ipcUtilsHandler = () => {
         torrentInfoHash: "",
         gidTorrent: "",
         torrentFiles: []
-        
       }
       
-      if (magnetUrl.startsWith("magnet:")) {
-        const platform = process.platform
-        const basePathSelected = electronStore.get("selectedStorageDirectory")
-        let basePath
-        if (platform === "win32") {
-          basePath = basePathSelected ?? app.getPath("downloads")
-        }
-        else {
-          basePath = basePathSelected ?? os.homedir()
-        }
-        const savePath = `${basePath}/Shabdiz-DM/torrents`
-        urlResponse.savePath = savePath
-        
+      if (magnetUrl.startsWith("magnet:") || magnetUrl.endsWith(".torrent")) {
+        urlResponse.savePath = torrentSavePath()
         urlResponse.typeUrl = "magnet"
-        
         const download = async () => {
           const gidUrl = (await aria2.sendAria2cRequest("addUri", [
             [magnetUrl],
             {
               "bt-metadata-only": "true",
               "bt-save-metadata": "true",
+              "allow-overwrite": "true",
               "follow-torrent": "false",
-              dir: `${savePath}`
+              dir: `${torrentSavePath()}`
             }
           ])) as string
           
-          const status = await waitForTorrentMetadata(gidUrl, 600000)
-          if (status?.infoHash) {
-            const torrentFilePath = path.join(savePath, `${status.infoHash}.torrent`)
-            const torrentBuffer = fs.readFileSync(torrentFilePath)
+          let isCompleted = false
+          const timeout = 60000 // 60 seconds timeout
+          const startTime = Date.now()
+          
+          while (!isCompleted && Date.now() - startTime < timeout) {
+            const statusResponse = (await aria2.sendAria2cRequest("tellStatus", [gidUrl, ["status"]])) as TtellRes
             
-            const parsed = parseTorrent(torrentBuffer) as TtorrentFileParsed
-            urlResponse.fileName = parsed.name
-            urlResponse.size = String(parsed.length)
-            urlResponse.resume = true
-            urlResponse.typeUrl = "torrent"
-            urlResponse.torrentInfoHash = status.infoHash
-            urlResponse.gidTorrent = gidUrl
-            urlResponse.torrentFiles = parsed.files
-            //   const parsed = parseTorrent(torrentBuffer);
-            console.log("%c 1 --> Line: 86||utils.ts\n parsed ddddddddddddddddddddk www: ", "color:#f0f;", parsed)
+            if (statusResponse.status === "complete") {
+              isCompleted = true
+            }
+            else if (statusResponse.status === "error" || statusResponse.status === "removed") {
+              throw new Error("Download failed or was removed")
+            }
+            
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+          }
+          
+          if (!isCompleted) {
+            throw new Error("Download timeout")
+          }
+          if (isCompleted) {
+            // const status = await waitForTorrentMetadata(gidUrl, 60000)
+            
+            const status = (await aria2.sendAria2cRequest("tellStatus", [gidUrl])) as TtellRes
+            
+            if (status?.infoHash) {
+              const parsed = parseTorrentFile(torrentSavePath(), status.infoHash)
+              urlResponse.fileName = parsed.name
+              urlResponse.size = String(parsed.length)
+              urlResponse.resume = true
+              urlResponse.typeUrl = "torrent"
+              urlResponse.torrentInfoHash = status.infoHash
+              urlResponse.savePath = torrentSavePath()
+              urlResponse.gidTorrent = gidUrl
+              urlResponse.torrentFiles = parsed.files
+            }
           }
         }
         
@@ -113,6 +120,124 @@ export const ipcUtilsHandler = () => {
       console.error("error in  get Torrent metaData", err)
     }
   })
+  ipcMain.handle(
+    UTILS_CHANNELS.ADD_TORRENT_URL,
+    async (_event: IpcMainInvokeEvent, selectedFile: string, torrentFilePath: string) => {
+      console.log(selectedFile, torrentFilePath)
+      
+      const torrentBuffer = await fsp.readFile(torrentFilePath)
+      const torrentBase64 = torrentBuffer.toString("base64")
+      
+      const gidUrl = (await aria2.sendAria2cRequest("addTorrent", [
+        torrentBase64,
+        [],
+        {
+          "select-file": `${selectedFile}`,
+          dir: `${torrentSavePath()}`
+        }
+      ])) as string
+      
+      console.log("%c 1 --> Line: 140||utils.ts\n gidUrl: ", "color:#f0f;", gidUrl)
+      return gidUrl
+    }
+  )
+  
+  ipcMain.handle(UTILS_CHANNELS.GET_TORRENT_METADATA_URLS, async (_event: IpcMainInvokeEvent, torrentUrl: string) => {
+    try {
+      if (torrentUrl.startsWith("magnet:")) return
+      
+      const urlResponse: resMetadataUrls = {
+        fileName: null,
+        size: null,
+        typeUrl: "magnet",
+        savePath: "",
+        resume: null,
+        torrentInfoHash: "",
+        gidTorrent: "",
+        torrentFiles: []
+      }
+      
+      if (torrentUrl.endsWith(".torrent")) {
+        const gidUrl = (await aria2.sendAria2cRequest("addUri", [
+          [torrentUrl],
+          {
+            "bt-metadata-only": "true",
+            "bt-save-metadata": "true",
+            "allow-overwrite": "true",
+            "follow-torrent": "false",
+            dir: `${torrentSavePath()}`
+          }
+        ])) as string
+        
+        let isCompleted = false
+        const timeout = 60000 // 60 seconds timeout
+        const startTime = Date.now()
+        
+        while (!isCompleted && Date.now() - startTime < timeout) {
+          const statusResponse = (await aria2.sendAria2cRequest("tellStatus", [gidUrl, ["status"]])) as TtellRes
+          
+          if (statusResponse.status === "complete") {
+            isCompleted = true
+          }
+          else if (statusResponse.status === "error" || statusResponse.status === "removed") {
+            throw new Error("Download failed or was removed")
+          }
+          
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+        }
+        
+        if (!isCompleted) {
+          throw new Error("Download timeout")
+        }
+        
+        const fileName = getFilenameFromUrl(torrentUrl)
+        const infoHash = fileName.split(".torrent")[0]
+        
+        const parsed = parseTorrentFile(torrentSavePath(), infoHash)
+        
+        if (parsed) {
+          urlResponse.fileName = parsed.name
+          urlResponse.size = String(parsed.length)
+          urlResponse.resume = true
+          urlResponse.typeUrl = "torrent"
+          urlResponse.savePath = torrentSavePath()
+          urlResponse.torrentInfoHash = infoHash
+          urlResponse.gidTorrent = gidUrl
+          urlResponse.torrentFiles = parsed.files
+        }
+      }
+      
+      return urlResponse
+    }
+    catch (error) {
+      console.error("error in  get Torrent metaData", error)
+    }
+  })
+  
+  ipcMain.handle(UTILS_CHANNELS.GET_TORRENT_METADATA_FILE, async (_event: IpcMainInvokeEvent, torrentPath: string) => {
+    const urlResponse: resMetadataUrls = {
+      fileName: null,
+      size: null,
+      typeUrl: "magnet",
+      savePath: "",
+      resume: null,
+      torrentInfoHash: "",
+      torrentFiles: []
+    }
+    const infoHash = path.basename(torrentPath, ".torrent")
+    const parsed = parseTorrentFile(torrentSavePath(), infoHash)
+    
+    if (parsed) {
+      urlResponse.fileName = parsed.name
+      urlResponse.size = String(parsed.length)
+      urlResponse.resume = true
+      urlResponse.typeUrl = "torrent"
+      urlResponse.torrentInfoHash = infoHash
+      urlResponse.torrentFiles = parsed.files
+      urlResponse.savePath = torrentSavePath()
+    }
+    return urlResponse
+  })
 
   ipcMain.handle(UTILS_CHANNELS.GET_METADATA_URLS, async (_event: IpcMainInvokeEvent, url: string) => {
     const urlResponse: resMetadataUrls = {
@@ -122,52 +247,6 @@ export const ipcUtilsHandler = () => {
       savePath: directionFolder(url),
       resume: null
     }
-    
-    // if (url.startsWith("magnet:")) {
-    //   const platform = process.platform
-    //   const basePathSelected = electronStore.get("selectedStorageDirectory")
-    //   let basePath = basePathSelected ?? app.getPath("downloads")
-    //   if (platform === "win32") {
-    //     basePath = basePathSelected ?? app.getPath("downloads")
-    //   } else {
-    //     basePath = basePathSelected ?? os.homedir()
-    //   }
-    //   const savePath = `${basePath}/Shabdiz-DM/torrents`
-    //
-    //   urlResponse.typeUrl = "magnet"
-    //   let downloadedMetadata: boolean = false
-    //
-    //   const download = async () => {
-    //     const resAdduri = (await aria2.sendAria2cRequest("addUri", [
-    //       [url],
-    //       {
-    //         "bt-metadata-only": "true",
-    //         "bt-save-metadata": "true",
-    //         "follow-torrent": "false",
-    //         dir: `${savePath}`
-    //       }
-    //     ])) as string
-    //
-    //     console.log("%c 1 --> Line: 46||utils.ts\n res: ", "color:#f0f;", resAdduri)
-    //
-    //     if (resAdduri) {
-    //       downloadedMetadata = true
-    //     }
-    //
-    //     const status = await waitForTorrentMetadata(resAdduri, 600000)
-    //     if (status?.infoHash) {
-    //       const torrentFilePath = path.join(savePath, `${status.infoHash}.torrent`)
-    //       const torrentBuffer = fs.readFileSync(torrentFilePath)
-    //
-    //       const parsed = parseTorrent(torrentBuffer)
-    //       //   const parsed = parseTorrent(torrentBuffer);
-    //       console.log("%c 1 --> Line: 86||utils.ts\n parsed ddddddddddddddddddddk www: ", "color:#f0f;", parsed)
-    //     }
-    //   }
-    //
-    //   await download()
-    // }
-    //
     try {
       if (!url.startsWith("magnet:")) {
         const response = await fetch(url, { method: "HEAD" })

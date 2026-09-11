@@ -4,9 +4,9 @@ import * as fsnp from "fs"
 import * as fs from "fs/promises"
 import os from "os"
 import path from "path"
-import { electronStore } from "./store/electronStore"
-import { TFileDetails, TtellRes } from "./types"
 import { aria2 } from "./main"
+import { electronStore } from "./store/electronStore"
+import { TFileDetails, TtellRes, TtorrentFileParsed } from "./types"
 
 const basePathSelected = electronStore.get("selectedStorageDirectory")
 
@@ -75,7 +75,8 @@ export const checkAndCreateFolder = async () => {
 export const getFolderFromUrl = (url: string) => {
   // const extension = url.split(".").pop()?.toLowerCase() || ""
   const fileName = getFilenameFromUrl(url)
-  const extension = fileName!=="Download"? fileName.split(".").pop()?.toLowerCase() : url.split(".").pop()?.toLowerCase()
+  const extension =
+    fileName !== "Download" ? fileName.split(".").pop()?.toLowerCase() : url.split(".").pop()?.toLowerCase()
 
   const fileTypes: Record<string, string[]> = {
     videos: ["mp4", "mkv", "avi", "mov", "wmv", "flv", "webm"],
@@ -306,40 +307,25 @@ export const openFileExplorer = (directoryPath: string) => {
 }
 
 // for get metaData
-export async function waitForTorrentMetadata(
-  gid: string,
-  timeout = 60_000
-) {
+export async function waitForTorrentMetadata(gid: string, timeout = 60_000) {
   const startedAt = Date.now()
-  
+
   while (Date.now() - startedAt < timeout) {
-    const status = await aria2.sendAria2cRequest(
-      "tellStatus",
-      [gid]
-    ) as TtellRes
-    
+    const status = (await aria2.sendAria2cRequest("tellStatus", [gid])) as TtellRes
+
     if (status.errorCode) {
-      throw new Error(
-        `${status.errorCode}: ${status.errorMessage}`
-      )
+      throw new Error(`${status.errorCode}: ${status.errorMessage}`)
     }
-    
+
     if (status.files?.length > 0) {
       return status
     }
     
-    if (
-      status.status === "error" ||
-      status.status === "removed"
-    ) {
-      throw new Error(
-        `aria2 metadata failed: ${status.status}`
-      )
+    if (status.status === "error" || status.status === "removed") {
+      throw new Error(`aria2 metadata failed: ${status.status}`)
     }
     
-    await new Promise(resolve =>
-      setTimeout(resolve, 500)
-    )
+    await new Promise((resolve) => setTimeout(resolve, 500))
   }
   
   throw new Error("Timed out waiting for torrent metadata")
@@ -349,16 +335,13 @@ export async function waitForTorrentMetadata(
 export const getFilenameFromUrl = (url: string): string => {
   try {
     const parsedUrl = new URL(url)
-
-    return decodeURIComponent(
-      parsedUrl.pathname.split("/").pop() || "Download"
-    )
+    
+    return decodeURIComponent(parsedUrl.pathname.split("/").pop() || "Download")
   }
   catch {
     return "Download"
   }
 }
-
 
 // get name from header of a link
 export const extractFilenameFromDisposition = (headerValue: string | null): string | null => {
@@ -396,6 +379,28 @@ export const extractFilenameFromDisposition = (headerValue: string | null): stri
 }
 export const generateId = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+}
+
+export const parseTorrentFile = (pathFile: string, infoHash: string) => {
+  const parseTorrent = require("parse-torrent")
+  const torrentFilePath = path.join(pathFile, `${infoHash}.torrent`)
+  const torrentBuffer = fsnp.readFileSync(torrentFilePath)
+  
+  const parsed = parseTorrent(torrentBuffer) as TtorrentFileParsed
+  return parsed as TtorrentFileParsed
+}
+
+export const torrentSavePath = () => {
+  const platform = process.platform
+  const basePathSelected = electronStore.get("selectedStorageDirectory")
+  let basePath
+  if (platform === "win32") {
+    basePath = basePathSelected ?? app.getPath("downloads")
+  }
+  else {
+    basePath = basePathSelected ?? os.homedir()
+  }
+  return `${basePath}/Shabdiz-DM/torrents`
 }
 
 // time must be like "12:30" for use this function

@@ -15,6 +15,7 @@ import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import styles from "./style.module.scss"
+import { DeviceHub, FileUploadOutlined } from "@mui/icons-material"
 
 export type TDetails = {
   label: string
@@ -117,8 +118,18 @@ const DownloadStart = () => {
 
   const isTorrentsDetails = isTorrent
     ? ([
-        { label: "Number Seeders", value: downloadStatus?.numSeeders ?? "0", showDetails: false },
-        { label: "Upload", value: downloadStatus?.uploadLength ?? "0", showDetails: false }
+      {
+        label: "Number Seeders: ",
+        value: downloadStatus?.numSeeders ?? "0",
+        showDetails: isTorrent,
+        icon: <DeviceHub color={"success"} />
+      },
+      {
+        label: "Upload length: ",
+        value: downloadStatus?.uploadLength ?? "0",
+        showDetails: isTorrent,
+        icon: <FileUploadOutlined color={"success"} />
+      }
       ] as TDetails[])
     : ([] as TDetails[])
 
@@ -133,7 +144,7 @@ const DownloadStart = () => {
       label: "Link : ",
       value: downloadStatus?.files[0].uris[0]?.uri ?? "",
       icon: <InsertLinkIcon color={"success"} />,
-      showDetails: true
+      showDetails: !isTorrent
     },
     {
       label: "Saved Path : ",
@@ -176,14 +187,14 @@ const DownloadStart = () => {
   return (
     <div className="flex flex-col w-full h-full">
       <CustomTitleBar id={gid} widthTitleBar="30%">
-          <div
-            className={clsx(
-              "w-fit bg-[#0d1420] max-w-[68%]  mb-1 text-center  rounded-xl font-medium px-3  border border-[rgba(255,255,255,0.2)] truncate",
-              styles.slideUp
-            )}
-          >
-            {filename}
-          </div>
+        <div
+          className={clsx(
+            "w-fit bg-[#0d1420] max-w-[68%]  mb-1 text-center  rounded-xl font-medium px-3  border border-[rgba(255,255,255,0.2)] truncate",
+            styles.slideUp
+          )}
+        >
+          {filename}
+        </div>
       </CustomTitleBar>
       <div
         className={clsx(

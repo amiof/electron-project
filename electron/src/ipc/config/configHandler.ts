@@ -47,21 +47,27 @@ export const ipcConfigHandler = () => {
   ipcMain.handle(CONFIG_CHANNELS.SET_TORRENTS_CONF, async (_event: IpcMainInvokeEvent, config: TTorrentConfig) => {
     return electronStore.set("torrentConfig", config)
   })
-
-  ipcMain.handle(CONFIG_CHANNELS.SELECT_COOKIE_FILE, async (_event: IpcMainInvokeEvent) => {
-    const result = await dialog.showOpenDialog({
-      properties: ['openFile'],
-      title: 'Select Cookie File',
-      filters: [
-        { name: 'Cookie Files', extensions: ['txt', 'cookie', 'cookies'] },
-        { name: 'All Files', extensions: ['*'] }
-      ]
-    })
-
-    if (result.canceled) {
-      return null
+  
+  ipcMain.handle(
+    CONFIG_CHANNELS.SELECT_COOKIE_FILE,
+    async (_event: IpcMainInvokeEvent, fileType: "cookie" | "torrent" = "cookie") => {
+      const torrentFile = fileType === "torrent"
+      const result = await dialog.showOpenDialog({
+        properties: ["openFile"],
+        title: torrentFile ? "Select Torrent File" : "Select Cookie File",
+        filters: torrentFile
+          ? [{ name: "Torrent Files", extensions: ["torrent"] }]
+          : [
+            { name: "Cookie Files", extensions: ["txt", "cookie", "cookies"] },
+            { name: "All Files", extensions: ["*"] }
+          ]
+      })
+      
+      if (result.canceled) {
+        return null
+      }
+      
+      return result.filePaths[0]
     }
-
-    return result.filePaths[0]
-  })
+  )
 }

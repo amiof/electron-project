@@ -64,11 +64,15 @@ interface ElectronAPI {
   selectStorageDirectory: () => Promise<unknown>
   getSelectedStorageDirectory: () => Promise<string>
   setSelectedStorageDirectory: (basePath: string) => Promise<void>
+  selectCookieFile: (fileType?: "cookie" | "torrent") => Promise<string | null>
   showNotification: (notif: TNotificationDetailes) => Promise<void>
   getTorrentConfig: () => Promise<TTorrentConfig>
   setTorrentConfig: (config: TTorrentConfig) => Promise<unknown>
   getMetadataUrls: (url: string) => Promise<unknown>
   getMagnetMetadataUrls: (magnetUrl: string) => Promise<resMetadataUrls>
+  getTorrentMetadataUrls: (torrentUrl: string) => Promise<resMetadataUrls>
+  getTorrentMetadataFile: (torrentUrl: string) => Promise<resMetadataUrls>
+  addTorrentUrl: (selectedFile: string, filePath: string) => Promise<string>
   showContextMenu: (id: string) => Promise<unknown>
   onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => Promise<any>
   readClipboard: () => Promise<string>
@@ -177,7 +181,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   selectStorageDirectory: () => ipcRenderer.invoke("select-storage-dir"),
   getSelectedStorageDirectory: () => ipcRenderer.invoke("get-selected=storage-config-dir"),
   setSelectedStorageDirectory: (basePath: string) => ipcRenderer.invoke("set-selected-storage-directory", basePath),
-  selectCookieFile: () => ipcRenderer.invoke("select-cookie-file"),
+  selectCookieFile: (fileType: "cookie" | "torrent" = "cookie") => ipcRenderer.invoke("select-cookie-file", fileType),
   getTorrentConfig: () => ipcRenderer.invoke("get-torrents-config"),
   setTorrentConfig: (config: TTorrentConfig) => ipcRenderer.invoke("set-torrents-config", config),
 
@@ -185,6 +189,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   showNotification: (notifDetailes: TNotificationDetailes) => ipcRenderer.invoke("show-notification", notifDetailes),
   getMetadataUrls: (url: string) => ipcRenderer.invoke("get-metadata-urls", url),
   getMagnetMetadataUrls: (magnetUrl: string) => ipcRenderer.invoke("get-magnet-metadata-urls", magnetUrl),
+  getTorrentMetadataUrls: (torrentUrl: string) => ipcRenderer.invoke("get-torrent-metadata-urls", torrentUrl),
+  getTorrentMetadataFile: (torrentPath: string) => ipcRenderer.invoke("get-torrent-metadata-file", torrentPath),
+  addTorrentUrl: (selectedFile: string, filePath: string) => ipcRenderer.invoke("add-torrent-url", selectedFile, filePath),
 
   showContextMenu: (id: string) => ipcRenderer.invoke("show-context-menu", id),
   onContextMenuAction: (callback: (action: string | { action: string; [key: string]: any }) => void) => {

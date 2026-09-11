@@ -13,6 +13,8 @@ import { TtellRes } from "@src/types.ts"
 import { ReactElement, useEffect, useState } from "react"
 import { ProgressBar } from "react-progressbar-fancy"
 import styles from "./style.module.scss"
+import SeedIcon from "@src/assets/seedIcon.tsx"
+import Typography from "@mui/material/Typography"
 
 type Props = {
   details: TDetails[]
@@ -99,19 +101,19 @@ const BackDetails = (props: Props) => {
             <div className={"pt-4 w-full"}>
               {isTorrent && (
                 <>
-                  {/*<div className={"absolute top-15 right-4"}>*/}
-                  {/*  <Tooltip title={findSeed?.label ?? "seed"} placement="bottom">*/}
-                  {/*    <Badge variant={"standard"} color={"primary"} badgeContent={findSeed?.value ?? "0"} anchorOrigin={{*/}
-                  {/*      vertical: "bottom",*/}
-                  {/*      horizontal: "left"*/}
-                  {/*    }}>*/}
-                  {/*      <SeedIcon style={{ fontSize: "46px" }} />*/}
-                  {/*    </Badge>*/}
-                  {/*  </Tooltip>*/}
-                  {/*</div>*/}
-                  <div className={"absolute top-2 right-3"}>
-                    <MagnetIcon style={{ fontSize: "46px" }} />
-                  </div>
+                  {
+                    downloadStatus?.numSeeders !== "0" || downloadStatus.status == "complete" ?
+                      <div
+                        className={"absolute bottom-2 right-3 animate-pulse border p-1 pl-2 rounded-xl border-white/10  bg-white/5 backdrop-blur-lg flex flex-col items-center justify-center "}>
+                        <MagnetIcon style={{ fontSize: "46px" }} />
+                      </div>
+                      :
+                      <div
+                        className={"absolute bottom-2 right-3 animate-pulse flex flex-col items-center justify-center gap-1 p-2 rounded-lg border border-white/10 backdrop-blur-lg "}>
+                        <SeedIcon style={{ fontSize: "46px" }} />
+                        <Typography variant={"caption"}>Finding Seeders...</Typography>
+                      </div>
+                  }
                 </>
               )}
               {details.map(
@@ -185,11 +187,6 @@ const BackDetails = (props: Props) => {
           }
         >
           <div className={"h-full w-full px-8  flex flex-col items-center justify-evenly"}>
-            {isTorrent && (
-              <div className={"absolute top-2 left-3"}>
-                <MagnetIcon style={{ fontSize: "46px" }} />
-              </div>
-            )}
             <SpeedGraph speed={Number(downloadStatus?.downloadSpeed) || 0} />
             <ChunkMap percent={percentage} width={"100%"} gridTemp={"repeat(20, 1fr)"} />
           </div>
