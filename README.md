@@ -75,7 +75,7 @@ Before you begin, ensure you have the following installed:
 
 
 ## 🛠️ Installation
-
+- in windows may be install Microsoft Visual C++ Redistributable
 1. **Clone the repository**
    ```bash
    git clone https://github.com/amiof/electron-project.git
