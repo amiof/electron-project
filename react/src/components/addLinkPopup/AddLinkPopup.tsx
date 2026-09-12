@@ -63,25 +63,25 @@ const AddLinkPopup = () => {
   const handleChange = (_event: React.SyntheticEvent, newValue: TAddLinkTabs) => {
     setValue(newValue)
   }
-  
+
   const resetTorrentResult = () => {
     setTorrentMetadata(null)
     setSelectedTorrentIndexes([])
     setTorrentStep("metadata")
     setTorrentError("")
   }
-  
+
   const handleTorrentInputTypeChange = (inputType: TTorrentInputType) => {
     setTorrentInputType(inputType)
     setTorrentInputValue("")
     resetTorrentResult()
   }
-  
+
   const handleTorrentInputValueChange = (inputValue: string) => {
     setTorrentInputValue(inputValue)
     resetTorrentResult()
   }
-  
+
   const handleSelectTorrentFile = async () => {
     try {
       const selectedPath = await window.electronAPI.selectCookieFile("torrent")
@@ -95,7 +95,7 @@ const AddLinkPopup = () => {
       setTorrentError("Failed to select a torrent file.")
     }
   }
-  
+
   const handleTorrentMetadata = async () => {
     const inputValue = torrentInputValue.trim()
     if (!inputValue || torrentLoading) return
@@ -109,12 +109,12 @@ const AddLinkPopup = () => {
     catch (error) {
       console.error("Failed to get torrent metadata File:", error)
     }
-    
+
     if (torrentInputType === "Magnet URL" && !inputValue.startsWith("magnet:")) {
       setTorrentError("Enter a valid magnet URL.")
       return
     }
-    
+
     if (torrentInputType === "Torrent Link") {
       try {
         const url = new URL(inputValue)
@@ -125,7 +125,7 @@ const AddLinkPopup = () => {
         return
       }
     }
-    
+
     setTorrentLoading(true)
     setTorrentError("")
     try {
@@ -146,19 +146,31 @@ const AddLinkPopup = () => {
       setTorrentLoading(false)
     }
   }
-  
+
   const downloadTorrentHandler = async () => {
     const indexes = selectedTorrentIndexes.map((torrentIndex) => {
       return torrentIndex + 1
     })
     const joinIndexes = indexes.join(",")
-    const gid = await window.electronAPI.addTorrentUrl(
-      joinIndexes,
-      `${torrentMetadata?.savePath}/${torrentMetadata?.torrentInfoHash}.torrent`
-    )
+    let gid
+
+    if (torrentInputType === "Torrent File") {
+      const inputValue = torrentInputValue.trim()
+      gid = await window.electronAPI.addTorrentUrl(
+        joinIndexes,
+        inputValue
+      )
+    }
+    else {
+
+      gid = await window.electronAPI.addTorrentUrl(
+        joinIndexes,
+        `${torrentMetadata?.savePath}/${torrentMetadata?.torrentInfoHash}.torrent`
+      )
+    }
     addDownloadPopup(gid, torrentMetadata?.fileName ?? "torrent download")
     closePopupWindow(id)
-    
+
   }
 
   const changeComponents = () => {
@@ -236,7 +248,7 @@ const AddLinkPopup = () => {
                   >
                     Back
                   </Button>
-                  
+
                   <Button
                     variant={"contained"}
                     size={"small"}

@@ -225,7 +225,8 @@ export const ipcUtilsHandler = () => {
       torrentFiles: []
     }
     const infoHash = path.basename(torrentPath, ".torrent")
-    const parsed = parseTorrentFile(torrentSavePath(), infoHash)
+    const address=path.dirname(torrentPath)
+    const parsed = parseTorrentFile(address, infoHash)
     
     if (parsed) {
       urlResponse.fileName = parsed.name
